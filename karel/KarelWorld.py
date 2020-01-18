@@ -11,4 +11,4 @@ class KarelWorld():
 	
 	def load_from_file(self):
 		for line in self.world_file:
-			print(line)
+			print(line.strip())

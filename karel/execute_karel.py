@@ -10,7 +10,8 @@ def start_karel_application(args):
 	# This process is used to extract a module from an arbitarily located
 	# file that contains student code
 	# Adapted from https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-	spec = importlib.util.spec_from_file_location(os.path.splitext(os.path.basename(args.code_file))[0], os.path.abspath(args.code_file))
+	module_name = os.path.splitext(os.path.basename(args.code_file))[0]
+	spec = importlib.util.spec_from_file_location(module_name, os.path.abspath(args.code_file))
 	student_module = importlib.util.module_from_spec(spec)
 	spec.loader.exec_module(student_module)
 
@@ -27,6 +28,7 @@ def start_karel_application(args):
 
 	# Initialize root Tk Window and spawn Karel application
 	root = tk.Tk()
+	root.title(module_name)
 	app = KarelApplication(karel, world, student_module, master=root)
 	app.mainloop()	
 
