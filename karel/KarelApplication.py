@@ -25,6 +25,7 @@ class KarelApplication(tk.Frame):
 		self.create_buttons()
 		self.create_slider()
 		self.create_status_label()
+		self.draw_world()
 
 	def create_slider(self):
 		"""
@@ -45,7 +46,7 @@ class KarelApplication(tk.Frame):
 		self.speed.trace('w', self.update_speed)
 
 		self.scale = tk.Scale(self.slider_frame, orient=tk.HORIZONTAL, variable=self.speed, showvalue=0)
-		self.scale.set(INIT_SPEED)
+		self.scale.set(self.world.init_speed)
 		self.scale.pack()
 
 	def create_canvas(self):
@@ -68,7 +69,7 @@ class KarelApplication(tk.Frame):
 		self.start_program["command"] = self.execute_task
 		self.start_program.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
-		self.reset_program = tk.Button(self, highlightthickness=0, text="Reset Program", command=self.reset_program)
+		self.reset_program = tk.Button(self, highlightthickness=0, text="Reset Program", command=self.reset_world)
 		self.reset_program.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
 		self.load_world = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
@@ -106,13 +107,13 @@ class KarelApplication(tk.Frame):
 	def execute_task(self):
 		self.mod.main()
 
-	def reset_program(self):
+	def reset_world(self):
 		pass
 
 	def load_world(self):
 		pass
 
+	def draw_world(self):
+
 	def update_speed(self, *args):
 		print(self.speed.get())
-
-
