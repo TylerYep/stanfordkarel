@@ -4,6 +4,7 @@ import os
 from KarelApplication import KarelApplication
 from KarelWorld import KarelWorld
 from Karel import Karel
+from kareldefinitions import *
 
 def start_karel_application(args):
 

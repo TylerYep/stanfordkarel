@@ -1,3 +1,5 @@
+from kareldefinitions import *
+
 class Karel():
 	def __init__(self, world):
 		self.world = world

@@ -1,9 +1,5 @@
 import tkinter as tk
-
-PAD_X = 75
-PAD_Y = 10
-INIT_SPEED = 50
-LIGHT_GREY = "#e5e5e5"
+from kareldefinitions import *
 
 class KarelApplication(tk.Frame):
 	def __init__(self, karel, world, mod, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -77,9 +73,6 @@ class KarelApplication(tk.Frame):
 
 		self.load_world = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
 		self.load_world.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
-
-		# self.load_world2 = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
-		# self.load_world2.grid(column=0, row=3, padx=PAD_X, pady=PAD_Y, sticky="ew")
 	
 	def create_status_label(self):
 		"""
@@ -120,7 +113,6 @@ class KarelApplication(tk.Frame):
 		pass
 
 	def update_speed(self, *args):
-		print("delay updating")
 		print(self.speed.get())
 
 
