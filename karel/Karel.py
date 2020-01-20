@@ -2,8 +2,18 @@ from kareldefinitions import *
 
 class Karel():
 	def __init__(self, world):
-		self.world = world
+		self._world = world
 
+		self._avenue, self._street = self._world.karel_starting_location
+
+	@property
+	def avenue(self):
+		return self._avenue
+
+	@property
+	def street(self):
+		return self._street
+		
 	def turn_left(self):
 		print("Turning left!")
 

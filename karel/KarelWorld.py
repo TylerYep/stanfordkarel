@@ -77,6 +77,24 @@ class KarelWorld():
 	@property
 	def init_speed(self):
 		return self._init_speed
+
+	@property
+	def num_streets(self):
+		return self._num_streets
+
+	@property
+	def num_avenues(self):
+		return self._num_avenues
+	
+	@property
+	def beepers(self):
+		return self._beepers
+
+	@property
+	def walls(self):
+		return self._walls
+	
+	
 	
 	def load_from_file(self):
 		def parse_line(line):
@@ -104,9 +122,9 @@ class KarelWorld():
 					# next check to see if parameter encodes a location
 					coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
 					if coordinate:
-						street = int(coordinate.group(1))
-						avenue = int(coordinate.group(2))
-						params["loc"] = (street, avenue)
+						avenue = int(coordinate.group(1))
+						street = int(coordinate.group(2))
+						params["loc"] = (avenue, street)
 					else:
 						# finally check to see if parameter encodes a numerical value
 						val = None
@@ -121,7 +139,7 @@ class KarelWorld():
 								continue
 						elif keyword == "beeperbag":
 							# handle the edge case where Karel has infinite beepers
-							if param == "infinity":
+							if param == "infinity" or param == "infinite":
 								val = INFINITY
 						# only store non-null numerical value
 						if val is not None: params["val"] = val
@@ -143,26 +161,31 @@ class KarelWorld():
 			if keyword == "dimension":
 				# set world dimensions based on location values
 				self._num_avenues, self._num_streets = params["loc"]
+
 			elif keyword == "wall":
 				# build a wall at the specified location
-				street, avenue = params["loc"]
+				avenue, street = params["loc"]
 				direction = params["dir"]
-				self._walls.add(Wall(street, avenue, direction))
+				self._walls.add(Wall(avenue, street, direction))
+
 			elif keyword == "beeper":
 				# add the specified number of beepers to the world
-				street, avenue = params["loc"]
+				avenue, street = params["loc"]
 				count = params["val"]
-				self._beepers[(street, avenue)] += count
+				self._beepers[(avenue, street)] += count
+
 			elif keyword == "karel":
 				# Give Karel initial state values
-				street, avenue = params["loc"]
+				avenue, street = params["loc"]
 				direction = params["dir"]
-				self._karel_starting_location = (street, avenue)
+				self._karel_starting_location = (avenue, street)
 				self._karel_starting_direction = direction
+
 			elif keyword == "beeperbag":
 				# Set Karel's initial beeper bag count
 				count = params["val"]
 				self._karel_starting_beeper_count = count
+
 			elif keyword == "speed":
 				# Set delay speed of program execution
 				speed = params["val"]
