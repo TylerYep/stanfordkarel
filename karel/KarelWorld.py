@@ -94,8 +94,6 @@ class KarelWorld():
 	def walls(self):
 		return self._walls
 	
-	
-	
 	def load_from_file(self):
 		def parse_line(line):
 			# Ignore blank lines and lines with no comma delineator
@@ -133,7 +131,7 @@ class KarelWorld():
 						elif keyword == "speed":
 							# double values are only allowed for speed parameter
 							try:
-								val = float(param)
+								val = int(100 * float(param))
 							except ValueError:
 								# invalid parameter value, do not process
 								continue
@@ -190,6 +188,22 @@ class KarelWorld():
 				# Set delay speed of program execution
 				speed = params["val"]
 				self._init_speed = speed
+
+	def add_beeper(self, avenue, street):
+		self._beepers[(avenue, street)] += 1
+
+	def remove_beeper(self, avenue, street):
+		if self._beepers[(avenue, street)] == 0:
+			# TODO: throw an error here
+			return
+		self._beepers[(avenue, street)] -= 1
+
+	def wall_exists(self, avenue, street, direction):
+		wall = Wall(avenue, street, direction)
+		return wall in self._walls
+
+	def in_bounds(self, avenue, street):
+		return avenue > 0 and street > 0 and avenue <= self._num_avenues and street <= self._num_streets
 
 	def reset_world(self):
 		pass

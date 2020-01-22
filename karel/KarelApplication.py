@@ -1,6 +1,8 @@
 import tkinter as tk
 import math
+import cmath
 from kareldefinitions import *
+from time import sleep
 
 class KarelApplication(tk.Frame):
 	def __init__(self, karel, world, mod, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -64,7 +66,17 @@ class KarelApplication(tk.Frame):
 		self.canvas.delete("all")
 		self.draw_world()
 		self.draw_karel()
+		self.canvas.update()
 
+	def redraw_karel(self):
+		self.canvas.delete("karel")
+		self.draw_karel()
+		self.canvas.update()
+
+	def redraw_beepers(self):
+		self.canvas.delete("beeper")
+		self.draw_all_beepers()
+		self.canvas.update()
 
 	def create_buttons(self):
 		"""
@@ -90,6 +102,26 @@ class KarelApplication(tk.Frame):
 		self.status_label = tk.Label(self.master, text="Welcome to Karel!", bg=LIGHT_GREY)
 		self.status_label.grid(row=1, column=0, columnspan=2)
 
+	def karel_action_decorator(self, karel_fn):
+		def wrapper():
+			# execute Karel function
+			karel_fn()
+			# redraw canavs with updated state of the world
+			self.redraw_karel()
+			# TODO: do calculation to dynamically update delay
+			sleep(1 - self.speed.get() / 100)
+		return wrapper
+
+	def beeper_action_decorator(self, karel_fn):
+		def wrapper():
+			# execute Karel function
+			karel_fn()
+			# redraw canavs with updated state of the world
+			self.redraw_beepers()
+			# TODO: do calculation to dynamically update delay
+			sleep(1 - self.speed.get() / 100)
+		return wrapper
+
 	def inject_namespace(self):
 		"""
 		This function is responsible for doing some Python hackery
@@ -101,10 +133,11 @@ class KarelApplication(tk.Frame):
 		manually specifying all Karel commands 
 
 		"""
-		self.mod.turn_left = self.karel.turn_left
-		self.mod.move = self.karel.move
-		self.mod.pick_beeper = self.karel.pick_beeper
-		self.mod.put_beeper = self.karel.put_beeper
+
+		self.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
+		self.mod.move = self.karel_action_decorator(self.karel.move)
+		self.mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)
+		self.mod.put_beeper = self.beeper_action_decorator(self.karel.put_beeper)
 		self.mod.facing_north = self.karel.facing_north
 		self.mod.facing_south = self.karel.facing_south
 		self.mod.facing_east = self.karel.facing_east
@@ -113,7 +146,15 @@ class KarelApplication(tk.Frame):
 		self.mod.on_beeper = self.karel.on_beeper
 
 	def execute_task(self):
-		self.mod.main()
+		# Error checking for existence of main function completed in prior file
+		try:
+			self.mod.main()
+			# TODO: update status label to indicate successful completion
+		except KarelException as e:
+			# TODO: parse traceback and deliver helpful error message popup
+			# similar to old Karel bug icon + message
+			pass
+
 
 	def reset_world(self):
 		pass
@@ -167,7 +208,7 @@ class KarelApplication(tk.Frame):
 		for street in range(1, self.world.num_streets + 1):
 			label_x = self.left_x - LABEL_OFFSET
 			label_y = self.calculate_corner_y(street)
-			self.canvas.create_text(label_x, label_y, text=str(self.world.num_streets - street + 1), font="Arial 10")
+			self.canvas.create_text(label_x, label_y, text=str(street), font="Arial 10")
 
 	def draw_corners(self):
 		# Draw all corner markers in the world 
@@ -183,15 +224,18 @@ class KarelApplication(tk.Frame):
 			self.draw_beeper(location, count)
 
 	def draw_beeper(self, location, count):
+		# handle case where defaultdict returns 0 count by not drawing beepers
+		if count == 0: return 
+
 		corner_x = self.calculate_corner_x(location[0])
 		corner_y = self.calculate_corner_y(location[1])
 		beeper_radius = self.cell_size * BEEPER_CELL_SIZE_FRAC
 
 		points = [corner_x, corner_y - beeper_radius, corner_x + beeper_radius, corner_y, corner_x, corner_y + beeper_radius, corner_x - beeper_radius, corner_y]
-		self.canvas.create_polygon(points, fill="light grey", outline="black")
+		self.canvas.create_polygon(points, fill="light grey", outline="black", tag="beeper")
 
 		if count > 1: 
-			self.canvas.create_text(corner_x, corner_y, text=str(count), font="Arial 12")
+			self.canvas.create_text(corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper")
 
 
 	def draw_all_walls(self):
@@ -232,17 +276,16 @@ class KarelApplication(tk.Frame):
 	def draw_karel(self):
 		corner_x = self.calculate_corner_x(self.karel.avenue)
 		corner_y = self.calculate_corner_y(self.karel.street)
+		center = (corner_x, corner_y)
 
 		karel_origin_x = corner_x - self.cell_size / 2 + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
 		karel_origin_y = corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
 
-		self.draw_karel_outer_body(karel_origin_x, karel_origin_y)
-		self.draw_karel_inner_components(karel_origin_x, karel_origin_y)
-		self.draw_karel_legs(karel_origin_x, karel_origin_y)
+		self.draw_karel_outer_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+		self.draw_karel_inner_components(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+		self.draw_karel_legs(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
 
-		# TODO: rotate Karel in the appropriate direction
-
-	def draw_karel_outer_body(self, x, y):
+	def draw_karel_outer_body(self, x, y, center, direction):
 		points = []
 		
 		# Top-left point (referred to as origin) of Karel's body
@@ -268,9 +311,11 @@ class KarelApplication(tk.Frame):
 		# Complete the polygon
 		points.extend((x,y))
 
-		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH)
+		self.rotate_points(center, points, direction)
 
-	def draw_karel_inner_components(self, x, y):
+		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+
+	def draw_karel_inner_components(self, x, y, center, direction):
 		inner_x = x + self.cell_size * KAREL_INNER_OFFSET
 		inner_y = y + self.cell_size * KAREL_INNER_OFFSET
 
@@ -278,8 +323,8 @@ class KarelApplication(tk.Frame):
 		inner_width = self.cell_size * KAREL_INNER_WIDTH
 
 		points = [inner_x, inner_y, inner_x + inner_width, inner_y, inner_x + inner_width, inner_y + inner_height, inner_x, inner_y + inner_height, inner_x, inner_y]
-
-		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH)
+		self.rotate_points(center, points, direction)
+		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
 		karel_height = self.cell_size * KAREL_HEIGHT
 		mouth_horizontal_offset = self.cell_size * KAREL_MOUTH_HORIZONTAL_OFFSET
@@ -288,9 +333,10 @@ class KarelApplication(tk.Frame):
 		mouth_y = inner_y + inner_height + mouth_vertical_offset
 
 		points = [x + mouth_horizontal_offset, mouth_y, x + mouth_horizontal_offset + mouth_width, mouth_y]
-		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH)
+		self.rotate_points(center, points, direction)
+		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
-	def draw_karel_legs(self, x, y):
+	def draw_karel_legs(self, x, y, center, direction):
 		leg_length = self.cell_size * KAREL_LEG_LENGTH
 		foot_length = self.cell_size * KAREL_FOOT_LENGTH
 		leg_foot_width = self.cell_size * KAREL_LEG_FOOT_WIDTH
@@ -308,7 +354,8 @@ class KarelApplication(tk.Frame):
 		points.extend((x, y + vertical_offset + leg_foot_width))
 		points.extend((x, y + vertical_offset))
 
-		self.canvas.create_polygon(points, fill="black", outline="black", width=KAREL_LINE_WIDTH)
+		self.rotate_points(center, points, direction)
+		self.canvas.create_polygon(points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
 		# Reset point of reference to be bottom left rather than top_left
 		y = y + self.cell_size * KAREL_HEIGHT
@@ -323,10 +370,8 @@ class KarelApplication(tk.Frame):
 		points.extend((x + horizontal_offset + leg_foot_width, y))
 		points.extend((x + horizontal_offset, y))
 
-		self.canvas.create_polygon(points, fill="black", outline="black", width=KAREL_LINE_WIDTH)
-
-
-
+		self.rotate_points(center, points, direction)
+		self.canvas.create_polygon(points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
 	def calculate_corner_x(self, avenue):
 		return self.left_x + self.cell_size / 2 + (avenue - 1) * self.cell_size
@@ -334,5 +379,19 @@ class KarelApplication(tk.Frame):
 	def calculate_corner_y(self, street):
 		return self.top_y + self.cell_size / 2 + (self.world.num_streets - street) * self.cell_size
 	
+	def rotate_points(self, center, points, direction):
+		"""
+		Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
+		"""
+		cangle = cmath.exp(direction*1j)
+		center = complex(center[0], center[1])
+		for i in range(0, len(points), 2):
+			x = points[i]
+			y = points[i+1]
+			v = cangle * (complex(x,y) - center) + center
+			points[i] = v.real 
+			points[i+1] = v.imag
+
+
 	def update_speed(self, *args):
 		print(self.speed.get())

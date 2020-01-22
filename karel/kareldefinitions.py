@@ -1,4 +1,5 @@
 from enum import Enum, unique
+import math
 
 INFINITY = -1
 PAD_X = 75
@@ -75,8 +76,36 @@ class Wall():
 @unique	
 class Direction(Enum):
 	EAST = 0
-	NORTH = 90
-	SOUTH = 180
-	WEST = 270
+	SOUTH = math.pi / 2
+	WEST = math.pi 
+	NORTH = 3 * math.pi / 2
 
-DIRECTIONS_MAP = {"north": Direction.NORTH, "east": Direction.EAST, "south": Direction.SOUTH, "west": Direction.WEST}
+DIRECTIONS_MAP = {
+	"north": Direction.NORTH, 
+	"east": Direction.EAST,
+	"south": Direction.SOUTH, 
+	"west": Direction.WEST
+}
+
+NEXT_DIRECTION_MAP = {
+	Direction.NORTH: Direction.WEST, 
+	Direction.WEST: Direction.SOUTH, 
+  	Direction.SOUTH: Direction.EAST, 
+	Direction.EAST: Direction.NORTH
+}
+
+# This map associates directions with the delta that Karel
+# undergoes if it were to move one step in that direction
+# delta is in terms of (avenue, street)
+DIRECTION_DELTA_MAP = {
+	Direction.NORTH: (0, 1),
+	Direction.EAST: (1, 0),
+	Direction.SOUTH: (0, -1),
+	Direction.WEST: (-1, 0)
+}
+
+"""
+The following classes define Karel-specific exceptions
+"""
+class KarelException(Exception):
+	pass
