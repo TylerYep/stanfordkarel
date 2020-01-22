@@ -32,9 +32,6 @@ class Karel():
 
 		self._num_beepers = self._world.karel_starting_beeper_count
 
-	def turn_left(self):
-		self._direction = NEXT_DIRECTION_MAP[self._direction]
-
 	def move(self):
 		if not self.front_is_clear():
 			# TODO: throw a helpful exception
@@ -43,6 +40,9 @@ class Karel():
 		delta_avenue, delta_street = DIRECTION_DELTA_MAP[self._direction]
 		self._avenue += delta_avenue
 		self._street += delta_street
+
+	def turn_left(self):
+		self._direction = NEXT_DIRECTION_MAP[self._direction]
 
 	def put_beeper(self):
 		if self._num_beepers == 0:
@@ -60,6 +60,51 @@ class Karel():
 		self._num_beepers += 1
 		self._world.remove_beeper(self._avenue, self._street)
 
+	def front_is_clear(self):
+		return self.direction_is_clear(self._direction)
+
+	def direction_is_clear(self, direction):
+		delta_avenue, delta_street = DIRECTION_DELTA_MAP[direction]
+		next_avenue = self._avenue + delta_avenue
+		next_street = self._street + delta_street
+		opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[direction]]
+
+		# front is not clear if we are about to go out of bounds
+		if not self._world.in_bounds(next_avenue, next_street):
+			return False
+
+		# front is not clear if wall exists in same direction of where we're currently facing
+		if self._world.wall_exists(self._avenue, self._street, direction):
+			return False
+
+		# must also check for alternate possible representation of wall 
+		if self._world.wall_exists(next_avenue, next_street, opposite_direction):
+			return False
+
+		# If all previous conditions checked out, then the front is clear
+		return True
+
+	def front_is_blocked(self):
+		return not self.front_is_clear()
+
+	def left_is_clear(self):
+		return self.direction_is_clear(NEXT_DIRECTION_MAP[self._direction])
+
+	def left_is_blocked(self):
+		return not self.left_is_clear()
+
+	def right_is_clear(self):
+		return self.direction_is_clear(NEXT_DIRECTION_MAP_RIGHT[self._direction])
+
+	def right_is_blocked(self):
+		return not self.right_is_clear()
+
+	def on_beeper(self):
+		return self._world.beepers[(self.avenue, self.street)] != 0
+
+	def beepers_in_bag(self):
+		return self._num_beepers > 0
+
 	def facing_north(self):
 		return self.direction == Direction.NORTH
 
@@ -72,25 +117,11 @@ class Karel():
 	def facing_south(self):
 		return self.direction == Direction.SOUTH
 
-	def front_is_clear(self):
-		delta_avenue, delta_street = DIRECTION_DELTA_MAP[self._direction]
-		next_avenue = self._avenue + delta_avenue
-		next_street = self._street + delta_street
-		opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[self._direction]]
+	"""
+	Should the following go in Super Karel?
+	"""
+	def paint_corner(self):
+		pass
 
-		# front is not clear if we are about to go out of bounds
-		if not self._world.in_bounds(next_avenue, next_street):
-			return False
-
-		# front is not clear if wall exists in same direction of where we're currently facing
-		if self._world.wall_exists(self._avenue, self._street, self._direction):
-			return False
-
-		# must also check for alternate possible representation of wall 
-		if self._world.wall_exists(next_avenue, next_street, opposite_direction):
-			return False
-
-		return True
-
-	def on_beeper(self):
-		return self._world.beepers[(self.avenue, self.street)] != 0
+	def corner_color_is(self):
+		pass

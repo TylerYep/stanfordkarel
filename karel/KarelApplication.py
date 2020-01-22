@@ -47,7 +47,6 @@ class KarelApplication(tk.Frame):
 		self.slow_label.pack(side="left")
 
 		self.speed = tk.IntVar()
-		self.speed.trace('w', self.update_speed)
 
 		self.scale = tk.Scale(self.slider_frame, orient=tk.HORIZONTAL, variable=self.speed, showvalue=0)
 		self.scale.set(self.world.init_speed)
@@ -74,6 +73,10 @@ class KarelApplication(tk.Frame):
 		self.canvas.update()
 
 	def redraw_beepers(self):
+		"""
+		TODO: implement more efficient manner that does not require deleting 
+		and redrawing all beepers
+		"""
 		self.canvas.delete("beeper")
 		self.draw_all_beepers()
 		self.canvas.update()
@@ -144,6 +147,11 @@ class KarelApplication(tk.Frame):
 		self.mod.facing_west = self.karel.facing_west
 		self.mod.front_is_clear = self.karel.front_is_clear
 		self.mod.on_beeper = self.karel.on_beeper
+		self.mod.front_is_blocked = self.karel.front_is_blocked
+		self.mod.left_is_clear = self.karel.left_is_clear
+		self.mod.left_is_blocked = self.karel.left_is_blocked
+		self.mod.right_is_clear = self.karel.right_is_clear
+		self.mod.right_is_blocked = self.karel.right_is_blocked
 
 	def execute_task(self):
 		# Error checking for existence of main function completed in prior file
@@ -391,7 +399,3 @@ class KarelApplication(tk.Frame):
 			v = cangle * (complex(x,y) - center) + center
 			points[i] = v.real 
 			points[i+1] = v.imag
-
-
-	def update_speed(self, *args):
-		print(self.speed.get())

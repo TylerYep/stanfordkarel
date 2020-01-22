@@ -94,6 +94,8 @@ NEXT_DIRECTION_MAP = {
 	Direction.EAST: Direction.NORTH
 }
 
+NEXT_DIRECTION_MAP_RIGHT = {v:k for k,v in NEXT_DIRECTION_MAP.items()}
+
 # This map associates directions with the delta that Karel
 # undergoes if it were to move one step in that direction
 # delta is in terms of (avenue, street)
