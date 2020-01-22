@@ -206,4 +206,29 @@ class KarelWorld():
 		return avenue > 0 and street > 0 and avenue <= self._num_avenues and street <= self._num_streets
 
 	def reset_world(self):
-		pass
+		"""
+		Reset initial state of beepers in the world
+		"""
+		self._beepers = copy.deepcopy(self._init_beepers)
+
+	def reload_world(self, filename):
+		"""
+		TODO: Do better decomp to not just copy constructor
+		"""
+		self._world_file = open(filename, 'r')
+		
+		self._beepers = collections.defaultdict(int)
+		self._walls = set()
+
+		self._num_streets = 1
+		self._num_avenues = 1
+
+		self._karel_starting_location = (1, 1)
+		self._karel_starting_direction = Direction.EAST
+		self._karel_starting_beeper_count = 0
+
+		self._init_speed = INIT_SPEED
+
+		self.load_from_file()
+
+		self._init_beepers = copy.deepcopy(self._beepers)

@@ -3,6 +3,8 @@ import math
 import cmath
 from kareldefinitions import *
 from time import sleep
+from tkinter.filedialog import askopenfilename
+import os
 
 class KarelApplication(tk.Frame):
 	def __init__(self, karel, world, mod, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -156,8 +158,11 @@ class KarelApplication(tk.Frame):
 	def execute_task(self):
 		# Error checking for existence of main function completed in prior file
 		try:
+			self.status_label.configure(text="Running...", fg="brown")
 			self.mod.main()
 			# TODO: update status label to indicate successful completion
+			self.status_label.configure(text="Finished running.", fg="green")
+
 		except KarelException as e:
 			# TODO: parse traceback and deliver helpful error message popup
 			# similar to old Karel bug icon + message
@@ -165,10 +170,21 @@ class KarelApplication(tk.Frame):
 
 
 	def reset_world(self):
-		pass
+		self.karel.reset_state()
+		self.world.reset_world()
+		self.redraw_canvas()
+		self.status_label.configure(text="Reset to initial state.", fg="black")
+
 
 	def load_world(self):
-		pass
+		filename = askopenfilename(initialdir="worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
+		# User hit cancel and did not select file, so leave world as-is
+		if filename == "": return
+		self.world.reload_world(filename)
+		self.karel.reset_state()
+		self.redraw_canvas()
+		self.status_label.configure(text=f"Loaded world from {os.path.basename(filename)}.", fg="black")
+
 
 	def draw_world(self):
 		self.init_geometry_values()
