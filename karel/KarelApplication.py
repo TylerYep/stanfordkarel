@@ -5,9 +5,11 @@ from kareldefinitions import *
 from time import sleep
 from tkinter.filedialog import askopenfilename
 import os
+import traceback as tb
+import inspect
 
 class KarelApplication(tk.Frame):
-	def __init__(self, karel, world, mod, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
+	def __init__(self, karel, world, mod, base_filename, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
 		# set window background to contrast white Karel canvas 
 		master.configure(background=LIGHT_GREY)
 
@@ -19,6 +21,7 @@ class KarelApplication(tk.Frame):
 		self.karel = karel
 		self.world = world
 		self.mod = mod
+		self.base_filename = base_filename
 		self.window_width = window_width
 		self.window_height = window_height
 		self.canvas_width = canvas_width
@@ -155,18 +158,48 @@ class KarelApplication(tk.Frame):
 		self.mod.right_is_clear = self.karel.right_is_clear
 		self.mod.right_is_blocked = self.karel.right_is_blocked
 
+	def disable_buttons(self):
+		self.start_program.configure(state="disabled")
+		self.reset_program.configure(state="disabled")
+		self.load_world.configure(state="disabled")
+
+	def enable_buttons(self):
+		self.start_program.configure(state="normal")
+		self.reset_program.configure(state="normal")
+		self.load_world.configure(state="normal")
+
+	def display_error_traceback(self, e):
+		print("Traceback (most recent call last):")
+		display_frames = []
+		# walk through all the frames in stack trace at time of failure
+		for frame, lineno in tb.walk_tb(e.__traceback__):
+			frame_info = inspect.getframeinfo(frame)
+			# get the name of the file corresponding to the current frame
+			filename = frame_info.filename
+			# Only display frames generated within the student's code
+			if self.base_filename in filename:
+				display_frames.append((frame, lineno))
+		
+		print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
+		print(str(e))
+
 	def execute_task(self):
 		# Error checking for existence of main function completed in prior file
 		try:
 			self.status_label.configure(text="Running...", fg="brown")
+			self.disable_buttons()
 			self.mod.main()
-			# TODO: update status label to indicate successful completion
 			self.status_label.configure(text="Finished running.", fg="green")
 
 		except KarelException as e:
 			# TODO: parse traceback and deliver helpful error message popup
 			# similar to old Karel bug icon + message
-			pass
+			self.status_label.configure(text="Program crashed, check console for details.", fg="red")
+			self.display_error_traceback(e)
+
+		finally: 
+			self.enable_buttons()
+
 
 
 	def reset_world(self):
@@ -183,6 +216,8 @@ class KarelApplication(tk.Frame):
 		self.world.reload_world(filename)
 		self.karel.reset_state()
 		self.redraw_canvas()
+		# Reset speed slider
+		self.scale.set(self.world.init_speed)
 		self.status_label.configure(text=f"Loaded world from {os.path.basename(filename)}.", fg="black")
 
 

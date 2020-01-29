@@ -20,6 +20,7 @@ def draw_even_row():
     turn_around()
     while front_is_clear():
         move()
+    move()
     turn_right()
 
 

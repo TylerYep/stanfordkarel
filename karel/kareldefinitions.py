@@ -87,6 +87,8 @@ DIRECTIONS_MAP = {
 	"west": Direction.WEST
 }
 
+DIRECTIONS_MAP_INVERSE = {v:k for k,v in DIRECTIONS_MAP.items()}
+
 NEXT_DIRECTION_MAP = {
 	Direction.NORTH: Direction.WEST, 
 	Direction.WEST: Direction.SOUTH, 
@@ -110,4 +112,11 @@ DIRECTION_DELTA_MAP = {
 The following classes define Karel-specific exceptions
 """
 class KarelException(Exception):
-	pass
+	def __init__(self, avenue, street, direction, message):
+		self.avenue = avenue
+		self.street = street
+		self.direction = DIRECTIONS_MAP_INVERSE[direction].capitalize()
+		self.message = message
+
+	def __str__(self):
+		return (f"KarelException: Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}")
