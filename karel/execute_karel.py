@@ -1,27 +1,10 @@
 import tkinter as tk
-import importlib
-import os
 from KarelApplication import KarelApplication
 from KarelWorld import KarelWorld
 from Karel import Karel
 from kareldefinitions import *
 
 def start_karel_application(args):
-
-	# This process is used to extract a module from an arbitarily located
-	# file that contains student code
-	# Adapted from https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-	base_filename = os.path.basename(args.code_file)
-	module_name = os.path.splitext(base_filename)[0]
-	spec = importlib.util.spec_from_file_location(module_name, os.path.abspath(args.code_file))
-	student_module = importlib.util.module_from_spec(spec)
-	spec.loader.exec_module(student_module)
-
-	# Do not proceed if the student has not defined a main function
-	if not hasattr(student_module, "main"):
-		print("Couldn't find the main() function. Are you sure you have one?")
-		return
-
 	# Create the world as specified in the given world file
 	world = KarelWorld(args.world_file)
 
@@ -30,8 +13,7 @@ def start_karel_application(args):
 
 	# Initialize root Tk Window and spawn Karel application
 	root = tk.Tk()
-	root.title(module_name)
-	app = KarelApplication(karel, world, student_module, base_filename, master=root)
+	app = KarelApplication(karel, world, args.code_file, master=root)
 	app.mainloop()	
 
 

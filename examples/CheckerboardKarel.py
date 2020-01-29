@@ -29,7 +29,7 @@ def draw_odd_row():
     while front_is_clear():
         move()
         put_beeper()
-        if front_is_clear():
+        if front_is_clear()
             move()
     turn_around()
     while front_is_clear():

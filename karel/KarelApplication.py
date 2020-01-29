@@ -7,9 +7,10 @@ from tkinter.filedialog import askopenfilename
 import os
 import traceback as tb
 import inspect
+import importlib
 
 class KarelApplication(tk.Frame):
-	def __init__(self, karel, world, mod, base_filename, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
+	def __init__(self, karel, world, code_file, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
 		# set window background to contrast white Karel canvas 
 		master.configure(background=LIGHT_GREY)
 
@@ -20,13 +21,16 @@ class KarelApplication(tk.Frame):
 		super().__init__(master, background=LIGHT_GREY)
 		self.karel = karel
 		self.world = world
-		self.mod = mod
-		self.base_filename = base_filename
+		self.code_file = code_file
+		if not self.load_student_module():
+			master.destroy()
+			return
 		self.window_width = window_width
 		self.window_height = window_height
 		self.canvas_width = canvas_width
 		self.canvas_height = canvas_height
 		self.master = master
+		self.master.title(self.module_name)
 		self.inject_namespace()
 		self.grid(row=0, column=0)
 		self.create_canvas()
@@ -35,6 +39,28 @@ class KarelApplication(tk.Frame):
 		self.create_status_label()
 		self.draw_world()
 		self.draw_karel()
+
+	def load_student_module(self):
+		# This process is used to extract a module from an arbitarily located
+		# file that contains student code
+		# Adapted from https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+		self.base_filename = os.path.basename(self.code_file)
+		self.module_name = os.path.splitext(self.base_filename)[0]
+		spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(self.code_file))
+		try:
+			self.mod = importlib.util.module_from_spec(spec)
+			spec.loader.exec_module(self.mod)
+		except Exception as e:
+			# Handle syntax errors and only print location of error
+			print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
+			return False
+
+		# Do not proceed if the student has not defined a main function
+		if not hasattr(self.mod, "main"):
+			print("Couldn't find the main() function. Are you sure you have one?")
+			return False
+
+		return True
 
 	def create_slider(self):
 		"""
