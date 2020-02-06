@@ -1,4 +1,5 @@
-from kareldefinitions import *
+from karel.kareldefinitions import *
+
 
 class Karel():
 	def __init__(self, world):
@@ -24,7 +25,6 @@ class Karel():
 	@property
 	def num_beepers(self):
 		return self._num_beepers
-	
 	
 	def reset_state(self):
 		self._avenue, self._street = self._world.karel_starting_location
@@ -118,11 +118,14 @@ class Karel():
 	def facing_south(self):
 		return self.direction == Direction.SOUTH
 
-	"""
-	Should the following go in Super Karel?
-	"""
 	def paint_corner(self):
-		pass
+		"""
+		TODO: write this function
+		"""
+		raise Exception("Not yet implemented")
 
 	def corner_color_is(self):
-		pass
+		"""
+		TODO: write this function
+		"""
+		raise Exception("Not yet implemented")

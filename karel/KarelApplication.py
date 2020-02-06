@@ -1,13 +1,14 @@
 import tkinter as tk
-import math
 import cmath
-from kareldefinitions import *
+from karel.kareldefinitions import *
 from time import sleep
 from tkinter.filedialog import askopenfilename
+from tkinter.messagebox import showerror, showwarning
 import os
 import traceback as tb
 import inspect
 import importlib
+
 
 class KarelApplication(tk.Frame):
 	def __init__(self, karel, world, code_file, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -19,6 +20,11 @@ class KarelApplication(tk.Frame):
 		master.columnconfigure(1, weight=1)
 
 		super().__init__(master, background=LIGHT_GREY)
+
+		# make Karel dock icon image
+		img = tk.Image("photo", file="./karel/icon.png")
+		master.tk.call('wm', 'iconphoto', master._w, img)
+
 		self.karel = karel
 		self.world = world
 		self.code_file = code_file
@@ -104,10 +110,6 @@ class KarelApplication(tk.Frame):
 		self.canvas.update()
 
 	def redraw_beepers(self):
-		"""
-		TODO: implement more efficient manner that does not require deleting 
-		and redrawing all beepers
-		"""
 		self.canvas.delete("beeper")
 		self.draw_all_beepers()
 		self.canvas.update()
@@ -162,10 +164,6 @@ class KarelApplication(tk.Frame):
 		that associates the generic commands the student wrote in their
 		file with specific commands relating to the Karel object that exists
 		in the world.
-
-		TODO: Find a better way to do this injection that does not involve
-		manually specifying all Karel commands 
-
 		"""
 
 		self.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
@@ -183,6 +181,8 @@ class KarelApplication(tk.Frame):
 		self.mod.left_is_blocked = self.karel.left_is_blocked
 		self.mod.right_is_clear = self.karel.right_is_clear
 		self.mod.right_is_blocked = self.karel.right_is_blocked
+		self.mod.paint_corner = self.karel.paint_corner
+		self.mod.corner_color_is = self.karel.corner_color_is
 
 	def disable_buttons(self):
 		self.start_program.configure(state="disabled")
@@ -218,25 +218,24 @@ class KarelApplication(tk.Frame):
 			self.status_label.configure(text="Finished running.", fg="green")
 
 		except KarelException as e:
-			# TODO: parse traceback and deliver helpful error message popup
-			# similar to old Karel bug icon + message
+			# Generate popup window to let the user know their program crashed
 			self.status_label.configure(text="Program crashed, check console for details.", fg="red")
 			self.display_error_traceback(e)
+			self.update()
+			showwarning("Karel Error", "Karel Crashed!\nCheck the terminal for more details.")
 
 		finally: 
 			self.enable_buttons()
-
-
 
 	def reset_world(self):
 		self.karel.reset_state()
 		self.world.reset_world()
 		self.redraw_canvas()
 		self.status_label.configure(text="Reset to initial state.", fg="black")
-
+		self.update()
 
 	def load_world(self):
-		filename = askopenfilename(initialdir="worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
+		filename = askopenfilename(initialdir="../worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
 		# User hit cancel and did not select file, so leave world as-is
 		if filename == "": return
 		self.world.reload_world(filename)
@@ -245,7 +244,6 @@ class KarelApplication(tk.Frame):
 		# Reset speed slider
 		self.scale.set(self.world.init_speed)
 		self.status_label.configure(text=f"Loaded world from {os.path.basename(filename)}.", fg="black")
-
 
 	def draw_world(self):
 		self.init_geometry_values()
@@ -322,7 +320,6 @@ class KarelApplication(tk.Frame):
 		if count > 1: 
 			self.canvas.create_text(corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper")
 
-
 	def draw_all_walls(self):
 		for wall in self.world.walls:
 			self.draw_wall(wall)
@@ -331,7 +328,6 @@ class KarelApplication(tk.Frame):
 		avenue, street, direction = wall.avenue, wall.street, wall.direction
 		corner_x = self.calculate_corner_x(avenue)
 		corner_y = self.calculate_corner_y(street)
-
 
 		if direction == Direction.NORTH:
 			self.canvas.create_line(corner_x - self.cell_size / 2, 
@@ -463,8 +459,9 @@ class KarelApplication(tk.Frame):
 
 	def calculate_corner_y(self, street):
 		return self.top_y + self.cell_size / 2 + (self.world.num_streets - street) * self.cell_size
-	
-	def rotate_points(self, center, points, direction):
+
+	@staticmethod
+	def rotate_points(center, points, direction):
 		"""
 		Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
 		"""
@@ -473,6 +470,6 @@ class KarelApplication(tk.Frame):
 		for i in range(0, len(points), 2):
 			x = points[i]
 			y = points[i+1]
-			v = cangle * (complex(x,y) - center) + center
+			v = cangle * (complex(x, y) - center) + center
 			points[i] = v.real 
 			points[i+1] = v.imag

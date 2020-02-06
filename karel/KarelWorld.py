@@ -23,7 +23,7 @@ World File Constraints:
 	- North 
 	- South	
 """
-from kareldefinitions import *
+from karel.kareldefinitions import *
 import collections
 import re
 import copy

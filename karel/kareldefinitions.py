@@ -41,7 +41,7 @@ KAREL_FOOT_LENGTH = 0.1875
 KAREL_LEG_FOOT_WIDTH = 0.075
 KAREL_LEG_VERTICAL_OFFSET = 0.5
 KAREL_LEG_HORIZONTAL_OFFSET = 0.2625
-KAREL_LINE_WIDTH = 1
+KAREL_LINE_WIDTH = 2
 
 
 class Wall():
@@ -80,6 +80,7 @@ class Direction(Enum):
 	WEST = math.pi 
 	NORTH = 3 * math.pi / 2
 
+
 DIRECTIONS_MAP = {
 	"north": Direction.NORTH, 
 	"east": Direction.EAST,
@@ -92,7 +93,7 @@ DIRECTIONS_MAP_INVERSE = {v:k for k,v in DIRECTIONS_MAP.items()}
 NEXT_DIRECTION_MAP = {
 	Direction.NORTH: Direction.WEST, 
 	Direction.WEST: Direction.SOUTH, 
-  	Direction.SOUTH: Direction.EAST, 
+	Direction.SOUTH: Direction.EAST,
 	Direction.EAST: Direction.NORTH
 }
 
@@ -108,10 +109,12 @@ DIRECTION_DELTA_MAP = {
 	Direction.WEST: (-1, 0)
 }
 
-"""
-The following classes define Karel-specific exceptions
-"""
+
 class KarelException(Exception):
+	"""
+	The following classes define Karel-specific exceptions
+	"""
+
 	def __init__(self, avenue, street, direction, message):
 		self.avenue = avenue
 		self.street = street
@@ -119,4 +122,4 @@ class KarelException(Exception):
 		self.message = message
 
 	def __str__(self):
-		return (f"KarelException: Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}")
+		return f"KarelException: Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"
