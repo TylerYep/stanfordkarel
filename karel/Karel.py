@@ -120,7 +120,7 @@ class Karel():
 	def paint_corner(self, color):
 		if normalize_color(color) not in COLORS:
 			raise KarelException(self._avenue, self._street, self._direction, 
-								f"Karel attempted to paint the corner with color {color}, which is not defined.")
+								f"Karel attempted to paint the corner with color {color}, which is not valid.")
 		self._world.paint_corner(self.avenue, self.street, color)
 
 	def corner_color_is(self, color):

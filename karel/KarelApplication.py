@@ -39,6 +39,7 @@ class KarelApplication(tk.Frame):
 		self.master.title(self.module_name)
 		self.inject_namespace()
 		self.grid(row=0, column=0)
+		self.create_menubar()
 		self.create_canvas()
 		self.create_buttons()
 		self.create_slider()
@@ -67,6 +68,15 @@ class KarelApplication(tk.Frame):
 			return False
 
 		return True
+
+	def create_menubar(self):
+		menubar = tk.Menu(self.master)
+		iconmenu = tk.Menu(menubar, tearoff=0)
+		iconmenu.add_command(label="Karel", command=lambda: print("Karel"))
+		iconmenu.add_command(label="Bit", command=lambda: print("Bit"))
+		menubar.add_cascade(label="Select Icon", menu=iconmenu)
+
+		self.master.config(menu=menubar)
 
 	def create_slider(self):
 		"""
