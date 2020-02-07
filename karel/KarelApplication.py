@@ -130,9 +130,6 @@ class KarelApplication(tk.Frame):
 		self.program_control_button["command"] = self.run_program
 		self.program_control_button.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
-		# self.reset_program = tk.Button(self, highlightthickness=0, text="Reset Program", command=self.reset_world)
-		# self.reset_program.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y, sticky="ew")
-
 		self.load_world_button = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
 		self.load_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
 	
@@ -275,7 +272,6 @@ class KarelApplication(tk.Frame):
 		self.draw_bounding_rectangle()
 		self.label_axes()
 		self.draw_corners()
-		# self.draw_colored_corner()
 		self.draw_all_beepers()
 		self.draw_all_walls()
 
