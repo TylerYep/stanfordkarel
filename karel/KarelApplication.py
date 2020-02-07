@@ -114,6 +114,11 @@ class KarelApplication(tk.Frame):
 		self.draw_all_beepers()
 		self.canvas.update()
 
+	def redraw_corners(self):
+		self.canvas.delete("corner")
+		self.draw_corners()
+		self.canvas.update()
+
 	def create_buttons(self):
 		"""
 		This method creates the three buttons that appear on the left
@@ -144,7 +149,7 @@ class KarelApplication(tk.Frame):
 			karel_fn()
 			# redraw canavs with updated state of the world
 			self.redraw_karel()
-			# TODO: do calculation to dynamically update delay
+			# delay by specified amount
 			sleep(1 - self.speed.get() / 100)
 		return wrapper
 
@@ -154,9 +159,21 @@ class KarelApplication(tk.Frame):
 			karel_fn()
 			# redraw canavs with updated state of the world
 			self.redraw_beepers()
-			# TODO: do calculation to dynamically update delay
+			# delay by specified amount
 			sleep(1 - self.speed.get() / 100)
 		return wrapper
+
+	def corner_action_decorator(self, karel_fn):
+		def wrapper(color):
+			# execute Karel function
+			karel_fn(color)
+			# redraw canvas with updated state of the world
+			self.redraw_corners()
+			self.redraw_beepers()
+			self.redraw_karel()
+			# delay by specified amount
+			sleep(1 - self.speed.get() / 100)
+		return wrapper 
 
 	def inject_namespace(self):
 		"""
@@ -181,7 +198,7 @@ class KarelApplication(tk.Frame):
 		self.mod.left_is_blocked = self.karel.left_is_blocked
 		self.mod.right_is_clear = self.karel.right_is_clear
 		self.mod.right_is_blocked = self.karel.right_is_blocked
-		self.mod.paint_corner = self.karel.paint_corner
+		self.mod.paint_corner = self.corner_action_decorator(self.karel.paint_corner)
 		self.mod.corner_color_is = self.karel.corner_color_is
 
 	def disable_buttons(self):
@@ -223,7 +240,7 @@ class KarelApplication(tk.Frame):
 			showwarning("Karel Error", "Karel Crashed!\nCheck the terminal for more details.")
 
 		finally:
-			# Update program control button to reset World
+			# Update program control button to force user to reset world before running program again
 			self.program_control_button["text"] = "Reset World"
 			self.program_control_button["command"] = self.reset_world 
 			self.enable_buttons()
@@ -233,7 +250,7 @@ class KarelApplication(tk.Frame):
 		self.world.reset_world()
 		self.redraw_canvas()
 		self.status_label.configure(text="Reset to initial state.", fg="black")
-		# Update button to now handle program starting
+		# Once world has been reset, program control button resets to "run" mode
 		self.program_control_button["text"] = "Run Program"
 		self.program_control_button["command"] = self.run_program 
 		self.update()
@@ -258,6 +275,7 @@ class KarelApplication(tk.Frame):
 		self.draw_bounding_rectangle()
 		self.label_axes()
 		self.draw_corners()
+		# self.draw_colored_corner()
 		self.draw_all_beepers()
 		self.draw_all_walls()
 
@@ -305,10 +323,16 @@ class KarelApplication(tk.Frame):
 		# Draw all corner markers in the world 
 		for avenue in range(1, self.world.num_avenues + 1):
 			for street in range(1, self.world.num_streets + 1):
+				color = self.world.corner_color(avenue, street)
 				corner_x = self.calculate_corner_x(avenue)
 				corner_y = self.calculate_corner_y(street)
-				self.canvas.create_line(corner_x, corner_y - CORNER_SIZE, corner_x, corner_y + CORNER_SIZE)
-				self.canvas.create_line(corner_x - CORNER_SIZE, corner_y, corner_x + CORNER_SIZE, corner_y)
+				if not color:
+					self.canvas.create_line(corner_x, corner_y - CORNER_SIZE, corner_x, corner_y + CORNER_SIZE, tag="corner")
+					self.canvas.create_line(corner_x - CORNER_SIZE, corner_y, corner_x + CORNER_SIZE, corner_y, tag="corner")
+				else:
+					self.canvas.create_rectangle(corner_x - self.cell_size / 2, corner_y - self.cell_size / 2,
+												 corner_x + self.cell_size / 2, corner_y + self.cell_size / 2, 
+												 fill=color, tag="corner", outline="")
 
 	def draw_all_beepers(self):
 		for location, count in self.world.beepers.items():

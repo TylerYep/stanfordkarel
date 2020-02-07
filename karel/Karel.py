@@ -117,14 +117,11 @@ class Karel():
 	def facing_south(self):
 		return self.direction == Direction.SOUTH
 
-	def paint_corner(self):
-		"""
-		TODO: write this function
-		"""
-		raise Exception("Not yet implemented")
+	def paint_corner(self, color):
+		if normalize_color(color) not in COLORS:
+			raise KarelException(self._avenue, self._street, self._direction, 
+								f"Karel attempted to paint the corner with color {color}, which is not defined.")
+		self._world.paint_corner(self.avenue, self.street, color)
 
-	def corner_color_is(self):
-		"""
-		TODO: write this function
-		"""
-		raise Exception("Not yet implemented")
+	def corner_color_is(self, color):
+		return self._world.corner_color(self.avenue, self.street) == color

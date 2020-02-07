@@ -1,4 +1,5 @@
 from enum import Enum, unique
+from karel.colors import COLORS, normalize_color 
 import math
 
 INFINITY = -1
@@ -10,6 +11,7 @@ VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeper
 VALID_DIRECTIONS = ["east", "west", "north", "south"]
 KEYWORD_DELIM = ":"
 PARAM_DELIM = ";"
+
 
 """
 Drawing Constants for Karel Canvas

@@ -6,7 +6,7 @@ General Notes About World Construction
 World File Constraints:
 - World file should specify one component per line in the format
   KEYWORD: PARAMETERS
-- Any lines with no comma delimiter will be ignored
+- Any lines with no colon delimiter will be ignored
 - The accepted KEYWORD, PARAMETER combinations are as follows:
 	- Dimension: (num_avenues, num_streets)
 	- Wall: (avenue, street); direction
@@ -39,6 +39,9 @@ class KarelWorld():
 
 		# Map of beeper locations to the count of beepers at that location
 		self._beepers = collections.defaultdict(int)
+
+		# Map of corner colors, defaults to None
+		self._corner_colors = collections.defaultdict(lambda: None)
 
 		# Set of Wall objects placed in the world
 		self._walls = set()
@@ -90,6 +93,10 @@ class KarelWorld():
 	def beepers(self):
 		return self._beepers
 
+	@property
+	def corner_colors(self):
+		return self._corner_colors
+	
 	@property
 	def walls(self):
 		return self._walls
@@ -198,6 +205,12 @@ class KarelWorld():
 			return
 		self._beepers[(avenue, street)] -= 1
 
+	def paint_corner(self, avenue, street, color):
+		self._corner_colors[(avenue, street)] = color
+
+	def corner_color(self, avenue, street):
+		return self._corner_colors[(avenue, street)]
+
 	def wall_exists(self, avenue, street, direction):
 		wall = Wall(avenue, street, direction)
 		return wall in self._walls
@@ -210,6 +223,7 @@ class KarelWorld():
 		Reset initial state of beepers in the world
 		"""
 		self._beepers = copy.deepcopy(self._init_beepers)
+		self._corner_colors = collections.defaultdict(lambda: None)
 
 	def reload_world(self, filename):
 		"""
@@ -218,6 +232,7 @@ class KarelWorld():
 		self._world_file = open(filename, 'r')
 		
 		self._beepers = collections.defaultdict(int)
+		self._corner_colors = collections.defaultdict(lambda: None)
 		self._walls = set()
 
 		self._num_streets = 1

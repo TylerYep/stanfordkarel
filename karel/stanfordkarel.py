@@ -78,6 +78,21 @@ def corner_color_is():
 	pass
 
 
+# Defined constants for ease of use by students when coloring corners
+RED = "red"
+BLACK = "black"
+CYAN = "cyan"
+DARK_GRAY = "gray30"
+GRAY = "gray55"
+GREEN = "green"
+LIGHT_GRAY = "gray80"
+MAGENTA = "magenta3"
+ORANGE = "orange"
+PINK = "pink"
+RED = "red"
+WHITE = "snow"
+YELLOW = "yellow"
+
 def run_karel_program(world_file=None):
 	# Extract the name of the file the student is executing
 	student_code_file = sys.argv[0]
@@ -90,7 +105,7 @@ def run_karel_program(world_file=None):
 		if os.path.exists(karel_world_file):
 			world_file = karel_world_file
 		else:
-			print(f"Could not find a world matching filename {base_filename}, defaulting to default world.")
+			print(f"Could not find a world matching filename {module_name}.w, defaulting to default world.")
 			default_world_file = "worlds/DefaultWorld.w"
 			if os.path.exists(default_world_file):
 				world_file = default_world_file
