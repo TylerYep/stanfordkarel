@@ -120,16 +120,16 @@ class KarelApplication(tk.Frame):
 		side of the screen. These buttons control the start of Karel 
 		execution, resetting Karel's state, and loading new worlds.
 		"""	
-		self.start_program = tk.Button(self, highlightthickness=0, highlightbackground='white')
-		self.start_program["text"] = "Start Program"
-		self.start_program["command"] = self.execute_task
-		self.start_program.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
+		self.program_control_button = tk.Button(self, highlightthickness=0, highlightbackground='white')
+		self.program_control_button["text"] = "Run Program"
+		self.program_control_button["command"] = self.run_program
+		self.program_control_button.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
-		self.reset_program = tk.Button(self, highlightthickness=0, text="Reset Program", command=self.reset_world)
-		self.reset_program.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y, sticky="ew")
+		# self.reset_program = tk.Button(self, highlightthickness=0, text="Reset Program", command=self.reset_world)
+		# self.reset_program.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
-		self.load_world = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
-		self.load_world.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
+		self.load_world_button = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
+		self.load_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
 	
 	def create_status_label(self):
 		"""
@@ -185,14 +185,12 @@ class KarelApplication(tk.Frame):
 		self.mod.corner_color_is = self.karel.corner_color_is
 
 	def disable_buttons(self):
-		self.start_program.configure(state="disabled")
-		self.reset_program.configure(state="disabled")
-		self.load_world.configure(state="disabled")
+		self.program_control_button.configure(state="disabled")
+		self.load_world_button.configure(state="disabled")
 
 	def enable_buttons(self):
-		self.start_program.configure(state="normal")
-		self.reset_program.configure(state="normal")
-		self.load_world.configure(state="normal")
+		self.program_control_button.configure(state="normal")
+		self.load_world_button.configure(state="normal")
 
 	def display_error_traceback(self, e):
 		print("Traceback (most recent call last):")
@@ -209,7 +207,7 @@ class KarelApplication(tk.Frame):
 		print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
 		print(str(e))
 
-	def execute_task(self):
+	def run_program(self):
 		# Error checking for existence of main function completed in prior file
 		try:
 			self.status_label.configure(text="Running...", fg="brown")
@@ -224,7 +222,10 @@ class KarelApplication(tk.Frame):
 			self.update()
 			showwarning("Karel Error", "Karel Crashed!\nCheck the terminal for more details.")
 
-		finally: 
+		finally:
+			# Update program control button to reset World
+			self.program_control_button["text"] = "Reset World"
+			self.program_control_button["command"] = self.reset_world 
 			self.enable_buttons()
 
 	def reset_world(self):
@@ -232,6 +233,9 @@ class KarelApplication(tk.Frame):
 		self.world.reset_world()
 		self.redraw_canvas()
 		self.status_label.configure(text="Reset to initial state.", fg="black")
+		# Update button to now handle program starting
+		self.program_control_button["text"] = "Run Program"
+		self.program_control_button["command"] = self.run_program 
 		self.update()
 
 	def load_world(self):
@@ -244,6 +248,10 @@ class KarelApplication(tk.Frame):
 		# Reset speed slider
 		self.scale.set(self.world.init_speed)
 		self.status_label.configure(text=f"Loaded world from {os.path.basename(filename)}.", fg="black")
+
+		# Make sure program control button is set to 'run' mode
+		self.program_control_button["text"] = "Run Program"
+		self.program_control_button["command"] = self.run_program 
 
 	def draw_world(self):
 		self.init_geometry_values()
