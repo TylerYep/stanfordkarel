@@ -1,3 +1,5 @@
+from karel.stanfordkarel import *
+
 def turn_right():
     turn_left()
     turn_left()
@@ -29,7 +31,7 @@ def draw_odd_row():
     while front_is_clear():
         move()
         put_beeper()
-        if front_is_clear()
+        if front_is_clear():
             move()
     turn_around()
     while front_is_clear():
@@ -48,3 +50,7 @@ def main():
         if front_is_clear():
             move()
             draw_even_row()
+
+
+if __name__ == "__main__":
+    run_karel_program()

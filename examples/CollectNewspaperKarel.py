@@ -1,3 +1,5 @@
+from karel.stanfordkarel import * 
+
 def turn_right():
     turn_left()
     turn_left()
@@ -37,3 +39,6 @@ def main():
     go_to_newspaper()
     collect_newspaper()
     return_home()
+
+if __name__ == "__main__":
+    run_karel_program()
