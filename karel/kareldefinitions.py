@@ -6,6 +6,7 @@ INFINITY = -1
 PAD_X = 75
 PAD_Y = 10
 INIT_SPEED = 50
+DEFAULT_ICON = "karel"
 LIGHT_GREY = "#e5e5e5"
 VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag"]
 VALID_DIRECTIONS = ["east", "west", "north", "south"]
@@ -19,11 +20,11 @@ Drawing Constants for Karel Canvas
 BORDER_OFFSET = 17
 LABEL_OFFSET = 7
 CORNER_SIZE = 2
-BEEPER_CELL_SIZE_FRAC = 0.35
+BEEPER_CELL_SIZE_FRAC = 0.4
 LINE_WIDTH = 2
 
 """
-Drawing Constants for Karel Robot
+Drawing Constants for Karel Robot Icon
 All constants are defined relative to the size of a single cell
 """
 KAREL_VERTICAL_OFFSET = 0.03125
@@ -45,6 +46,12 @@ KAREL_LEG_VERTICAL_OFFSET = 0.5
 KAREL_LEG_HORIZONTAL_OFFSET = 0.2625
 KAREL_LINE_WIDTH = 2
 
+"""
+Drawing Constants for Simple Karel Robot Icon
+All constants are defined relative to the size of a single cell
+"""
+SIMPLE_KAREL_HEIGHT = 0.7
+SIMPLE_KAREL_WIDTH = 0.8
 
 class Wall():
 	def __init__(self, avenue, street, direction):

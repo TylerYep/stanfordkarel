@@ -31,6 +31,7 @@ class KarelApplication(tk.Frame):
 		if not self.load_student_module():
 			master.destroy()
 			return
+		self.icon = DEFAULT_ICON
 		self.window_width = window_width
 		self.window_height = window_height
 		self.canvas_width = canvas_width
@@ -72,11 +73,16 @@ class KarelApplication(tk.Frame):
 	def create_menubar(self):
 		menubar = tk.Menu(self.master)
 		iconmenu = tk.Menu(menubar, tearoff=0)
-		iconmenu.add_command(label="Karel", command=lambda: print("Karel"))
-		iconmenu.add_command(label="Bit", command=lambda: print("Bit"))
+		iconmenu.add_command(label="Karel", command=lambda: self.set_icon("karel"))
+		iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
+		# iconmenu.add_command(label="Arrow", command=lambda: lambda: self.set_icon("arrow"))
 		menubar.add_cascade(label="Select Icon", menu=iconmenu)
 
 		self.master.config(menu=menubar)
+
+	def set_icon(self, icon):
+		self.icon = icon
+		self.redraw_karel()
 
 	def create_slider(self):
 		"""
@@ -397,12 +403,17 @@ class KarelApplication(tk.Frame):
 		corner_y = self.calculate_corner_y(self.karel.street)
 		center = (corner_x, corner_y)
 
-		karel_origin_x = corner_x - self.cell_size / 2 + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
-		karel_origin_y = corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
+		if self.icon == "karel":
+			karel_origin_x = corner_x - self.cell_size / 2 + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
+			karel_origin_y = corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
 
-		self.draw_karel_outer_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
-		self.draw_karel_inner_components(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
-		self.draw_karel_legs(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+			self.draw_karel_outer_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+			self.draw_karel_inner_components(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+			self.draw_karel_legs(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+		elif self.icon == "simple":
+			self.draw_simple_karel_icon(center, self.karel.direction.value)
+		# elif self.icon == "arrow":
+		# 	self.draw_arrow_icon(center, self.karel.direction.value)
 
 	def draw_karel_outer_body(self, x, y, center, direction):
 		points = []
@@ -491,6 +502,20 @@ class KarelApplication(tk.Frame):
 
 		self.rotate_points(center, points, direction)
 		self.canvas.create_polygon(points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+
+	def draw_simple_karel_icon(self, center, direction):
+		simple_karel_width = self.cell_size * SIMPLE_KAREL_WIDTH
+		simple_karel_height = self.cell_size * SIMPLE_KAREL_HEIGHT
+		center_x, center_y = center
+		points = []
+		points.extend((center_x - simple_karel_width / 2 , center_y - simple_karel_height / 2))
+		points.extend((center_x - simple_karel_width / 2 , center_y + simple_karel_height / 2))
+		points.extend((center_x, center_y + simple_karel_height / 2))
+		points.extend((center_x + simple_karel_width / 2, center_y))
+		points.extend((center_x, center_y - simple_karel_height / 2))
+		points.extend((center_x - simple_karel_width / 2 , center_y - simple_karel_height / 2))
+		self.rotate_points(center, points, direction)
+		self.canvas.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
 	def calculate_corner_x(self, avenue):
 		return self.left_x + self.cell_size / 2 + (avenue - 1) * self.cell_size
