@@ -35,7 +35,7 @@ class Karel():
 	def move(self):
 		if not self.front_is_clear():
 			raise KarelException(self._avenue, self._street, self._direction, 
-								"Karel attempted to move, but it's front was blocked.")
+								"Karel attempted to move, but its front was blocked.")
 
 		delta_avenue, delta_street = DIRECTION_DELTA_MAP[self._direction]
 		self._avenue += delta_avenue
@@ -54,7 +54,6 @@ class Karel():
 
 	def pick_beeper(self):
 		if not self.on_beeper():
-			# TODO: throw helpful exception here
 			raise KarelException(self._avenue, self._street, self._direction, 
 								"Karel attempted to pick up a beeper, but there were none on the current corner.")
 
