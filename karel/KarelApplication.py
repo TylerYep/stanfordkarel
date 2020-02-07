@@ -7,7 +7,7 @@ from tkinter.messagebox import showerror, showwarning
 import os
 import traceback as tb
 import inspect
-import importlib
+import importlib.util
 
 
 class KarelApplication(tk.Frame):
