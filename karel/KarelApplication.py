@@ -21,10 +21,6 @@ class KarelApplication(tk.Frame):
 
 		super().__init__(master, background=LIGHT_GREY)
 
-		# make Karel dock icon image
-		img = tk.Image("photo", file="./karel/icon.png")
-		master.tk.call('wm', 'iconphoto', master._w, img)
-
 		self.karel = karel
 		self.world = world
 		self.code_file = code_file
@@ -38,6 +34,7 @@ class KarelApplication(tk.Frame):
 		self.canvas_height = canvas_height
 		self.master = master
 		self.master.title(self.module_name)
+		self.set_dock_icon()
 		self.inject_namespace()
 		self.grid(row=0, column=0)
 		self.create_menubar()
@@ -47,6 +44,11 @@ class KarelApplication(tk.Frame):
 		self.create_status_label()
 		self.draw_world()
 		self.draw_karel()
+
+	def set_dock_icon(self):
+		# make Karel dock icon image
+		img = tk.Image("photo", file="./karel/icon.png")
+		self.master.tk.call('wm', 'iconphoto', self.master._w, img)
 
 	def load_student_module(self):
 		# This process is used to extract a module from an arbitarily located
