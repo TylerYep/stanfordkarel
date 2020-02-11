@@ -274,6 +274,15 @@ class KarelCanvas(tk.Canvas):
 	def calculate_corner_y(self, street):
 		return self.top_y + self.cell_size / 2 + (self.world.num_streets - street) * self.cell_size
 
+	def calculate_location(self, x, y):
+		x = x - self.left_x
+		y = y - self.top_y
+		if x < 0: x = 0
+		if y < 0: y = 0
+		if x > self.boundary_width: x = self.boundary_width - 1
+		if y > self.boundary_height: y = self.boundary_height - 1
+		return int(x // self.cell_size) + 1, int((self.boundary_height - y) // self.cell_size) + 1
+
 	@staticmethod
 	def rotate_points(center, points, direction):
 		"""

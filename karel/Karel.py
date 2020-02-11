@@ -14,17 +14,33 @@ class Karel():
 	def avenue(self):
 		return self._avenue
 
+	@avenue.setter
+	def avenue(self, val):
+		self._avenue = val
+
 	@property
 	def street(self):
 		return self._street
+
+	@street.setter
+	def street(self, val):
+		self._street = val
 
 	@property
 	def direction(self):
 		return self._direction
 
+	@direction.setter
+	def direction(self, val):
+		self._direction = val
+
 	@property
 	def num_beepers(self):
 		return self._num_beepers
+
+	@num_beepers.setter
+	def num_beepers(self, val):
+		self._num_beepers = val
 	
 	def reset_state(self):
 		self._avenue, self._street = self._world.karel_starting_location

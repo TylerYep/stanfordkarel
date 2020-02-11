@@ -4,6 +4,7 @@ import tkinter as tk
 from karel.KarelApplication import KarelApplication
 from karel.KarelWorld import KarelWorld
 from karel.Karel import Karel
+from karel.kareldefinitions import DEFAULT_WORLD_FILE
 
 
 def move():
@@ -106,7 +107,7 @@ def run_karel_program(world_file=None):
 			world_file = karel_world_file
 		else:
 			print(f"Could not find a world matching filename {module_name}.w, defaulting to default world.")
-			default_world_file = "worlds/DefaultWorld.w"
+			default_world_file = f"worlds/{DEFAULT_WORLD_FILE}"
 			if os.path.exists(default_world_file):
 				world_file = default_world_file
 			else:

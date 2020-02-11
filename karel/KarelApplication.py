@@ -110,7 +110,6 @@ class KarelApplication(tk.Frame):
 		world are drawn. 
 		"""
 		self.canvas = KarelCanvas(self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel)
-		# self.canvas = tk.Canvas(self.master, width=self.canvas_width, height=self.canvas_height, bg="white")
 		self.canvas.grid(column=1, row=0, sticky="NESW")
 		self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
 
@@ -251,7 +250,7 @@ class KarelApplication(tk.Frame):
 		filename = askopenfilename(initialdir="../worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
 		# User hit cancel and did not select file, so leave world as-is
 		if filename == "": return
-		self.world.reload_world(filename)
+		self.world.reload_world(filename=filename)
 		self.karel.reset_state()
 		self.canvas.redraw_all()
 		# Reset speed slider

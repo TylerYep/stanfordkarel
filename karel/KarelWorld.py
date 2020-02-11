@@ -85,10 +85,18 @@ class KarelWorld():
 	def num_streets(self):
 		return self._num_streets
 
+	@num_streets.setter
+	def num_streets(self, val):
+		self._num_streets = val
+
 	@property
 	def num_avenues(self):
 		return self._num_avenues
 	
+	@num_avenues.setter
+	def num_avenues(self, val):
+		self._num_avenues = val
+
 	@property
 	def beepers(self):
 		return self._beepers
@@ -225,11 +233,10 @@ class KarelWorld():
 		self._beepers = copy.deepcopy(self._init_beepers)
 		self._corner_colors = collections.defaultdict(lambda: None)
 
-	def reload_world(self, filename):
+	def reload_world(self, filename=None):
 		"""
 		TODO: Do better decomp to not just copy constructor
 		"""
-		self._world_file = open(filename, 'r')
 		
 		self._beepers = collections.defaultdict(int)
 		self._corner_colors = collections.defaultdict(lambda: None)
@@ -244,6 +251,14 @@ class KarelWorld():
 
 		self._init_speed = INIT_SPEED
 
-		self.load_from_file()
+		if filename:
+			self._world_file = open(filename, 'r')
+			self.load_from_file()
 
 		self._init_beepers = copy.deepcopy(self._beepers)
+
+	def save_to_file(self, filename):
+		"""
+		TODO: Implement this
+		"""
+		pass
