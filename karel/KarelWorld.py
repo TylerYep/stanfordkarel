@@ -219,6 +219,10 @@ class KarelWorld():
 	def corner_color(self, avenue, street):
 		return self._corner_colors[(avenue, street)]
 
+	def reset_corner(self, avenue, street):
+		self._beepers[(avenue, street)] = 0
+		self._corner_colors[(avenue, street)] = None
+
 	def wall_exists(self, avenue, street, direction):
 		wall = Wall(avenue, street, direction)
 		return wall in self._walls

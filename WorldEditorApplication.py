@@ -22,6 +22,7 @@ class WorldBuilderApplication(tk.Frame):
 		self.window_height = window_height
 		self.canvas_width = canvas_width
 		self.canvas_height = canvas_height
+		self.last_action_event_loc = (None, None)
 		self.master = master
 		self.master.title("Karel World Builder")
 		self.set_dock_icon()
@@ -114,9 +115,12 @@ class WorldBuilderApplication(tk.Frame):
 		self.program_control_button.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y)
 
 		self.load_world_button = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
-		self.load_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y)
+		self.load_world_button.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y)
 
 		# TODO: add save world button 
+
+		self.save_world_button = tk.Button(self, highlightthickness=0, text="Save World", command=self.save_world)
+		self.save_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y)
 
 		self.create_direction_radio_buttons()
 		self.create_beeper_bag_radio_buttons()
@@ -165,7 +169,7 @@ class WorldBuilderApplication(tk.Frame):
 		tk.Radiobutton(self.action_radio_frame, text="Remove Wall", variable=self.action_var,value="remove_wall",bg=LIGHT_GREY).pack()
 		tk.Radiobutton(self.action_radio_frame, text="Add Beeper", variable=self.action_var,value="add_beeper",bg=LIGHT_GREY).pack()
 		tk.Radiobutton(self.action_radio_frame, text="Remove Beeper", variable=self.action_var,value="remove_beeper",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Clear All Beepers", variable=self.action_var,value="clear_beepers",bg=LIGHT_GREY).pack()
+		tk.Radiobutton(self.action_radio_frame, text="Reset Corner", variable=self.action_var,value="reset_corner",bg=LIGHT_GREY).pack()
 
 
 	def reset_direction_radio_buttons(self):
@@ -184,6 +188,18 @@ class WorldBuilderApplication(tk.Frame):
 		self.karel.num_beepers = new_num_beepers
 
 	def handle_mouse_event(self, event):
+		def apply_function(fn):
+			if event_type == tk.EventType.ButtonPress:
+				self.last_action_event_loc = (avenue, street)
+				fn(avenue, street)
+				self.canvas.redraw_beepers()
+			elif event_type == tk.EventType.Motion:
+				if (avenue, street) != self.last_action_event_loc:
+					self.last_action_event_loc = (avenue, street)
+					fn(avenue, street)
+					self.canvas.redraw_beepers()
+
+		event_type = event.type
 		avenue, street = self.canvas.calculate_location(event.x, event.y)
 		action = self.action_var.get()
 		if action == "move_karel":
@@ -191,7 +207,18 @@ class WorldBuilderApplication(tk.Frame):
 				self.karel.avenue = avenue
 				self.karel.street = street
 				self.canvas.redraw_karel()
-		print(avenue, street)
+		elif action == "add_beeper":
+			apply_function(self.world.add_beeper)
+		elif action == "remove_beeper":
+			apply_function(self.world.remove_beeper)
+		elif action == "reset_corner":
+			apply_function(self.world.reset_corner)
+
+
+
+	def save_world(self):
+		print("saving world")
+
 
 
 if __name__ == "__main__":
