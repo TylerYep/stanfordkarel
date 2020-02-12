@@ -3,7 +3,7 @@ from karel.KarelWorld import KarelWorld
 from karel.Karel import Karel
 from karel.kareldefinitions import *
 from karel.KarelCanvas import KarelCanvas
-from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import askopenfilename, asksaveasfilename
 from tkinter import simpledialog, messagebox
 
 class WorldBuilderApplication(tk.Frame):
@@ -213,11 +213,23 @@ class WorldBuilderApplication(tk.Frame):
 			apply_function(self.world.remove_beeper)
 		elif action == "reset_corner":
 			apply_function(self.world.reset_corner)
+		elif action == "add_wall":
+			wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
+			if wall:
+				self.world.add_wall(wall)
+				self.canvas.redraw_walls()
+		elif action == "remove_wall":
+			wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
+			if wall:
+				self.world.remove_wall(wall)
+				self.canvas.redraw_walls()
 
 
 
 	def save_world(self):
-		print("saving world")
+		filename = asksaveasfilename(initialdir="./worlds", title="Save Karel World", filetypes=[("Karel Worlds", "*.w")])
+		if filename == "": return 
+		self.world.save_to_file(filename, self.karel)
 
 
 

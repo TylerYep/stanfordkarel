@@ -36,6 +36,11 @@ class KarelCanvas(tk.Canvas):
 		self.draw_corners()
 		self.update()
 
+	def redraw_walls(self):
+		self.delete("wall")
+		self.draw_all_walls()
+		self.update()
+
 	def draw_world(self):
 		self.init_geometry_values()
 		self.draw_bounding_rectangle()
@@ -131,25 +136,25 @@ class KarelCanvas(tk.Canvas):
 							 corner_y - self.cell_size / 2, 
 							 corner_x + self.cell_size / 2, 
 							 corner_y - self.cell_size / 2,
-							 width=LINE_WIDTH)
+							 width=LINE_WIDTH, tag="wall")
 		if direction == Direction.SOUTH:
 			self.create_line(corner_x - self.cell_size / 2, 
 							 corner_y + self.cell_size / 2, 
 							 corner_x + self.cell_size / 2, 
 							 corner_y + self.cell_size / 2, 
-							 width=LINE_WIDTH)
+							 width=LINE_WIDTH, tag="wall")
 		if direction == Direction.EAST:
 			self.create_line(corner_x + self.cell_size / 2,
 							 corner_y - self.cell_size / 2,
 							 corner_x + self.cell_size / 2,
 							 corner_y + self.cell_size / 2, 
-							 width=LINE_WIDTH)
+							 width=LINE_WIDTH, tag="wall")
 		if direction == Direction.WEST:
 			self.create_line(corner_x - self.cell_size / 2,
 							 corner_y - self.cell_size / 2,
 							 corner_x - self.cell_size / 2,
 							 corner_y + self.cell_size / 2,
-							 width=LINE_WIDTH)
+							 width=LINE_WIDTH, tag="wall")
 
 	def draw_karel(self):
 		corner_x = self.calculate_corner_x(self.karel.avenue)
@@ -283,6 +288,25 @@ class KarelCanvas(tk.Canvas):
 		if y > self.boundary_height: y = self.boundary_height - 1
 		return int(x // self.cell_size) + 1, int((self.boundary_height - y) // self.cell_size) + 1
 
+	def find_nearest_wall(self, x, y, avenue, street):
+		corner_x = self.calculate_corner_x(avenue)
+		corner_y = self.calculate_corner_y(street)
+
+		if x > (corner_x + self.cell_size / 2 - self.cell_size * WALL_DETECTION_THRESHOLD):
+			# Check for a wall to the east
+			return Wall(avenue, street, Direction.EAST)
+		if x < (corner_x - self.cell_size / 2 + self.cell_size * WALL_DETECTION_THRESHOLD):
+			# Check for a wall to the west
+			return Wall(avenue, street, Direction.WEST)
+		if y > (corner_y + self.cell_size / 2 - self.cell_size * WALL_DETECTION_THRESHOLD):
+			# Check for a wall to the south
+			return Wall(avenue, street, Direction.SOUTH)
+		if y < (corner_y - self.cell_size / 2 + self.cell_size * WALL_DETECTION_THRESHOLD):
+			# Check for a wall to the north
+			return Wall(avenue, street, Direction.NORTH)
+
+		# No wall within threshold distance
+		return None
 	@staticmethod
 	def rotate_points(center, points, direction):
 		"""

@@ -213,6 +213,28 @@ class KarelWorld():
 			return
 		self._beepers[(avenue, street)] -= 1
 
+	def add_wall(self, wall):
+		alt_wall = self.get_alt_wall(wall)
+		if wall not in self._walls and alt_wall not in self._walls:
+			self._walls.add(wall)
+
+	def remove_wall(self, wall):
+		alt_wall = self.get_alt_wall(wall)
+		if wall in self._walls:
+			self._walls.remove(wall)
+		if alt_wall in self._walls:
+			self._walls.remove(alt_wall)
+		
+	def get_alt_wall(self, wall):
+		if wall.direction == Direction.NORTH:
+			return Wall(wall.avenue, wall.street + 1, Direction.SOUTH)
+		if wall.direction == Direction.SOUTH:
+			return Wall(wall.avenue, wall.street - 1, Direction.NORTH)
+		if wall.direction == Direction.EAST:
+			return Wall(wall.avenue + 1, wall.street, Direction.WEST)
+		if wall.direction == Direction.WEST:
+			return Wall(wall.avenue - 1, wall.street, Direction.EAST)
+
 	def paint_corner(self, avenue, street, color):
 		self._corner_colors[(avenue, street)] = color
 
@@ -261,8 +283,22 @@ class KarelWorld():
 
 		self._init_beepers = copy.deepcopy(self._beepers)
 
-	def save_to_file(self, filename):
-		"""
-		TODO: Implement this
-		"""
-		pass
+	def save_to_file(self, filename, karel):
+		with open(filename, "w") as f:
+			# First, output dimensions of world
+			f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
+
+			# Next, output all walls
+			for wall in self._walls:
+				f.write(f"Wall: ({wall.avenue}, {wall.street}); {DIRECTIONS_MAP_INVERSE[wall.direction]}\n")
+
+			# Next, output all beepers
+			for loc, count in self._beepers.items():
+				f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
+
+			# Next, output Karel information
+			f.write(f"Karel: ({karel.avenue}, {karel.street}); {DIRECTIONS_MAP_INVERSE[karel.direction]}\n")
+			
+			# Finally, output beeperbag info
+			beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
+			f.write(f"BeeperBag: {beeper_output}\n")
