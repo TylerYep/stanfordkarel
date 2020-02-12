@@ -4,7 +4,7 @@ from karel.Karel import Karel
 from karel.kareldefinitions import *
 from karel.KarelCanvas import KarelCanvas
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, messagebox, colorchooser
 
 class WorldBuilderApplication(tk.Frame):
 	def __init__(self, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -160,17 +160,32 @@ class WorldBuilderApplication(tk.Frame):
 
 		self.action_var = tk.StringVar()
 		self.action_var.set("move_karel")
-		# self.action_var.trace("w", self.update_karel_num_beepers)
 
 		action_label = tk.Label(self.action_radio_frame, text="Action: ", bg=LIGHT_GREY)
 		action_label.pack(side="left")
-		tk.Radiobutton(self.action_radio_frame, text="Move Karel", variable=self.action_var,value="move_karel",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Add Wall", variable=self.action_var,value="add_wall",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Remove Wall", variable=self.action_var,value="remove_wall",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Add Beeper", variable=self.action_var,value="add_beeper",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Remove Beeper", variable=self.action_var,value="remove_beeper",bg=LIGHT_GREY).pack()
-		tk.Radiobutton(self.action_radio_frame, text="Reset Corner", variable=self.action_var,value="reset_corner",bg=LIGHT_GREY).pack()
+		tk.Radiobutton(self.action_radio_frame, text="Move Karel", variable=self.action_var,value="move_karel",bg=LIGHT_GREY).pack(anchor='w')
+		tk.Radiobutton(self.action_radio_frame, text="Add Wall", variable=self.action_var,value="add_wall",bg=LIGHT_GREY).pack(anchor='w')
+		tk.Radiobutton(self.action_radio_frame, text="Remove Wall", variable=self.action_var,value="remove_wall",bg=LIGHT_GREY).pack(anchor='w')
+		tk.Radiobutton(self.action_radio_frame, text="Add Beeper", variable=self.action_var,value="add_beeper",bg=LIGHT_GREY).pack(anchor='w')
+		tk.Radiobutton(self.action_radio_frame, text="Remove Beeper", variable=self.action_var,value="remove_beeper",bg=LIGHT_GREY).pack(anchor='w')
+		
+		color_selection_frame = tk.Frame(self.action_radio_frame, bg=LIGHT_GREY)
+		color_selection_frame.pack(anchor="w")
 
+		tk.Radiobutton(color_selection_frame, text="Paint Corner", variable=self.action_var,value="paint_corner",bg=LIGHT_GREY).pack(side='left')
+		self.curr_color = DEFAULT_COLOR
+		self.color_selector_label = tk.Label(color_selection_frame, text="   ",bg=self.curr_color)
+		self.color_selector_label.pack(side="left")
+		self.color_selector_label.bind("<Button-1>",self.select_color)
+
+		tk.Radiobutton(self.action_radio_frame, text="Reset Corner", variable=self.action_var,value="reset_corner",bg=LIGHT_GREY).pack(anchor='w')
+
+
+	def select_color(self, *args):
+		rgb_color, color_str = colorchooser.askcolor(color=self.curr_color)
+		if color_str:
+			self.curr_color = color_str
+			self.color_selector_label.configure(bg=color_str)
 
 	def reset_direction_radio_buttons(self):
 		self.karel_direction_var.set(DIRECTIONS_MAP_INVERSE[self.karel.direction])
@@ -188,16 +203,24 @@ class WorldBuilderApplication(tk.Frame):
 		self.karel.num_beepers = new_num_beepers
 
 	def handle_mouse_event(self, event):
-		def apply_function(fn):
+		def apply_function(fn, *args):
 			if event_type == tk.EventType.ButtonPress:
 				self.last_action_event_loc = (avenue, street)
-				fn(avenue, street)
+				fn(avenue, street, *args)
+				self.canvas.redraw_corners()
 				self.canvas.redraw_beepers()
+				self.canvas.redraw_walls()
+				self.canvas.redraw_karel()
+
 			elif event_type == tk.EventType.Motion:
 				if (avenue, street) != self.last_action_event_loc:
 					self.last_action_event_loc = (avenue, street)
-					fn(avenue, street)
+					fn(avenue, street, *args)
+					self.canvas.redraw_corners()
 					self.canvas.redraw_beepers()
+					self.canvas.redraw_walls()
+					self.canvas.redraw_karel()
+
 
 		event_type = event.type
 		avenue, street = self.canvas.calculate_location(event.x, event.y)
@@ -223,6 +246,11 @@ class WorldBuilderApplication(tk.Frame):
 			if wall:
 				self.world.remove_wall(wall)
 				self.canvas.redraw_walls()
+		elif action == "paint_corner":
+			apply_function(self.world.paint_corner, self.curr_color)
+			# self.world.paint_corner(avenue, street, self.curr_color)
+			# self.canvas.redraw_corners()
+			# self.canvas.redraw_karel()
 
 
 

@@ -204,6 +204,8 @@ class KarelWorld():
 				speed = params["val"]
 				self._init_speed = speed
 
+			# TODO: add color keyword and possibility of loading colors from file as well
+
 	def add_beeper(self, avenue, street):
 		self._beepers[(avenue, street)] += 1
 
@@ -302,3 +304,5 @@ class KarelWorld():
 			# Finally, output beeperbag info
 			beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
 			f.write(f"BeeperBag: {beeper_output}\n")
+
+			# TODO: Dump colors to file as well
