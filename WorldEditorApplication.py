@@ -43,21 +43,30 @@ class WorldBuilderApplication(tk.Frame):
 		if load_existing:
 			self.load_world(init=True)
 		else:
-			self.create_new_world(init=True)
+			self.create_new_world(init=True, default=True)
 
 
-	def create_new_world(self, init=False):
+	def create_new_world(self, init=False, default=False):
 		num_avenues = simpledialog.askinteger("New World Size", "How many avenues should the new world have?",
 											  parent=self.master, 
 											  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
 
-		if not num_avenues: return
+		if not num_avenues:
+			if default:
+				num_avenues = DEFAULT_SIZE
+			else:
+				# In this case, we can just cancel execution and return to existing world 
+				return
 
 		num_streets = simpledialog.askinteger("New World Size", "How many streets should the new world have?",
 										 	  parent=self.master, 
 										 	  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
-		if not num_avenues: return
-
+		if not num_streets:
+			if default:  
+				num_streets = DEFAULT_SIZE
+			else:
+				# In this case, we can just cancel execution and return to existing world 
+				return
 		if init:
 			self.world = KarelWorld()
 			self.karel = Karel(self.world)
@@ -117,8 +126,6 @@ class WorldBuilderApplication(tk.Frame):
 		self.load_world_button = tk.Button(self, highlightthickness=0, text="Load World", command=self.load_world)
 		self.load_world_button.grid(column=0, row=1, padx=PAD_X, pady=PAD_Y)
 
-		# TODO: add save world button 
-
 		self.save_world_button = tk.Button(self, highlightthickness=0, text="Save World", command=self.save_world)
 		self.save_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y)
 
@@ -172,20 +179,16 @@ class WorldBuilderApplication(tk.Frame):
 		color_selection_frame = tk.Frame(self.action_radio_frame, bg=LIGHT_GREY)
 		color_selection_frame.pack(anchor="w")
 
+		self.color_var = tk.StringVar()
+		self.color_var.set(DEFAULT_COLOR) 
+
+
 		tk.Radiobutton(color_selection_frame, text="Paint Corner", variable=self.action_var,value="paint_corner",bg=LIGHT_GREY).pack(side='left')
-		self.curr_color = DEFAULT_COLOR
-		self.color_selector_label = tk.Label(color_selection_frame, text="   ",bg=self.curr_color)
-		self.color_selector_label.pack(side="left")
-		self.color_selector_label.bind("<Button-1>",self.select_color)
+		self.color_dropdown = tk.OptionMenu(color_selection_frame, self.color_var, *COLOR_OPTIONS)
+		self.color_dropdown["bg"] = LIGHT_GREY
+		self.color_dropdown.pack(side="left")
 
 		tk.Radiobutton(self.action_radio_frame, text="Reset Corner", variable=self.action_var,value="reset_corner",bg=LIGHT_GREY).pack(anchor='w')
-
-
-	def select_color(self, *args):
-		rgb_color, color_str = colorchooser.askcolor(color=self.curr_color)
-		if color_str:
-			self.curr_color = color_str
-			self.color_selector_label.configure(bg=color_str)
 
 	def reset_direction_radio_buttons(self):
 		self.karel_direction_var.set(DIRECTIONS_MAP_INVERSE[self.karel.direction])
@@ -207,22 +210,25 @@ class WorldBuilderApplication(tk.Frame):
 			if event_type == tk.EventType.ButtonPress:
 				self.last_action_event_loc = (avenue, street)
 				fn(avenue, street, *args)
-				self.canvas.redraw_corners()
-				self.canvas.redraw_beepers()
-				self.canvas.redraw_walls()
+				self.canvas.redraw_corners(update=False)
+				self.canvas.redraw_beepers(update=False)
+				self.canvas.redraw_walls(update=False)
 				self.canvas.redraw_karel()
 
 			elif event_type == tk.EventType.Motion:
 				if (avenue, street) != self.last_action_event_loc:
 					self.last_action_event_loc = (avenue, street)
 					fn(avenue, street, *args)
-					self.canvas.redraw_corners()
-					self.canvas.redraw_beepers()
-					self.canvas.redraw_walls()
+					self.canvas.redraw_corners(update=False)
+					self.canvas.redraw_beepers(update=False)
+					self.canvas.redraw_walls(update=False)
 					self.canvas.redraw_karel()
 
 
 		event_type = event.type
+		# only handle click events that happen in the world
+		if not self.canvas.click_in_world(event.x, event.y): return
+
 		avenue, street = self.canvas.calculate_location(event.x, event.y)
 		action = self.action_var.get()
 		if action == "move_karel":
@@ -236,6 +242,8 @@ class WorldBuilderApplication(tk.Frame):
 			apply_function(self.world.remove_beeper)
 		elif action == "reset_corner":
 			apply_function(self.world.reset_corner)
+		elif action == "paint_corner":
+			apply_function(self.world.paint_corner, COLOR_MAP[self.color_var.get()])
 		elif action == "add_wall":
 			wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
 			if wall:
@@ -246,20 +254,12 @@ class WorldBuilderApplication(tk.Frame):
 			if wall:
 				self.world.remove_wall(wall)
 				self.canvas.redraw_walls()
-		elif action == "paint_corner":
-			apply_function(self.world.paint_corner, self.curr_color)
-			# self.world.paint_corner(avenue, street, self.curr_color)
-			# self.canvas.redraw_corners()
-			# self.canvas.redraw_karel()
-
-
 
 	def save_world(self):
 		filename = asksaveasfilename(initialdir="./worlds", title="Save Karel World", filetypes=[("Karel Worlds", "*.w")])
 		if filename == "": return 
 		self.world.save_to_file(filename, self.karel)
-
-
+		
 
 if __name__ == "__main__":
 	root = tk.Tk()

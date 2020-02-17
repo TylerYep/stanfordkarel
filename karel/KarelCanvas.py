@@ -21,25 +21,25 @@ class KarelCanvas(tk.Canvas):
 		self.draw_karel()
 		self.update()
 
-	def redraw_karel(self):
+	def redraw_karel(self, update=True):
 		self.delete("karel")
 		self.draw_karel()
-		self.update()
+		if update: self.update()
 
-	def redraw_beepers(self):
+	def redraw_beepers(self, update=True):
 		self.delete("beeper")
 		self.draw_all_beepers()
-		self.update()
+		if update: self.update()
 
-	def redraw_corners(self):
+	def redraw_corners(self, update=True):
 		self.delete("corner")
 		self.draw_corners()
-		self.update()
+		if update: self.update()
 
-	def redraw_walls(self):
+	def redraw_walls(self, update=True):
 		self.delete("wall")
 		self.draw_all_walls()
-		self.update()
+		if update: self.update()
 
 	def draw_world(self):
 		self.init_geometry_values()
@@ -279,14 +279,15 @@ class KarelCanvas(tk.Canvas):
 	def calculate_corner_y(self, street):
 		return self.top_y + self.cell_size / 2 + (self.world.num_streets - street) * self.cell_size
 
+	def click_in_world(self, x, y):
+		x = x - self.left_x 
+		y = y - self.top_y
+		return 0 <= x < self.boundary_width and 0 <= y < self.boundary_height
+
 	def calculate_location(self, x, y):
 		x = x - self.left_x
 		y = y - self.top_y
-		if x < 0: x = 0
-		if y < 0: y = 0
-		if x > self.boundary_width: x = self.boundary_width - 1
-		if y > self.boundary_height: y = self.boundary_height - 1
-		return int(x // self.cell_size) + 1, int((self.boundary_height - y) // self.cell_size) + 1
+		return int(max(x,0) // self.cell_size) + 1, int(max((self.boundary_height - 1 - y), 0) // self.cell_size) + 1
 
 	def find_nearest_wall(self, x, y, avenue, street):
 		corner_x = self.calculate_corner_x(avenue)
@@ -307,6 +308,7 @@ class KarelCanvas(tk.Canvas):
 
 		# No wall within threshold distance
 		return None
+		
 	@staticmethod
 	def rotate_points(center, points, direction):
 		"""

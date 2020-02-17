@@ -90,8 +90,8 @@ LIGHT_GRAY = "gray80"
 MAGENTA = "magenta3"
 ORANGE = "orange"
 PINK = "pink"
-RED = "red"
 WHITE = "snow"
+BLUE = "blue"
 YELLOW = "yellow"
 
 def run_karel_program(world_file=None):

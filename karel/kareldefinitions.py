@@ -1,5 +1,4 @@
 from enum import Enum, unique
-from karel.colors import COLORS, normalize_color 
 import math
 
 INFINITY = -1
@@ -8,7 +7,7 @@ PAD_Y = 10
 INIT_SPEED = 50
 DEFAULT_ICON = "karel"
 LIGHT_GREY = "#e5e5e5"
-VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag"]
+VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag", "color"]
 VALID_DIRECTIONS = ["east", "west", "north", "south"]
 KEYWORD_DELIM = ":"
 PARAM_DELIM = ";"
@@ -16,8 +15,10 @@ DEFAULT_WORLD_FILE = "DefaultWorld.w"
 MIN_DIMENSIONS = 1
 MAX_DIMENSIONS = 50
 WALL_DETECTION_THRESHOLD = 0.1
-DEFAULT_COLOR = "red"
-
+DEFAULT_COLOR = "Red"
+DEFAULT_SIZE = 8
+COLOR_OPTIONS = sorted(["Red", "Black", "Cyan", "Dark Gray", "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "White", "Blue", "Yellow"])
+COLOR_MAP = {"Red": "red", "Black": "black", "Cyan": "cyan", "Dark Gray": "gray30", "Gray": "gray55", "Green": "green", "Light Gray": "gray80", "Magenta": "magenta3", "Orange": "orange", "Pink": "pink", "White": "snow", "Blue": "blue", "Yellow": "yellow"}
 
 """
 Drawing Constants for Karel Canvas

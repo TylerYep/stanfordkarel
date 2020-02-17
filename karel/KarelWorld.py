@@ -12,11 +12,14 @@ World File Constraints:
 	- Wall: (avenue, street); direction
 	- Beeper: (avenue, street) count
 	- Karel: (avenue, street); direction
+	- Color: (avenue, street); color
 	- Speed: delay
 	- BeeperBag: num_beepers
 - Multiple parameter values for the same keyword should be separated by a semicolon
 - All numerical values (except delay) must be expressed as ints. The exception
   to this is that the number of beepers can also be INFINITY
+- Any specified color values must be valid TKinter color strings, and are limited
+  to the set of colors 
 - Direction is case-insensitive and can be one of the following values:
 	- East
 	- West
@@ -139,7 +142,7 @@ class KarelWorld():
 						street = int(coordinate.group(2))
 						params["loc"] = (avenue, street)
 					else:
-						# finally check to see if parameter encodes a numerical value
+						# finally check to see if parameter encodes a numerical value or color string
 						val = None
 						if param.isdigit():
 							val = int(param)
@@ -154,7 +157,10 @@ class KarelWorld():
 							# handle the edge case where Karel has infinite beepers
 							if param == "infinity" or param == "infinite":
 								val = INFINITY
-						# only store non-null numerical value
+						elif keyword == "color":
+							# TODO: add check for valid color? 
+							val = param 
+						# only store non-null values
 						if val is not None: params["val"] = val
 
 			return keyword.lower(), params, True
@@ -204,14 +210,17 @@ class KarelWorld():
 				speed = params["val"]
 				self._init_speed = speed
 
-			# TODO: add color keyword and possibility of loading colors from file as well
+			elif keyword == "color":
+				# Set corner color to be specified color
+				avenue, street = params["loc"]
+				color = params["val"]
+				self._corner_colors[(avenue, street)] = color
 
 	def add_beeper(self, avenue, street):
 		self._beepers[(avenue, street)] += 1
 
 	def remove_beeper(self, avenue, street):
 		if self._beepers[(avenue, street)] == 0:
-			# TODO: throw an error here
 			return
 		self._beepers[(avenue, street)] -= 1
 
@@ -298,11 +307,14 @@ class KarelWorld():
 			for loc, count in self._beepers.items():
 				f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
 
+			# Next, output all color information
+			for loc, color in self._corner_colors.items():
+				if color:
+					f.write(f"Color: ({loc[0]}, {loc[1]}); {color}\n")
+
 			# Next, output Karel information
 			f.write(f"Karel: ({karel.avenue}, {karel.street}); {DIRECTIONS_MAP_INVERSE[karel.direction]}\n")
 			
 			# Finally, output beeperbag info
 			beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
 			f.write(f"BeeperBag: {beeper_output}\n")
-
-			# TODO: Dump colors to file as well

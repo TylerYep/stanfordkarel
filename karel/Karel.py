@@ -134,7 +134,7 @@ class Karel():
 		return self.direction == Direction.SOUTH
 
 	def paint_corner(self, color):
-		if normalize_color(color) not in COLORS:
+		if color not in COLOR_MAP.values():
 			raise KarelException(self._avenue, self._street, self._direction, 
 								f"Karel attempted to paint the corner with color {color}, which is not valid.")
 		self._world.paint_corner(self.avenue, self.street, color)
