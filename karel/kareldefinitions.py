@@ -33,7 +33,8 @@ LINE_WIDTH = 2
 Drawing Constants for Karel Robot Icon
 All constants are defined relative to the size of a single cell
 """
-KAREL_VERTICAL_OFFSET = 0.03125
+# KAREL_VERTICAL_OFFSET = 0.03125
+KAREL_VERTICAL_OFFSET = 0.05
 KAREL_LEFT_HORIZONTAL_PAD = 0.29 
 KAREL_HEIGHT = 0.76
 KAREL_WIDTH = 0.58
@@ -137,4 +138,4 @@ class KarelException(Exception):
 		self.message = message
 
 	def __str__(self):
-		return f"KarelException: Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"
+		return f"Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"

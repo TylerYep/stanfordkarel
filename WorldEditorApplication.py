@@ -16,6 +16,9 @@ class WorldBuilderApplication(tk.Frame):
 		master.columnconfigure(1, weight=1)
 
 		super().__init__(master, background=LIGHT_GREY)
+		# self.master.lift()
+		# self.master.attributes('-topmost',True)
+		# self.master.after_idle(root.attributes,'-topmost',False)
 
 		self.icon = DEFAULT_ICON
 		self.window_width = window_width
@@ -47,6 +50,8 @@ class WorldBuilderApplication(tk.Frame):
 
 
 	def create_new_world(self, init=False, default=False):
+		# self.update()
+		# self.update_idletasks()
 		num_avenues = simpledialog.askinteger("New World Size", "How many avenues should the new world have?",
 											  parent=self.master, 
 											  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
@@ -81,6 +86,7 @@ class WorldBuilderApplication(tk.Frame):
 
 	def load_world(self, init=False):
 		filename = askopenfilename(initialdir="./worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
+
 		# User hit cancel and did not select file, so leave world as-is
 		if filename == "": 
 			if init:

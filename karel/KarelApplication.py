@@ -60,6 +60,7 @@ class KarelApplication(tk.Frame):
 			spec.loader.exec_module(self.mod)
 		except Exception as e:
 			# Handle syntax errors and only print location of error
+			print("here")
 			print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
 			return False
 
@@ -150,6 +151,7 @@ class KarelApplication(tk.Frame):
 			karel_fn()
 			# redraw canavs with updated state of the world
 			self.canvas.redraw_beepers()
+			self.canvas.redraw_karel()
 			# delay by specified amount
 			sleep(1 - self.speed.get() / 100)
 		return wrapper
@@ -213,7 +215,7 @@ class KarelApplication(tk.Frame):
 				display_frames.append((frame, lineno))
 		
 		print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
-		print(str(e))
+		print(f"{type(e).__name__}: {str(e)}")
 
 	def run_program(self):
 		# Error checking for existence of main function completed in prior file
@@ -223,7 +225,7 @@ class KarelApplication(tk.Frame):
 			self.mod.main()
 			self.status_label.configure(text="Finished running.", fg="green")
 
-		except KarelException as e:
+		except (KarelException, NameError) as e:
 			# Generate popup window to let the user know their program crashed
 			self.status_label.configure(text="Program crashed, check console for details.", fg="red")
 			self.display_error_traceback(e)

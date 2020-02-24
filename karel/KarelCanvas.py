@@ -165,17 +165,16 @@ class KarelCanvas(tk.Canvas):
 			karel_origin_x = corner_x - self.cell_size / 2 + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
 			karel_origin_y = corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
 
-			self.draw_karel_outer_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
-			self.draw_karel_inner_components(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+			self.draw_karel_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
 			self.draw_karel_legs(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
 		elif self.icon == "simple":
 			self.draw_simple_karel_icon(center, self.karel.direction.value)
 
-	def draw_karel_outer_body(self, x, y, center, direction):
-		points = []
+	def generate_external_karel_points(self, x, y, center, direction):
+		outer_points = []
 		
 		# Top-left point (referred to as origin) of Karel's body
-		points.extend((x,y))
+		outer_points.extend((x,y))
 
 		# Calculate Karel's height and width as well as missing diag segments
 		width = self.cell_size * KAREL_WIDTH
@@ -184,43 +183,68 @@ class KarelCanvas(tk.Canvas):
 		upper_right_missing = (self.cell_size * KAREL_UPPER_RIGHT_DIAG) / math.sqrt(2)
 
 		# These two points define Karel's upper right
-		points.extend((x + width - upper_right_missing, y))
-		points.extend((x + width, y + upper_right_missing))
+		outer_points.extend((x + width - upper_right_missing, y))
+		outer_points.extend((x + width, y + upper_right_missing))
 
 		# Karel's bottom right edge
-		points.extend((x + width, y + height))
+		outer_points.extend((x + width, y + height))
 
 		# These two points define Karel's lower left 
-		points.extend((x + lower_left_missing, y + height))
-		points.extend((x, y + height - lower_left_missing))
+		outer_points.extend((x + lower_left_missing, y + height))
+		outer_points.extend((x, y + height - lower_left_missing))
 
 		# Complete the polygon
-		points.extend((x,y))
+		outer_points.extend((x,y))
 
-		self.rotate_points(center, points, direction)
+		# Rotate all external body points to get correct Karel orientation
+		self.rotate_points(center, outer_points, direction)
 
-		self.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+		return outer_points
 
-	def draw_karel_inner_components(self, x, y, center, direction):
+	def generate_internal_karel_points(self, x, y, center, direction):
+		
+		# Calculate dimensions and location of Karel's inner eye
 		inner_x = x + self.cell_size * KAREL_INNER_OFFSET
 		inner_y = y + self.cell_size * KAREL_INNER_OFFSET
-
 		inner_height = self.cell_size * KAREL_INNER_HEIGHT
 		inner_width = self.cell_size * KAREL_INNER_WIDTH
 
-		points = [inner_x, inner_y, inner_x + inner_width, inner_y, inner_x + inner_width, inner_y + inner_height, inner_x, inner_y + inner_height, inner_x, inner_y]
-		self.rotate_points(center, points, direction)
-		self.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+		# Define inner body points
+		inner_points = [inner_x, inner_y, inner_x + inner_width, inner_y, inner_x + inner_width, inner_y + inner_height, inner_x, inner_y + inner_height, inner_x, inner_y]
+		self.rotate_points(center, inner_points, direction)
 
+		return inner_points
+
+	def draw_karel_body(self, x, y, center, direction):
+		outer_points = self.generate_external_karel_points(x, y, center, direction)
+		inner_points = self.generate_internal_karel_points(x, y, center, direction)
+
+		# Non-convex polygon that determines Karel's entire body is a
+		# combination of the two sets of points defining internal and external
+		# components
+		entire_body_points = outer_points + inner_points
+
+		# First draw the filled non-convex polygon
+		self.create_polygon(entire_body_points, fill="white", outline="", width=KAREL_LINE_WIDTH, tag="karel")
+		
+		# Then draw the transparent exterior edges of Karel's body
+		self.create_polygon(outer_points, fill="", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+		self.create_polygon(inner_points, fill="", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+
+		# Define dimensions and location of Karel's mouth
 		karel_height = self.cell_size * KAREL_HEIGHT
 		mouth_horizontal_offset = self.cell_size * KAREL_MOUTH_HORIZONTAL_OFFSET
 		mouth_vertical_offset = self.cell_size * KAREL_MOUTH_VERTICAL_OFFSET
+		inner_y = y + self.cell_size * KAREL_INNER_OFFSET
+		inner_height = self.cell_size * KAREL_INNER_HEIGHT
 		mouth_width = self.cell_size * KAREL_MOUTH_WIDTH
+
 		mouth_y = inner_y + inner_height + mouth_vertical_offset
 
-		points = [x + mouth_horizontal_offset, mouth_y, x + mouth_horizontal_offset + mouth_width, mouth_y]
-		self.rotate_points(center, points, direction)
-		self.create_polygon(points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
+		# Define, rotate, and draw points
+		mouth_points = [x + mouth_horizontal_offset, mouth_y, x + mouth_horizontal_offset + mouth_width, mouth_y]
+		self.rotate_points(center, mouth_points, direction)
+		self.create_polygon(mouth_points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel")
 
 	def draw_karel_legs(self, x, y, center, direction):
 		leg_length = self.cell_size * KAREL_LEG_LENGTH
