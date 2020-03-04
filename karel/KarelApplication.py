@@ -262,7 +262,7 @@ class KarelApplication(tk.Frame):
 		self.update()
 
 	def load_world(self):
-		filename = askopenfilename(initialdir="../worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
+		filename = askopenfilename(initialdir="../worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")], parent=self.master)
 		# User hit cancel and did not select file, so leave world as-is
 		if filename == "": return
 		self.world.reload_world(filename=filename)

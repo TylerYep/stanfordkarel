@@ -8,7 +8,7 @@ from tkinter import simpledialog, messagebox
 
 
 class WorldBuilderApplication(tk.Frame):
-	def __init__(self, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
+	def __init__(self, master=None, window_width=800, window_height=400, canvas_width=600, canvas_height=400):
 		# set window background to contrast white Karel canvas 
 		master.configure(background=LIGHT_GREY)
 
@@ -16,8 +16,7 @@ class WorldBuilderApplication(tk.Frame):
 		master.rowconfigure(0, weight=1)
 		master.columnconfigure(1, weight=1)
 
-		super().__init__(master, background=LIGHT_GREY)
-
+		super().__init__(master, width=window_width, height=window_height, background=LIGHT_GREY)
 		self.icon = DEFAULT_ICON
 		self.window_width = window_width
 		self.window_height = window_height
@@ -28,9 +27,11 @@ class WorldBuilderApplication(tk.Frame):
 		self.master.title("Karel World Builder")
 		self.set_dock_icon()
 		self.grid(row=0, column=0)
+		self.master.update()
 		self.setup_world()
 		self.create_canvas()
 		self.create_buttons()
+
 
 
 
@@ -48,8 +49,6 @@ class WorldBuilderApplication(tk.Frame):
 
 
 	def create_new_world(self, init=False, default=False):
-		# self.update()
-		# self.update_idletasks()
 		num_avenues = simpledialog.askinteger("New World Size", "How many avenues should the new world have?",
 											  parent=self.master, 
 											  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
@@ -83,8 +82,7 @@ class WorldBuilderApplication(tk.Frame):
 			self.canvas.redraw_all()
 
 	def load_world(self, init=False):
-		filename = askopenfilename(initialdir="./worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")])
-
+		filename = askopenfilename(initialdir="./worlds", title="Select Karel World", filetypes=[("Karel Worlds", "*.w")],parent=self.master)
 		# User hit cancel and did not select file, so leave world as-is
 		if filename == "": 
 			if init:
@@ -260,12 +258,13 @@ class WorldBuilderApplication(tk.Frame):
 				self.canvas.redraw_walls()
 
 	def save_world(self):
-		filename = asksaveasfilename(initialdir="./worlds", title="Save Karel World", filetypes=[("Karel Worlds", "*.w")])
+		filename = asksaveasfilename(initialdir="./worlds", title="Save Karel World", filetypes=[("Karel Worlds", "*.w")], parent=self.master)
 		if filename == "": return 
 		self.world.save_to_file(filename, self.karel)
 		
 
 if __name__ == "__main__":
 	root = tk.Tk()
+	# root.update()
 	world_builder = WorldBuilderApplication(master=root)
 	world_builder.mainloop()
