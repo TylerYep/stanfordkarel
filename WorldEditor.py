@@ -4,7 +4,8 @@ from karel.Karel import Karel
 from karel.kareldefinitions import *
 from karel.KarelCanvas import KarelCanvas
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from tkinter import simpledialog, messagebox, colorchooser
+from tkinter import simpledialog, messagebox
+
 
 class WorldBuilderApplication(tk.Frame):
 	def __init__(self, master=None, window_width=800, window_height=600, canvas_width=600, canvas_height=400):
@@ -16,9 +17,6 @@ class WorldBuilderApplication(tk.Frame):
 		master.columnconfigure(1, weight=1)
 
 		super().__init__(master, background=LIGHT_GREY)
-		# self.master.lift()
-		# self.master.attributes('-topmost',True)
-		# self.master.after_idle(root.attributes,'-topmost',False)
 
 		self.icon = DEFAULT_ICON
 		self.window_width = window_width

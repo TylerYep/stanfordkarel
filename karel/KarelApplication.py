@@ -8,6 +8,7 @@ import os
 import traceback as tb
 import inspect
 import importlib.util
+import sys
 
 
 class KarelApplication(tk.Frame):
@@ -73,12 +74,24 @@ class KarelApplication(tk.Frame):
 
 	def create_menubar(self):
 		menubar = tk.Menu(self.master)
+
+		fileMenu = tk.Menu(menubar, tearoff=False)
+		menubar.add_cascade(label="File", menu=fileMenu)
+		fileMenu.add_command(label="Exit", underline=1,
+							 command=self.master.quit, accelerator="Cmd+W")
+
 		iconmenu = tk.Menu(menubar, tearoff=0)
-		iconmenu.add_command(label="Karel", command=lambda: self.set_icon("karel"))
-		iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
 		menubar.add_cascade(label="Select Icon", menu=iconmenu)
 
+		iconmenu.add_command(label="Karel", command=lambda: self.set_icon("karel"))
+		iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
+
+		self.bind_all("<Command-w>", self.quit)
+
 		self.master.config(menu=menubar)
+
+	def quit(self, event):
+		sys.exit(0)
 
 	def set_icon(self, icon):
 		self.canvas.set_icon(icon)
