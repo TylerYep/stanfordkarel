@@ -1,4 +1,3 @@
 Dimension: (1, 1)
+Karel: (1, 1); east
 BeeperBag: INFINITY
-Karel: (1, 1); East
-Speed: 0.75

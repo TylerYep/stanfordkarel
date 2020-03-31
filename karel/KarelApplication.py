@@ -1,3 +1,15 @@
+"""
+This file defines the GUI for running Karel programs. 
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
 import tkinter as tk
 from karel.kareldefinitions import *
 from karel.KarelCanvas import KarelCanvas

@@ -1,3 +1,19 @@
+"""
+This file defines the canvas upon which a Karel world is drawn. This 
+class defines all necessary methods to draw all components of a Karel
+world, including walls, beepers, and Karel itself. All Karel applications
+contains exactly one Karel Canvas object and each Karel Canvas object 
+holds information about one Karel World and one Karel object. 
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
 from karel.kareldefinitions import * 
 import tkinter as tk
 import cmath

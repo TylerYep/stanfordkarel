@@ -1,3 +1,19 @@
+"""
+This file defines the necessary functions and definitions that students must
+import in order to be able to write a new Karel program. Any new Karel file 
+must include the following line: 
+
+	from karel.stanfordkarel import *  
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
 import sys
 import os
 import tkinter as tk
@@ -6,6 +22,13 @@ from karel.KarelWorld import KarelWorld
 from karel.Karel import Karel
 from karel.kareldefinitions import DEFAULT_WORLD_FILE
 
+
+"""
+The following function definitions are defined as stubs so that IDEs can recognize
+the function definitions in student code. These names are re-bound upon program
+execution to asscoiate their behavior to the one particular Karel object located 
+in a given world.
+"""
 
 def move():
 	pass
@@ -102,6 +125,7 @@ def run_karel_program(world_file=None):
 		# Find world file that matches program name
 		base_filename = os.path.basename(student_code_file)
 		module_name = os.path.splitext(base_filename)[0]
+		# Look for existing file name in the worlds/ directory
 		karel_world_file = f"worlds/{module_name}.w"
 		if os.path.exists(karel_world_file):
 			world_file = karel_world_file

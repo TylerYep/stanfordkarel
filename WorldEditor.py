@@ -1,3 +1,15 @@
+"""
+This file defines the TK GUI for editing Karel worlds. 
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
 import tkinter as tk
 from karel.KarelWorld import KarelWorld
 from karel.Karel import Karel
@@ -50,7 +62,7 @@ class WorldBuilderApplication(tk.Frame):
 
 	def create_new_world(self, init=False, default=False):
 		num_avenues = simpledialog.askinteger("New World Size", "How many avenues should the new world have?",
-											  parent=self.master, 
+											  parent=self.parent, 
 											  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
 
 		if not num_avenues:
@@ -265,6 +277,5 @@ class WorldBuilderApplication(tk.Frame):
 
 if __name__ == "__main__":
 	root = tk.Tk()
-	# root.update()
 	world_builder = WorldBuilderApplication(master=root)
 	world_builder.mainloop()

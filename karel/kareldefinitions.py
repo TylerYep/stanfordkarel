@@ -1,5 +1,25 @@
+"""
+This file contains all of the constant and class definitions used
+throughout the Karel library. Constants here define drawing proportions
+for Karel and it's world, initial world parameters, and different exception
+and enumeration types, among other things.
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
+
 from enum import Enum, unique
 import math
+
+"""
+General Karel constants
+"""
 
 INFINITY = -1
 PAD_X = 75
@@ -33,7 +53,6 @@ LINE_WIDTH = 2
 Drawing Constants for Karel Robot Icon
 All constants are defined relative to the size of a single cell
 """
-# KAREL_VERTICAL_OFFSET = 0.03125
 KAREL_VERTICAL_OFFSET = 0.05
 KAREL_LEFT_HORIZONTAL_PAD = 0.29 
 KAREL_HEIGHT = 0.76

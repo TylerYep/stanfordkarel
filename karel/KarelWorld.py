@@ -1,4 +1,19 @@
 """
+This file defines the class definition of a Karel world.
+
+The sub header comment defines important notes about the Karel
+world file format. 
+
+Original Author: Nicholas Bowman
+Credits: Kylie Jue 
+License: MIT
+Version: 1.0.0
+Email: nbowman@stanford.edu
+Date of Creation: 10/1/2019
+Last Modified: 3/31/2020
+"""
+
+"""
 General Notes About World Construction 
 - Streets run EAST-WEST (rows)
 - Avenues run NORTH-SOUTH (columns)
@@ -26,6 +41,7 @@ World File Constraints:
 	- North 
 	- South	
 """
+
 from karel.kareldefinitions import *
 import collections
 import re
