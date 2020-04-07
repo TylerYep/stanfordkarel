@@ -32,6 +32,9 @@ class KarelApplication(tk.Frame):
 		master.rowconfigure(0, weight=1)
 		master.columnconfigure(1, weight=1)
 
+		# set master geometry
+		master.geometry(str(window_width) + "x" + str(window_height))
+
 		super().__init__(master, background=LIGHT_GREY)
 
 		self.karel = karel
