@@ -116,7 +116,7 @@ def facing_south():
 
 def not_facing_south():
 	pass
-	
+
 
 def paint_corner():
 	pass
@@ -140,6 +140,7 @@ PINK = "pink"
 WHITE = "snow"
 BLUE = "blue"
 YELLOW = "yellow"
+BLANK = ""
 
 def run_karel_program(world_file=None):
 	# Extract the name of the file the student is executing

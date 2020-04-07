@@ -391,7 +391,7 @@ class Karel():
 
 	def not_facing_south(self):
 		return not self.facing_south()
-		
+
 	def paint_corner(self, color):
 		"""
 		This function makes Karel paint it's current corner the indicated color.
@@ -403,7 +403,7 @@ class Karel():
 			color (str) - The color string specifying which color to paint the corner
 		Returns: None
 		"""
-		if color not in COLOR_MAP.values():
+		if color and color not in COLOR_MAP.values():
 			raise KarelException(self._avenue, self._street, self._direction, 
 								f"Karel attempted to paint the corner with color {color}, which is not valid.")
 		self._world.paint_corner(self.avenue, self.street, color)

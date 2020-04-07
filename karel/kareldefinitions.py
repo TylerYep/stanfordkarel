@@ -39,7 +39,7 @@ DEFAULT_COLOR = "Red"
 DEFAULT_SIZE = 8
 COLOR_OPTIONS = sorted(["Red", "Black", "Cyan", "Dark Gray", "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "White", "Blue", "Yellow"])
 COLOR_MAP = {"Red": "red", "Black": "black", "Cyan": "cyan", "Dark Gray": "gray30", "Gray": "gray55", "Green": "green", "Light Gray": "gray80", "Magenta": "magenta3", "Orange": "orange", "Pink": "pink", "White": "snow", "Blue": "blue", "Yellow": "yellow"}
-
+BLANK = ""
 """
 Drawing Constants for Karel Canvas
 """

@@ -212,8 +212,15 @@ class KarelApplication(tk.Frame):
 		self.mod.facing_south = self.karel.facing_south
 		self.mod.facing_east = self.karel.facing_east
 		self.mod.facing_west = self.karel.facing_west
+		self.mod.not_facing_north = self.karel.not_facing_north
+		self.mod.not_facing_south = self.karel.not_facing_south
+		self.mod.not_facing_east = self.karel.not_facing_east
+		self.mod.not_facing_west = self.karel.not_facing_west
 		self.mod.front_is_clear = self.karel.front_is_clear
-		self.mod.on_beeper = self.karel.on_beeper
+		self.mod.beepers_present = self.karel.beepers_present
+		self.mod.no_beepers_present = self.karel.no_beepers_present
+		self.mod.beepers_in_bag = self.karel.beepers_in_bag
+		self.mod.no_beepers_in_bag = self.karel.no_beepers_in_bag
 		self.mod.front_is_blocked = self.karel.front_is_blocked
 		self.mod.left_is_clear = self.karel.left_is_clear
 		self.mod.left_is_blocked = self.karel.left_is_blocked

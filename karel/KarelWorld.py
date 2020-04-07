@@ -60,7 +60,7 @@ class KarelWorld():
 		self._beepers = collections.defaultdict(int)
 
 		# Map of corner colors, defaults to None
-		self._corner_colors = collections.defaultdict(lambda: None)
+		self._corner_colors = collections.defaultdict(lambda: "")
 
 		# Set of Wall objects placed in the world
 		self._walls = set()
@@ -270,7 +270,7 @@ class KarelWorld():
 
 	def reset_corner(self, avenue, street):
 		self._beepers[(avenue, street)] = 0
-		self._corner_colors[(avenue, street)] = None
+		self._corner_colors[(avenue, street)] = ""
 
 	def wall_exists(self, avenue, street, direction):
 		wall = Wall(avenue, street, direction)

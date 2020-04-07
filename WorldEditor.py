@@ -62,7 +62,7 @@ class WorldBuilderApplication(tk.Frame):
 
 	def create_new_world(self, init=False, default=False):
 		num_avenues = simpledialog.askinteger("New World Size", "How many avenues should the new world have?",
-											  parent=self.parent, 
+											  parent=self.master, 
 											  minvalue=MIN_DIMENSIONS, maxvalue=MAX_DIMENSIONS)
 
 		if not num_avenues:
