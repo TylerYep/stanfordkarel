@@ -70,7 +70,11 @@ def right_is_blocked():
 	pass
 
 
-def on_beeper():
+def beepers_present():
+	pass
+
+
+def no_beepers_present():
 	pass
 
 
@@ -78,7 +82,15 @@ def beepers_in_bag():
 	pass
 
 
+def no_beepers_in_bag():
+	pass
+
+
 def facing_north():
+	pass
+
+
+def not_facing_north():
 	pass
 
 
@@ -86,13 +98,25 @@ def facing_east():
 	pass
 
 
+def not_facing_east():
+	pass
+
+	
 def facing_west():
+	pass
+
+
+def not_facing_west():
 	pass
 
 
 def facing_south():
 	pass
 
+
+def not_facing_south():
+	pass
+	
 
 def paint_corner():
 	pass

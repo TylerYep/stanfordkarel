@@ -302,7 +302,7 @@ class Karel():
 		"""
 		return not self.right_is_clear()
 
-	def on_beeper(self):
+	def beepers_present(self):
 		"""
 		This function returns a boolean indicating whether or not there is 
 		a beeper on Karel's current corner.
@@ -313,6 +313,9 @@ class Karel():
 										False otherwise
 		"""
 		return self._world.beepers[(self.avenue, self.street)] != 0
+
+	def no_beepers_present(self):
+		return not self.beepers_present()
 
 	def beepers_in_bag(self):
 		"""
@@ -326,6 +329,9 @@ class Karel():
 		"""
 		return self._num_beepers > 0
 
+	def no_beepers_in_bag(self):
+		return not self.beepers_in_bag()
+
 	def facing_north(self):
 		"""
 		This function returns a boolean indicating whether or not Karel is currently
@@ -337,6 +343,9 @@ class Karel():
 								  False otherwise
 		"""
 		return self.direction == Direction.NORTH
+
+	def not_facing_north(self):
+		return not self.facing_north()
 
 	def facing_east(self):
 		"""
@@ -350,6 +359,9 @@ class Karel():
 		"""
 		return self.direction == Direction.EAST
 
+	def not_facing_east(self):
+		return not self.facing_east()
+
 	def facing_west(self):
 		"""
 		This function returns a boolean indicating whether or not Karel is currently
@@ -361,6 +373,9 @@ class Karel():
 								 False otherwise
 		"""
 		return self.direction == Direction.WEST
+
+	def not_facing_west(self):
+		return not self.facing_west()
 
 	def facing_south(self):
 		"""
@@ -374,6 +389,9 @@ class Karel():
 		"""
 		return self.direction == Direction.SOUTH
 
+	def not_facing_south(self):
+		return not self.facing_south()
+		
 	def paint_corner(self, color):
 		"""
 		This function makes Karel paint it's current corner the indicated color.
