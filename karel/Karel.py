@@ -191,7 +191,7 @@ class Karel():
 		Parameters: None
 		Returns: None
 		"""
-		if not self.on_beeper():
+		if not self.beepers_present():
 			raise KarelException(self._avenue, self._street, self._direction, 
 								"Karel attempted to pick up a beeper, but there were none on the current corner.")
 
