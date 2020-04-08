@@ -272,6 +272,7 @@ class WorldBuilderApplication(tk.Frame):
 	def save_world(self):
 		filename = asksaveasfilename(initialdir="./worlds", title="Save Karel World", filetypes=[("Karel Worlds", "*.w")], parent=self.master)
 		if filename == "": return 
+		if not filename.endswith(".w"): filename = filename + ".w"
 		self.world.save_to_file(filename, self.karel)
 		
 
