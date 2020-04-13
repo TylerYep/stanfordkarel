@@ -179,7 +179,9 @@ class Karel():
 			raise KarelException(self._avenue, self._street, self._direction, 
 								"Karel attempted to put a beeper, but it had none left in its bag.")
 
-		self._num_beepers -= 1
+		if self._num_beepers != INFINITY:
+			self._num_beepers -= 1
+
 		self._world.add_beeper(self._avenue, self._street)
 
 	def pick_beeper(self):
@@ -195,7 +197,9 @@ class Karel():
 			raise KarelException(self._avenue, self._street, self._direction, 
 								"Karel attempted to pick up a beeper, but there were none on the current corner.")
 
-		self._num_beepers += 1
+		if self._num_beepers != INFINITY:
+			self._num_beepers += 1
+
 		self._world.remove_beeper(self._avenue, self._street)
 
 	def front_is_clear(self):
@@ -327,10 +331,12 @@ class Karel():
 			beepers_in_bag (Bool) - True if there is at least one beeper in Karel's bag
 									False otherwise
 		"""
-		return self._num_beepers > 0
+		# Can't check > 0 because INFINITY beepers is -1
+		return self._num_beepers != 0
 
 	def no_beepers_in_bag(self):
-		return not self.beepers_in_bag()
+		# Only 0 beepers in bag indicates empty bag – negative numbers represent INFINITY
+		return self._num_beepers == 0
 
 	def facing_north(self):
 		"""
