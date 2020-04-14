@@ -5,17 +5,15 @@ for Karel and it's world, initial world parameters, and different exception
 and enumeration types, among other things.
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue 
+Credits: Kylie Jue
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-
-
-from enum import Enum, unique
 import math
+from enum import Enum, unique
 
 """
 General Karel constants
@@ -37,8 +35,38 @@ MAX_DIMENSIONS = 50
 WALL_DETECTION_THRESHOLD = 0.1
 DEFAULT_COLOR = "Red"
 DEFAULT_SIZE = 8
-COLOR_OPTIONS = sorted(["Red", "Black", "Cyan", "Dark Gray", "Gray", "Green", "Light Gray", "Magenta", "Orange", "Pink", "White", "Blue", "Yellow"])
-COLOR_MAP = {"Red": "red", "Black": "black", "Cyan": "cyan", "Dark Gray": "gray30", "Gray": "gray55", "Green": "green", "Light Gray": "gray80", "Magenta": "magenta3", "Orange": "orange", "Pink": "pink", "White": "snow", "Blue": "blue", "Yellow": "yellow"}
+COLOR_OPTIONS = sorted(
+    [
+        "Red",
+        "Black",
+        "Cyan",
+        "Dark Gray",
+        "Gray",
+        "Green",
+        "Light Gray",
+        "Magenta",
+        "Orange",
+        "Pink",
+        "White",
+        "Blue",
+        "Yellow",
+    ]
+)
+COLOR_MAP = {
+    "Red": "red",
+    "Black": "black",
+    "Cyan": "cyan",
+    "Dark Gray": "gray30",
+    "Gray": "gray55",
+    "Green": "green",
+    "Light Gray": "gray80",
+    "Magenta": "magenta3",
+    "Orange": "orange",
+    "Pink": "pink",
+    "White": "snow",
+    "Blue": "blue",
+    "Yellow": "yellow",
+}
 BLANK = ""
 """
 Drawing Constants for Karel Canvas
@@ -54,7 +82,7 @@ Drawing Constants for Karel Robot Icon
 All constants are defined relative to the size of a single cell
 """
 KAREL_VERTICAL_OFFSET = 0.05
-KAREL_LEFT_HORIZONTAL_PAD = 0.29 
+KAREL_LEFT_HORIZONTAL_PAD = 0.29
 KAREL_HEIGHT = 0.76
 KAREL_WIDTH = 0.58
 KAREL_INNER_HEIGHT = 0.38
@@ -79,82 +107,87 @@ All constants are defined relative to the size of a single cell
 SIMPLE_KAREL_HEIGHT = 0.7
 SIMPLE_KAREL_WIDTH = 0.8
 
-class Wall():
-	def __init__(self, avenue, street, direction):
-		self._avenue = avenue
-		self._street = street
-		self._direction = direction
 
-	def __eq__(self, other):
-		return  self._avenue == other.avenue and \
-				self._street == other.street and \
-				self._direction == other.direction
+class Wall:
+    def __init__(self, avenue, street, direction):
+        self._avenue = avenue
+        self._street = street
+        self._direction = direction
 
-	def __hash__(self):
-		return hash((self._avenue, self._street, self._direction))
+    def __eq__(self, other):
+        return (
+            self._avenue == other.avenue
+            and self._street == other.street
+            and self._direction == other.direction
+        )
 
-	def __repr__(self):
-		return f"({self._avenue}, {self._street}) {self._direction}"
+    def __hash__(self):
+        return hash((self._avenue, self._street, self._direction))
 
-	@property
-	def avenue(self):
-		return self._avenue
+    def __repr__(self):
+        return f"({self._avenue}, {self._street}) {self._direction}"
 
-	@property
-	def street(self):
-		return self._street
+    @property
+    def avenue(self):
+        return self._avenue
 
-	@property
-	def direction(self):
-		return self._direction
+    @property
+    def street(self):
+        return self._street
 
-@unique	
+    @property
+    def direction(self):
+        return self._direction
+
+
+@unique
 class Direction(Enum):
-	EAST = 0
-	SOUTH = math.pi / 2
-	WEST = math.pi 
-	NORTH = 3 * math.pi / 2
+    EAST = 0
+    SOUTH = math.pi / 2
+    WEST = math.pi
+    NORTH = 3 * math.pi / 2
 
 
 DIRECTIONS_MAP = {
-	"north": Direction.NORTH, 
-	"east": Direction.EAST,
-	"south": Direction.SOUTH, 
-	"west": Direction.WEST
+    "north": Direction.NORTH,
+    "east": Direction.EAST,
+    "south": Direction.SOUTH,
+    "west": Direction.WEST,
 }
 
-DIRECTIONS_MAP_INVERSE = {v:k for k,v in DIRECTIONS_MAP.items()}
+DIRECTIONS_MAP_INVERSE = {v: k for k, v in DIRECTIONS_MAP.items()}
 
 NEXT_DIRECTION_MAP = {
-	Direction.NORTH: Direction.WEST, 
-	Direction.WEST: Direction.SOUTH, 
-	Direction.SOUTH: Direction.EAST,
-	Direction.EAST: Direction.NORTH
+    Direction.NORTH: Direction.WEST,
+    Direction.WEST: Direction.SOUTH,
+    Direction.SOUTH: Direction.EAST,
+    Direction.EAST: Direction.NORTH,
 }
 
-NEXT_DIRECTION_MAP_RIGHT = {v:k for k,v in NEXT_DIRECTION_MAP.items()}
+NEXT_DIRECTION_MAP_RIGHT = {v: k for k, v in NEXT_DIRECTION_MAP.items()}
 
 # This map associates directions with the delta that Karel
 # undergoes if it were to move one step in that direction
 # delta is in terms of (avenue, street)
 DIRECTION_DELTA_MAP = {
-	Direction.NORTH: (0, 1),
-	Direction.EAST: (1, 0),
-	Direction.SOUTH: (0, -1),
-	Direction.WEST: (-1, 0)
+    Direction.NORTH: (0, 1),
+    Direction.EAST: (1, 0),
+    Direction.SOUTH: (0, -1),
+    Direction.WEST: (-1, 0),
 }
 
 
 class KarelException(Exception):
-	"""
+    """
 	The following classes define Karel-specific exceptions
 	"""
 
-	def __init__(self, avenue, street, direction, message):
-		self.avenue = avenue
-		self.street = street
-		self.direction = DIRECTIONS_MAP_INVERSE[direction].capitalize()
-		self.message = message
+    def __init__(self, avenue, street, direction, message):
+        super().__init__()
+        self.avenue = avenue
+        self.street = street
+        self.direction = DIRECTIONS_MAP_INVERSE[direction].capitalize()
+        self.message = message
 
-	def __str__(self):
-		return f"Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"
+    def __str__(self):
+        return f"Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"
