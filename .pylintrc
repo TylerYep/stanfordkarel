@@ -154,9 +154,7 @@ disable=print-statement,
         too-many-instance-attributes,
         unused-wildcard-import,
         wildcard-import,
-        line-too-long,
-        attribute-defined-outside-init
-
+        line-too-long
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

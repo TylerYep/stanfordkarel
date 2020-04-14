@@ -289,27 +289,10 @@ class KarelWorld:
 
     def reload_world(self, filename=None):
         """
-		TODO: Do better decomp to not just copy constructor
+		Reloads world using constructor.
 		"""
-
-        self._beepers = collections.defaultdict(int)
-        self._corner_colors = collections.defaultdict(lambda: "")
-        self._walls = set()
-
-        self._num_streets = 1
-        self._num_avenues = 1
-
-        self._karel_starting_location = (1, 1)
-        self._karel_starting_direction = Direction.EAST
-        self._karel_starting_beeper_count = 0
-
-        self._init_speed = INIT_SPEED
-
-        if filename:
-            self._world_file = open(filename, "r")
-            self.load_from_file()
-
-        self._init_beepers = copy.deepcopy(self._beepers)
+        world_file = open(filename) if filename else None
+        self.__init__(world_file)
 
     def save_to_file(self, filename, karel):
         with open(filename, "w") as f:
