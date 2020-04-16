@@ -35,23 +35,6 @@ MAX_DIMENSIONS = 50
 WALL_DETECTION_THRESHOLD = 0.1
 DEFAULT_COLOR = "Red"
 DEFAULT_SIZE = 8
-COLOR_OPTIONS = sorted(
-    [
-        "Red",
-        "Black",
-        "Cyan",
-        "Dark Gray",
-        "Gray",
-        "Green",
-        "Light Gray",
-        "Magenta",
-        "Orange",
-        "Pink",
-        "White",
-        "Blue",
-        "Yellow",
-    ]
-)
 COLOR_MAP = {
     "Red": "red",
     "Black": "black",
@@ -67,6 +50,7 @@ COLOR_MAP = {
     "Blue": "blue",
     "Yellow": "yellow",
 }
+COLOR_OPTIONS = sorted(COLOR_MAP.keys())
 BLANK = ""
 """
 Drawing Constants for Karel Canvas
