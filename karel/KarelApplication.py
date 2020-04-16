@@ -10,6 +10,7 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
+import types
 import importlib.util
 import inspect
 import os
@@ -29,8 +30,7 @@ class StudentCode:
         # This process is used to extract a module from an arbitarily located
         # file that contains student code. Adapted from:
         # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-        self.base_filename = os.path.basename(code_file)
-        self.module_name = os.path.splitext(self.base_filename)[0]
+        self.module_name = os.path.splitext(os.path.basename(code_file))[0]
         spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
         try:
             self.mod = importlib.util.module_from_spec(spec)
@@ -56,30 +56,34 @@ class StudentCode:
 		file with specific commands relating to the Karel object that exists
 		in the world.
 		"""
-        self.mod.turn_left = self.karel.turn_left
-        self.mod.move = self.karel.move
-        self.mod.pick_beeper = self.karel.pick_beeper
-        self.mod.put_beeper = self.karel.put_beeper
-        self.mod.facing_north = self.karel.facing_north
-        self.mod.facing_south = self.karel.facing_south
-        self.mod.facing_east = self.karel.facing_east
-        self.mod.facing_west = self.karel.facing_west
-        self.mod.not_facing_north = self.karel.not_facing_north
-        self.mod.not_facing_south = self.karel.not_facing_south
-        self.mod.not_facing_east = self.karel.not_facing_east
-        self.mod.not_facing_west = self.karel.not_facing_west
-        self.mod.front_is_clear = self.karel.front_is_clear
-        self.mod.beepers_present = self.karel.beepers_present
-        self.mod.no_beepers_present = self.karel.no_beepers_present
-        self.mod.beepers_in_bag = self.karel.beepers_in_bag
-        self.mod.no_beepers_in_bag = self.karel.no_beepers_in_bag
-        self.mod.front_is_blocked = self.karel.front_is_blocked
-        self.mod.left_is_clear = self.karel.left_is_clear
-        self.mod.left_is_blocked = self.karel.left_is_blocked
-        self.mod.right_is_clear = self.karel.right_is_clear
-        self.mod.right_is_blocked = self.karel.right_is_blocked
-        self.mod.paint_corner = self.karel.paint_corner
-        self.mod.corner_color_is = self.karel.corner_color_is
+        functions_to_override = [
+            "move",
+            "turn_left",
+            "pick_beeper",
+            "put_beeper",
+            "facing_north",
+            "facing_south",
+            "facing_east",
+            "facing_west",
+            "not_facing_north",
+            "not_facing_south",
+            "not_facing_east",
+            "not_facing_west",
+            "front_is_clear",
+            "beepers_present",
+            "no_beepers_present",
+            "beepers_in_bag",
+            "no_beepers_in_bag",
+            "front_is_blocked",
+            "left_is_blocked",
+            "left_is_clear",
+            "right_is_blocked",
+            "right_is_clear",
+            "paint_corner",
+            "corner_color_is",
+        ]
+        for func in functions_to_override:
+            setattr(self.mod, func, getattr(self.karel, func))
 
 
 class KarelApplication(tk.Frame):
@@ -285,7 +289,7 @@ class KarelApplication(tk.Frame):
             # get the name of the file corresponding to the current frame
             filename = frame_info.filename
             # Only display frames generated within the student's code
-            if self.student_code.base_filename in filename:
+            if self.student_code.base_filename + ".py" in filename:
                 display_frames.append((frame, lineno))
 
         print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())

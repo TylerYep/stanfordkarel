@@ -8,14 +8,14 @@ class TestKarel:
     def test_checkerboard_karel():
         code_file = "CheckerboardKarel"
 
-        world = execute_karel_problem(code_file)
+        world = execute_karel_code(code_file)
 
         assert KarelWorld("CheckerboardKarelEnd.w") == world
 
 
-def execute_karel_problem(code_file):
-    world = KarelWorld(code_file + ".w")
+def execute_karel_code(problem_name):
+    world = KarelWorld(problem_name + ".w")
     karel = Karel(world)
-    student_code = StudentCode(code_file + ".py", karel)
+    student_code = StudentCode(problem_name + ".py", karel)
     student_code.mod.main()
     return world
