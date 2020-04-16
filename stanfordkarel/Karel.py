@@ -18,7 +18,7 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
-from karel.kareldefinitions import *
+from stanfordkarel.kareldefinitions import *
 
 
 class Karel:

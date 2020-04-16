@@ -18,10 +18,10 @@ import os
 import sys
 import tkinter as tk
 
-from karel.Karel import Karel
-from karel.KarelApplication import KarelApplication
-from karel.kareldefinitions import DEFAULT_WORLD_FILE
-from karel.KarelWorld import KarelWorld
+from stanfordkarel.Karel import Karel
+from stanfordkarel.KarelApplication import KarelApplication
+from stanfordkarel.kareldefinitions import DEFAULT_WORLD_FILE
+from stanfordkarel.KarelWorld import KarelWorld
 
 
 """

@@ -21,8 +21,8 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 
-from karel.KarelCanvas import KarelCanvas
-from karel.kareldefinitions import *
+from stanfordkarel.KarelCanvas import KarelCanvas
+from stanfordkarel.kareldefinitions import *
 
 
 class StudentCode:
@@ -134,7 +134,8 @@ class KarelApplication(tk.Frame):
 
     def set_dock_icon(self):
         # make Karel dock icon image
-        img = tk.Image("photo", file="./karel/icon.png")
+        path = os.path.join(os.path.dirname(__file__), "icon.png")
+        img = tk.Image("photo", file=path)
         self.master.tk.call("wm", "iconphoto", self.master._w, img)
 
     def create_menubar(self):
