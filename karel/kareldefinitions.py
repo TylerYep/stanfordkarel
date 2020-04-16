@@ -99,11 +99,7 @@ class Wall:
         self._direction = direction
 
     def __eq__(self, other):
-        return (
-            self._avenue == other.avenue
-            and self._street == other.street
-            and self._direction == other.direction
-        )
+        return self.__dict__ == other.__dict__
 
     def __hash__(self):
         return hash((self._avenue, self._street, self._direction))

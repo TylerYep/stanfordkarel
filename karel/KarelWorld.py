@@ -55,7 +55,7 @@ class KarelWorld:
 		Parameters:
 			world_file: Open file object containing information about the initial state of Karel's world
 		"""
-        self._world_file = self.process_world(world_file)
+        self._world_file = self.process_world(world_file) if world_file else None
 
         # Map of beeper locations to the count of beepers at that location
         self._beepers = collections.defaultdict(int)

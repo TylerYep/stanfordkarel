@@ -55,7 +55,8 @@ class WorldBuilderApplication(tk.Frame):
     def setup_world(self):
         load_existing = messagebox.askyesno(
             "World Selection",
-            "Would you like to load an existing world? \n\nSelecting 'No' will allow you to start with a blank slate.",
+            "Would you like to load an existing world? \n\n"
+            "Selecting 'No' will allow you to start with a blank slate.",
             parent=self.master,
         )
         if load_existing:
@@ -130,9 +131,9 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_canvas(self):
         """
-		This method creates the canvas on which Karel and Karel's
-		world are drawn.
-		"""
+                This method creates the canvas on which Karel and Karel's
+                world are drawn.
+                """
         self.canvas = KarelCanvas(
             self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel
         )
@@ -143,10 +144,10 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_buttons(self):
         """
-		This method creates the three buttons that appear on the left
-		side of the screen. These buttons control the start of Karel
-		execution, resetting Karel's state, and loading new worlds.
-		"""
+                This method creates the three buttons that appear on the left
+                side of the screen. These buttons control the start of Karel
+                execution, resetting Karel's state, and loading new worlds.
+                """
         self.program_control_button = tk.Button(
             self, highlightthickness=0, highlightbackground="white"
         )
