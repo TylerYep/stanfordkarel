@@ -96,7 +96,7 @@ class WorldBuilderApplication(tk.Frame):
             self.world = KarelWorld()
             self.karel = Karel(self.world)
         else:
-            self.world.reload_world()
+            self.world = KarelWorld()
             self.karel.reset_state()
 
         self.world.num_avenues = num_avenues
@@ -124,8 +124,6 @@ class WorldBuilderApplication(tk.Frame):
         else:
             self.world.reload_world(filename=filename)
             self.karel.reset_state()
-
-        if not init:
             self.canvas.redraw_all()
             self.reset_direction_radio_buttons()
             self.reset_beeper_bag_radio_buttons()
@@ -379,7 +377,7 @@ class WorldBuilderApplication(tk.Frame):
         if filename == "":
             return
         if not filename.endswith(".w"):
-            filename = filename + ".w"
+            filename += ".w"
         self.world.save_to_file(filename, self.karel)
 
 

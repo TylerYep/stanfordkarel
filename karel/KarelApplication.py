@@ -20,8 +20,32 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 
+from karel.KarelWorld import KarelWorld
 from karel.KarelCanvas import KarelCanvas
 from karel.kareldefinitions import *
+
+
+class StudentCode:
+    def __init__(self, code_file):
+        # This process is used to extract a module from an arbitarily located
+        # file that contains student code. Adapted from:
+        # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+        self.base_filename = os.path.basename(code_file)
+        self.module_name = os.path.splitext(self.base_filename)[0]
+        spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
+        try:
+            self.mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(self.mod)
+        except Exception as e:
+            # Handle syntax errors and only print location of error
+            print(f"Syntax Error: {e}")
+            print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
+            self.mod = None
+
+        # Do not proceed if the student has not defined a main function
+        if not hasattr(self.mod, "main"):
+            print("Couldn't find the main() function. Are you sure you have one?")
+            self.mod = None
 
 
 class KarelApplication(tk.Frame):
@@ -50,8 +74,8 @@ class KarelApplication(tk.Frame):
 
         self.karel = karel
         self.world = world
-        self.code_file = code_file
-        if not self.load_student_module():
+        self.student_code = StudentCode(code_file)
+        if not self.student_code.mod:
             master.destroy()
             return
         self.icon = DEFAULT_ICON
@@ -60,7 +84,7 @@ class KarelApplication(tk.Frame):
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
         self.master = master
-        self.master.title(self.module_name)
+        self.master.title(self.student_code.module_name)
         self.set_dock_icon()
         self.inject_namespace()
         self.grid(row=0, column=0)
@@ -74,31 +98,6 @@ class KarelApplication(tk.Frame):
         # make Karel dock icon image
         img = tk.Image("photo", file="./karel/icon.png")
         self.master.tk.call("wm", "iconphoto", self.master._w, img)
-
-    def load_student_module(self):
-        # This process is used to extract a module from an arbitarily located
-        # file that contains student code
-        # Adapted from https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
-        self.base_filename = os.path.basename(self.code_file)
-        self.module_name = os.path.splitext(self.base_filename)[0]
-        spec = importlib.util.spec_from_file_location(
-            self.module_name, os.path.abspath(self.code_file)
-        )
-        try:
-            self.mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(self.mod)
-        except Exception as e:
-            # Handle syntax errors and only print location of error
-            print(f"Syntax Error: {e}")
-            print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
-            return False
-
-        # Do not proceed if the student has not defined a main function
-        if not hasattr(self.mod, "main"):
-            print("Couldn't find the main() function. Are you sure you have one?")
-            return False
-
-        return True
 
     def create_menubar(self):
         menubar = tk.Menu(self.master)
@@ -229,31 +228,30 @@ class KarelApplication(tk.Frame):
 		file with specific commands relating to the Karel object that exists
 		in the world.
 		"""
-
-        self.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
-        self.mod.move = self.karel_action_decorator(self.karel.move)
-        self.mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)
-        self.mod.put_beeper = self.beeper_action_decorator(self.karel.put_beeper)
-        self.mod.facing_north = self.karel.facing_north
-        self.mod.facing_south = self.karel.facing_south
-        self.mod.facing_east = self.karel.facing_east
-        self.mod.facing_west = self.karel.facing_west
-        self.mod.not_facing_north = self.karel.not_facing_north
-        self.mod.not_facing_south = self.karel.not_facing_south
-        self.mod.not_facing_east = self.karel.not_facing_east
-        self.mod.not_facing_west = self.karel.not_facing_west
-        self.mod.front_is_clear = self.karel.front_is_clear
-        self.mod.beepers_present = self.karel.beepers_present
-        self.mod.no_beepers_present = self.karel.no_beepers_present
-        self.mod.beepers_in_bag = self.karel.beepers_in_bag
-        self.mod.no_beepers_in_bag = self.karel.no_beepers_in_bag
-        self.mod.front_is_blocked = self.karel.front_is_blocked
-        self.mod.left_is_clear = self.karel.left_is_clear
-        self.mod.left_is_blocked = self.karel.left_is_blocked
-        self.mod.right_is_clear = self.karel.right_is_clear
-        self.mod.right_is_blocked = self.karel.right_is_blocked
-        self.mod.paint_corner = self.corner_action_decorator(self.karel.paint_corner)
-        self.mod.corner_color_is = self.karel.corner_color_is
+        self.student_code.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
+        self.student_code.mod.move = self.karel_action_decorator(self.karel.move)
+        self.student_code.mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)
+        self.student_code.mod.put_beeper = self.beeper_action_decorator(self.karel.put_beeper)
+        self.student_code.mod.facing_north = self.karel.facing_north
+        self.student_code.mod.facing_south = self.karel.facing_south
+        self.student_code.mod.facing_east = self.karel.facing_east
+        self.student_code.mod.facing_west = self.karel.facing_west
+        self.student_code.mod.not_facing_north = self.karel.not_facing_north
+        self.student_code.mod.not_facing_south = self.karel.not_facing_south
+        self.student_code.mod.not_facing_east = self.karel.not_facing_east
+        self.student_code.mod.not_facing_west = self.karel.not_facing_west
+        self.student_code.mod.front_is_clear = self.karel.front_is_clear
+        self.student_code.mod.beepers_present = self.karel.beepers_present
+        self.student_code.mod.no_beepers_present = self.karel.no_beepers_present
+        self.student_code.mod.beepers_in_bag = self.karel.beepers_in_bag
+        self.student_code.mod.no_beepers_in_bag = self.karel.no_beepers_in_bag
+        self.student_code.mod.front_is_blocked = self.karel.front_is_blocked
+        self.student_code.mod.left_is_clear = self.karel.left_is_clear
+        self.student_code.mod.left_is_blocked = self.karel.left_is_blocked
+        self.student_code.mod.right_is_clear = self.karel.right_is_clear
+        self.student_code.mod.right_is_blocked = self.karel.right_is_blocked
+        self.student_code.mod.paint_corner = self.corner_action_decorator(self.karel.paint_corner)
+        self.student_code.mod.corner_color_is = self.karel.corner_color_is
 
     def disable_buttons(self):
         self.program_control_button.configure(state="disabled")
@@ -272,7 +270,7 @@ class KarelApplication(tk.Frame):
             # get the name of the file corresponding to the current frame
             filename = frame_info.filename
             # Only display frames generated within the student's code
-            if self.base_filename in filename:
+            if self.student_code.base_filename in filename:
                 display_frames.append((frame, lineno))
 
         print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
@@ -283,7 +281,7 @@ class KarelApplication(tk.Frame):
         try:
             self.status_label.configure(text="Running...", fg="brown")
             self.disable_buttons()
-            self.mod.main()
+            self.student_code.mod.main()
             self.status_label.configure(text="Finished running.", fg="green")
 
         except (KarelException, NameError) as e:
@@ -296,7 +294,8 @@ class KarelApplication(tk.Frame):
             showwarning("Karel Error", "Karel Crashed!\nCheck the terminal for more details.")
 
         finally:
-            # Update program control button to force user to reset world before running program again
+            # Update program control button to force user
+            # to reset world before running program again
             self.program_control_button["text"] = "Reset World"
             self.program_control_button["command"] = self.reset_world
             self.enable_buttons()

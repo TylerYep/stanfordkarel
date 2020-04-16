@@ -190,4 +190,7 @@ class KarelException(Exception):
         self.message = message
 
     def __str__(self):
-        return f"Karel crashed while on avenue {self.avenue} and street {self.street}, facing {self.direction}\nInvalid action: {self.message}"
+        return (
+            f"Karel crashed while on avenue {self.avenue} and street {self.street}, "
+            f"facing {self.direction}\nInvalid action: {self.message}"
+        )

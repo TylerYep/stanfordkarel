@@ -168,19 +168,6 @@ def run_karel_program(world_file=None):
                 print("Could not find a default world to use, please specify a world filename.")
                 return
 
-    # Create the world as specified in the given world file
-    try:
-        # Attempt to open the file that has been specified
-        world_file = open(world_file, "r")
-    except OSError:
-        try:
-            # Before failing, look inside the worlds folder for this file
-            world_file = open(os.path.join("worlds", world_file))
-        except OSError:
-            # Print warning to user and exit out of the program
-            print(f"Could not find world file with name: {world_file}")
-            return
-
     world = KarelWorld(world_file)
 
     # Create Karel and assign it to live in the newly created world

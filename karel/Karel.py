@@ -34,11 +34,12 @@ class Karel:
 		Returns: None
 		"""
         self._world = world
-
         self._avenue, self._street = self._world.karel_starting_location
         self._direction = self._world.karel_starting_direction
-
         self._num_beepers = self._world.karel_starting_beeper_count
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
     @property
     def avenue(self):
@@ -242,7 +243,6 @@ class Karel:
         delta_avenue, delta_street = DIRECTION_DELTA_MAP[direction]
         next_avenue = self._avenue + delta_avenue
         next_street = self._street + delta_street
-        opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[direction]]
 
         # front is not clear if we are about to go out of bounds
         if not self._world.in_bounds(next_avenue, next_street):
@@ -253,6 +253,7 @@ class Karel:
             return False
 
         # must also check for alternate possible representation of wall
+        opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[direction]]
         if self._world.wall_exists(next_avenue, next_street, opposite_direction):
             return False
 
@@ -326,8 +327,8 @@ class Karel:
 
 		Parameters: None
 		Returns:
-			beeepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
-										False otherwise
+			beepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
+									   False otherwise
 		"""
         return self._world.beepers[(self.avenue, self.street)] != 0
 

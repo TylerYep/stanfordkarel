@@ -41,7 +41,9 @@ Last Modified: 3/31/2020
 """
 import collections
 import copy
+import os
 import re
+import sys
 
 from karel.kareldefinitions import *
 
@@ -53,7 +55,7 @@ class KarelWorld:
 		Parameters:
 			world_file: Open file object containing information about the initial state of Karel's world
 		"""
-        self._world_file = world_file
+        self._world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
         self._beepers = collections.defaultdict(int)
@@ -82,6 +84,22 @@ class KarelWorld:
 
         # Save initial beeper state to enable world reset
         self._init_beepers = copy.deepcopy(self._beepers)
+
+    @staticmethod
+    def process_world(world_file):
+        # Create the world as specified in the given world file
+        try:
+            # Attempt to open the file that has been specified
+            world_file = open(world_file)
+        except OSError:
+            try:
+                # Before failing, look inside the worlds folder for this file
+                world_file = open(os.path.join("worlds", world_file))
+            except OSError:
+                # Print warning to user and exit out of the program
+                print(f"Could not find world file with name: {world_file}")
+                sys.exit()
+        return world_file
 
     @property
     def karel_starting_location(self):
@@ -291,8 +309,7 @@ class KarelWorld:
         """
 		Reloads world using constructor.
 		"""
-        world_file = open(filename) if filename else None
-        self.__init__(world_file)
+        self.__init__(filename)
 
     def save_to_file(self, filename, karel):
         with open(filename, "w") as f:
