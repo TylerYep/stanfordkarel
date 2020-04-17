@@ -148,11 +148,11 @@ BLANK = ""
 def run_karel_program(world_file=None):
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
-    base_filename = os.path.basename(student_code_file)
-    module_name = os.path.splitext(base_filename)[0]
 
     if not world_file:
         # Find world file that matches program name in the worlds/ directory
+        base_filename = os.path.basename(student_code_file)
+        module_name = os.path.splitext(base_filename)[0]
         karel_world_file = f"worlds/{module_name}.w"
         if os.path.exists(karel_world_file):
             world_file = karel_world_file

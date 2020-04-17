@@ -39,7 +39,7 @@ class StudentCode:
             # Handle syntax errors and only print location of error
             print(f"Syntax Error: {e}")
             print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
-            self.mod = None
+            sys.exit()
 
         # Do not proceed if the student has not defined a main function.
         if not hasattr(self.mod, "main"):

@@ -53,7 +53,7 @@ class KarelWorld:
         """
 		Karel World constructor
 		Parameters:
-			world_file: Open file object containing information about the initial state of Karel's world
+			world_file: filename of world file containing the initial state of Karel's world
 		"""
         self._world_file = self.process_world(world_file) if world_file else None
 
