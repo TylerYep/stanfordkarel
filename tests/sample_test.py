@@ -1,6 +1,6 @@
-from karel.Karel import Karel
-from karel.KarelApplication import StudentCode
-from karel.KarelWorld import KarelWorld
+from stanfordkarel.karel import Karel
+from stanfordkarel.karel_application import StudentCode
+from stanfordkarel.karel_world import KarelWorld
 
 
 class TestKarel:

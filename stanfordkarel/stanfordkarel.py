@@ -3,7 +3,7 @@ This file defines the necessary functions and definitions that students must
 import in order to be able to write a new Karel program. Any new Karel file
 must include the following line:
 
-	from karel.stanfordkarel import *
+	from stanfordkarel import *
 
 Original Author: Nicholas Bowman
 Credits: Kylie Jue
@@ -18,10 +18,10 @@ import os
 import sys
 import tkinter as tk
 
-from stanfordkarel.Karel import Karel
-from stanfordkarel.KarelApplication import KarelApplication
-from stanfordkarel.kareldefinitions import DEFAULT_WORLD_FILE
-from stanfordkarel.KarelWorld import KarelWorld
+from stanfordkarel.karel import Karel
+from stanfordkarel.karel_application import KarelApplication
+from stanfordkarel.karel_definitions import DEFAULT_WORLD_FILE
+from stanfordkarel.karel_world import KarelWorld
 
 
 """
@@ -158,7 +158,8 @@ def run_karel_program(world_file=None):
             world_file = karel_world_file
         else:
             print(
-                f"Could not find a world matching filename {module_name}.w, defaulting to default world."
+                f"Could not find a world matching filename {module_name}.w, "
+                f"defaulting to default world."
             )
             default_world_file = f"worlds/{DEFAULT_WORLD_FILE}"
             if os.path.exists(default_world_file):

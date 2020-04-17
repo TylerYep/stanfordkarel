@@ -45,7 +45,7 @@ import os
 import re
 import sys
 
-from stanfordkarel.kareldefinitions import *
+from stanfordkarel.karel_definitions import *
 
 
 class KarelWorld:

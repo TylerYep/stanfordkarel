@@ -1,7 +1,7 @@
 """
 This file contains all of the constant and class definitions used
 throughout the Karel library. Constants here define drawing proportions
-for Karel and it's world, initial world parameters, and different exception
+for Karel and its world, initial world parameters, and different exception
 and enumeration types, among other things.
 
 Original Author: Nicholas Bowman

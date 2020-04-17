@@ -10,14 +10,21 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
+import os
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-from karel.Karel import Karel
-from karel.KarelCanvas import KarelCanvas
-from karel.kareldefinitions import *
-from karel.KarelWorld import KarelWorld
+from stanfordkarel.karel import Karel
+from stanfordkarel.karel_canvas import KarelCanvas
+from stanfordkarel.karel_definitions import *
+from stanfordkarel.karel_world import KarelWorld
+
+
+def run_world_editor():
+    root = tk.Tk()
+    world_builder = WorldBuilderApplication(master=root)
+    world_builder.mainloop()
 
 
 class WorldBuilderApplication(tk.Frame):
@@ -49,7 +56,8 @@ class WorldBuilderApplication(tk.Frame):
 
     def set_dock_icon(self):
         # make Karel dock icon image
-        img = tk.Image("photo", file="./karel/icon.png")
+        path = os.path.join(os.path.dirname(__file__), "icon.png")
+        img = tk.Image("photo", file=path)
         self.master.tk.call("wm", "iconphoto", self.master._w, img)
 
     def setup_world(self):
@@ -383,6 +391,4 @@ class WorldBuilderApplication(tk.Frame):
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    world_builder = WorldBuilderApplication(master=root)
-    world_builder.mainloop()
+    run_world_editor()

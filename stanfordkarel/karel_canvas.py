@@ -17,7 +17,7 @@ Last Modified: 3/31/2020
 import cmath
 import tkinter as tk
 
-from stanfordkarel.kareldefinitions import *
+from stanfordkarel.karel_definitions import *
 
 
 class KarelCanvas(tk.Canvas):

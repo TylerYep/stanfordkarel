@@ -10,19 +10,19 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
-import types
 import importlib.util
 import inspect
 import os
 import sys
 import tkinter as tk
 import traceback as tb
+import types
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 
-from stanfordkarel.KarelCanvas import KarelCanvas
-from stanfordkarel.kareldefinitions import *
+from stanfordkarel.karel_canvas import KarelCanvas
+from stanfordkarel.karel_definitions import *
 
 
 class StudentCode:
@@ -41,15 +41,14 @@ class StudentCode:
             print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
             self.mod = None
 
-        # Do not proceed if the student has not defined a main function
+        # Do not proceed if the student has not defined a main function.
         if not hasattr(self.mod, "main"):
             print("Couldn't find the main() function. Are you sure you have one?")
-            self.mod = None
+            sys.exit()
 
-        self.karel = karel
-        self.inject_namespace()
+        self.inject_namespace(karel)
 
-    def inject_namespace(self):
+    def inject_namespace(self, karel):
         """
 		This function is responsible for doing some Python hackery
 		that associates the generic commands the student wrote in their
@@ -83,7 +82,7 @@ class StudentCode:
             "corner_color_is",
         ]
         for func in functions_to_override:
-            setattr(self.mod, func, getattr(self.karel, func))
+            setattr(self.mod, func, getattr(karel, func))
 
 
 class KarelApplication(tk.Frame):
