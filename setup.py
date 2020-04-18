@@ -1,15 +1,15 @@
 import setuptools
 
 with open("README.md") as fh:
-    long_description = fh.read()
+    LONG_DESCRIPTION = fh.read()
 
 setuptools.setup(
     name="stanfordkarel",
-    version="0.0.3",
+    version="0.0.5",
     author="Nicholas Bowman, Kylie Jue, Tyler Yep",
     author_email="tyep10@gmail.com",
     description="Official Stanford Karel library used in CS 106A",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/tyleryep/stanford-karel",
     packages=["stanfordkarel"],

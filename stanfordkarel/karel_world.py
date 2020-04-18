@@ -58,7 +58,7 @@ VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeper
 VALID_DIRECTIONS = ["east", "west", "north", "south"]
 KEYWORD_DELIM = ":"
 PARAM_DELIM = ";"
-DEFAULT_WORLD_FILE = "DefaultWorld.w"
+DEFAULT_WORLD_FILE = "default_world.w"
 
 
 class KarelWorld:
