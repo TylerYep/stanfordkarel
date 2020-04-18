@@ -29,6 +29,11 @@ class KarelCanvas(tk.Canvas):
         self.draw_world()
         self.draw_karel()
 
+    def create_polygon(
+        self, points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
+    ):
+        super().create_polygon(points, fill=fill, outline=outline, width=width, tag=tag)
+
     def set_icon(self, icon):
         self.icon = icon
 
@@ -166,7 +171,7 @@ class KarelCanvas(tk.Canvas):
             corner_x - beeper_radius,
             corner_y,
         ]
-        self.create_polygon(points, fill="light grey", outline="black", tag="beeper")
+        self.create_polygon(points, fill="light grey", tag="beeper")
 
         if count > 1:
             self.create_text(corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper")
@@ -298,17 +303,11 @@ class KarelCanvas(tk.Canvas):
         entire_body_points = outer_points + inner_points
 
         # First draw the filled non-convex polygon
-        self.create_polygon(
-            entire_body_points, fill="white", outline="", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(entire_body_points, fill="white", outline="")
 
         # Then draw the transparent exterior edges of Karel's body
-        self.create_polygon(
-            outer_points, fill="", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
-        self.create_polygon(
-            inner_points, fill="", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(outer_points, fill="")
+        self.create_polygon(inner_points, fill="")
 
         # Define dimensions and location of Karel's mouth
         # karel_height = self.cell_size * KAREL_HEIGHT
@@ -328,9 +327,7 @@ class KarelCanvas(tk.Canvas):
             mouth_y,
         ]
         self.rotate_points(center, mouth_points, direction)
-        self.create_polygon(
-            mouth_points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(mouth_points, fill="white")
 
     def draw_karel_legs(self, x, y, center, direction):
         leg_length = self.cell_size * KAREL_LEG_LENGTH
@@ -351,12 +348,10 @@ class KarelCanvas(tk.Canvas):
         points += [x, y + vertical_offset]
 
         self.rotate_points(center, points, direction)
-        self.create_polygon(
-            points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(points)
 
         # Reset point of reference to be bottom left rather than top_left
-        y = y + self.cell_size * KAREL_HEIGHT
+        y += self.cell_size * KAREL_HEIGHT
 
         # Generate points for right leg
         points = []
@@ -369,9 +364,7 @@ class KarelCanvas(tk.Canvas):
         points += [x + horizontal_offset, y]
 
         self.rotate_points(center, points, direction)
-        self.create_polygon(
-            points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(points)
 
     def draw_simple_karel_icon(self, center, direction):
         simple_karel_width = self.cell_size * SIMPLE_KAREL_WIDTH
@@ -385,9 +378,7 @@ class KarelCanvas(tk.Canvas):
         points += [center_x, center_y - simple_karel_height / 2]
         points += [center_x - simple_karel_width / 2, center_y - simple_karel_height / 2]
         self.rotate_points(center, points, direction)
-        self.create_polygon(
-            points, fill="white", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-        )
+        self.create_polygon(points, fill="white")
 
     def calculate_corner_x(self, avenue):
         return self.left_x + self.cell_size / 2 + (avenue - 1) * self.cell_size
@@ -411,17 +402,18 @@ class KarelCanvas(tk.Canvas):
     def find_nearest_wall(self, x, y, avenue, street):
         corner_x = self.calculate_corner_x(avenue)
         corner_y = self.calculate_corner_y(street)
+        wall_proximity = self.cell_size * WALL_DETECTION_THRESHOLD
 
-        if x > (corner_x + self.cell_size / 2 - self.cell_size * WALL_DETECTION_THRESHOLD):
+        if x > (corner_x + self.cell_size / 2 - wall_proximity):
             # Check for a wall to the east
             return Wall(avenue, street, Direction.EAST)
-        if x < (corner_x - self.cell_size / 2 + self.cell_size * WALL_DETECTION_THRESHOLD):
+        if x < (corner_x - self.cell_size / 2 + wall_proximity):
             # Check for a wall to the west
             return Wall(avenue, street, Direction.WEST)
-        if y > (corner_y + self.cell_size / 2 - self.cell_size * WALL_DETECTION_THRESHOLD):
+        if y > (corner_y + self.cell_size / 2 - wall_proximity):
             # Check for a wall to the south
             return Wall(avenue, street, Direction.SOUTH)
-        if y < (corner_y - self.cell_size / 2 + self.cell_size * WALL_DETECTION_THRESHOLD):
+        if y < (corner_y - self.cell_size / 2 + wall_proximity):
             # Check for a wall to the north
             return Wall(avenue, street, Direction.NORTH)
 

@@ -317,12 +317,12 @@ class WorldBuilderApplication(tk.Frame):
     def reset_beeper_bag_radio_buttons(self):
         self.beeper_bag_var.set(self.karel.num_beepers)
 
-    def update_karel_direction(self):
+    def update_karel_direction(self, *args):
         new_dir = self.karel_direction_var.get()
         self.karel.direction = DIRECTIONS_MAP[new_dir]
         self.canvas.redraw_karel()
 
-    def update_karel_num_beepers(self):
+    def update_karel_num_beepers(self, *args):
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
 

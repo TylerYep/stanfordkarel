@@ -30,8 +30,9 @@ def get_solutions_for_testing():
         shutil.copy(src, dest)
 
 
-def convert_to_lowercase():
-    pass
+def convert_to_lowercase(folder):
+    for f in os.listdir(folder):
+        pass
 
 
 if __name__ == "__main__":
