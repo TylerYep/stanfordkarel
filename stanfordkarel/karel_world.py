@@ -96,18 +96,26 @@ class KarelWorld:
 
     @staticmethod
     def process_world(world_file):
-        # Create the world as specified in the given world file
-        worlds_prefix = os.path.join("worlds", world_file)
-        if os.path.isfile(world_file):
-            # Attempt to open the file that has been specified
-            world_file = open(world_file)
-        elif os.path.isfile(worlds_prefix):
-            # Before failing, look inside the worlds folder for this file
+        # Find world file that matches program name in the worlds/ directory
+        worlds_prefix = os.path.join("worlds", world_file + ".w")
+        if not os.path.isdir("worlds"):
+            print("Could not find worlds/ folder. Please store worlds in a folder with this name.")
+
+        if os.path.isfile(worlds_prefix):
+            # First look inside the worlds folder for this file
             world_file = open(worlds_prefix)
+        elif os.path.isfile(world_file):
+            # Attempt to open the exact filename that has been specified
+            world_file = open(world_file)
         else:
-            # Print warning to user and exit out of the program
-            print(f"Could not find world file with name: {world_file}")
-            sys.exit()
+            default_world = os.path.join("worlds", DEFAULT_WORLD_FILE)
+            print(f"Could not find world file: {world_file}.w. Using default world instead.")
+            if os.path.isfile(default_world):
+                world_file = open(default_world)
+            else:
+                print("Could not find default world to use. Please specify a valid world filename.")
+                sys.exit()
+
         return world_file
 
     @property

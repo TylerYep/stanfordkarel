@@ -26,10 +26,12 @@ from stanfordkarel.karel_definitions import *
 
 
 class StudentCode:
-    def __init__(self, code_file, karel):
-        # This process is used to extract a module from an arbitarily located
-        # file that contains student code. Adapted from:
-        # https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+    """
+    This process extracts a module from an arbitary file that contains student code.
+    https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+    """
+
+    def __init__(self, code_file, karel=None):
         self.module_name = os.path.splitext(os.path.basename(code_file))[0]
         spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
         try:
@@ -46,7 +48,8 @@ class StudentCode:
             print("Couldn't find the main() function. Are you sure you have one?")
             sys.exit()
 
-        self.inject_namespace(karel)
+        if karel:
+            self.inject_namespace(karel)
 
     def inject_namespace(self, karel):
         """
@@ -289,7 +292,7 @@ class KarelApplication(tk.Frame):
             # get the name of the file corresponding to the current frame
             filename = frame_info.filename
             # Only display frames generated within the student's code
-            if self.student_code.base_filename + ".py" in filename:
+            if self.student_code.module_name + ".py" in filename:
                 display_frames.append((frame, lineno))
 
         print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())

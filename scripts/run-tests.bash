@@ -10,9 +10,10 @@ cd "${0%/*}/.."
 # Auto-code formatters
 isort -y
 black . -l 100
+git add .
 
 # Style Checking
 # find . -iname "*.py" | xargs pylint
 
 # Testing
-pytest
+# pytest

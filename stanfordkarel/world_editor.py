@@ -105,7 +105,7 @@ class WorldBuilderApplication(tk.Frame):
             self.world = KarelWorld()
             self.karel = Karel(self.world)
         else:
-            self.world = KarelWorld()
+            self.world.reload_world()
             self.karel.reset_state()
 
         self.world.num_avenues = num_avenues

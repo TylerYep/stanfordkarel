@@ -148,25 +148,9 @@ BLANK = ""
 def run_karel_program(world_file=None):
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
-
-    if not world_file:
-        # Find world file that matches program name in the worlds/ directory
+    if world_file is None:
         base_filename = os.path.basename(student_code_file)
-        module_name = os.path.splitext(base_filename)[0]
-        karel_world_file = f"worlds/{module_name}.w"
-        if os.path.exists(karel_world_file):
-            world_file = karel_world_file
-        else:
-            print(
-                f"Could not find a world matching filename {module_name}.w, "
-                f"defaulting to default world."
-            )
-            default_world_file = f"worlds/{DEFAULT_WORLD_FILE}"
-            if os.path.exists(default_world_file):
-                world_file = default_world_file
-            else:
-                print("Could not find a default world to use, please specify a world filename.")
-                return
+        world_file = os.path.splitext(base_filename)[0]
 
     world = KarelWorld(world_file)
 

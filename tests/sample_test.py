@@ -10,11 +10,11 @@ class TestKarel:
 
         world = execute_karel_code(code_file)
 
-        assert KarelWorld("CheckerboardKarelEnd.w") == world
+        assert KarelWorld("CheckerboardKarelEnd") == world
 
 
 def execute_karel_code(problem_name):
-    world = KarelWorld(problem_name + ".w")
+    world = KarelWorld(problem_name)
     karel = Karel(world)
     student_code = StudentCode(problem_name + ".py", karel)
     student_code.mod.main()
