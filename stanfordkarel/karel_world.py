@@ -32,7 +32,7 @@ World File Constraints:
 	- South
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue
+Credits: Kylie Jue, Tyler Yep
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
@@ -45,7 +45,20 @@ import os
 import re
 import sys
 
-from stanfordkarel.karel_definitions import *
+from stanfordkarel.karel_definitions import (
+    DIRECTIONS_MAP,
+    DIRECTIONS_MAP_INVERSE,
+    INFINITY,
+    Direction,
+    Wall,
+)
+
+INIT_SPEED = 50
+VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag", "color"]
+VALID_DIRECTIONS = ["east", "west", "north", "south"]
+KEYWORD_DELIM = ":"
+PARAM_DELIM = ";"
+DEFAULT_WORLD_FILE = "DefaultWorld.w"
 
 
 class KarelWorld:

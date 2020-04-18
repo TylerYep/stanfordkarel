@@ -2,7 +2,7 @@
 This file defines the TK GUI for editing Karel worlds.
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue
+Credits: Kylie Jue, Tyler Yep
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
@@ -17,8 +17,22 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 from stanfordkarel.karel import Karel
 from stanfordkarel.karel_canvas import KarelCanvas
-from stanfordkarel.karel_definitions import *
+from stanfordkarel.karel_definitions import (
+    COLOR_MAP,
+    DEFAULT_ICON,
+    DIRECTIONS_MAP,
+    DIRECTIONS_MAP_INVERSE,
+    INFINITY,
+    LIGHT_GREY,
+    PAD_X,
+    PAD_Y,
+)
 from stanfordkarel.karel_world import KarelWorld
+
+MIN_DIMENSIONS = 1
+MAX_DIMENSIONS = 50
+DEFAULT_COLOR = "Red"
+DEFAULT_SIZE = 8
 
 
 def run_world_editor():
@@ -139,9 +153,9 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_canvas(self):
         """
-                This method creates the canvas on which Karel and Karel's
-                world are drawn.
-                """
+        This method creates the canvas on which Karel and Karel's
+        world are drawn.
+        """
         self.canvas = KarelCanvas(
             self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel
         )
@@ -152,10 +166,10 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_buttons(self):
         """
-                This method creates the three buttons that appear on the left
-                side of the screen. These buttons control the start of Karel
-                execution, resetting Karel's state, and loading new worlds.
-                """
+        This method creates the three buttons that appear on the left
+        side of the screen. These buttons control the start of Karel
+        execution, resetting Karel's state, and loading new worlds.
+        """
         self.program_control_button = tk.Button(
             self, highlightthickness=0, highlightbackground="white"
         )
@@ -299,7 +313,9 @@ class WorldBuilderApplication(tk.Frame):
             value="paint_corner",
             bg=LIGHT_GREY,
         ).pack(side="left")
-        self.color_dropdown = tk.OptionMenu(color_selection_frame, self.color_var, *COLOR_OPTIONS)
+        self.color_dropdown = tk.OptionMenu(
+            color_selection_frame, self.color_var, *sorted(COLOR_MAP.keys())
+        )
         self.color_dropdown["bg"] = LIGHT_GREY
         self.color_dropdown.pack(side="left")
 
@@ -318,11 +334,13 @@ class WorldBuilderApplication(tk.Frame):
         self.beeper_bag_var.set(self.karel.num_beepers)
 
     def update_karel_direction(self, *args):
+        del args
         new_dir = self.karel_direction_var.get()
         self.karel.direction = DIRECTIONS_MAP[new_dir]
         self.canvas.redraw_karel()
 
     def update_karel_num_beepers(self, *args):
+        del args
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
 

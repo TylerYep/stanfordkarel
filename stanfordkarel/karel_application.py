@@ -2,7 +2,7 @@
 This file defines the GUI for running Karel programs.
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue
+Credits: Kylie Jue, Tyler Yep
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
@@ -16,13 +16,12 @@ import os
 import sys
 import tkinter as tk
 import traceback as tb
-import types
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 
 from stanfordkarel.karel_canvas import KarelCanvas
-from stanfordkarel.karel_definitions import *
+from stanfordkarel.karel_definitions import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelException
 
 
 class StudentCode:

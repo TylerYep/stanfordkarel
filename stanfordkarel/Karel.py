@@ -10,7 +10,7 @@ in its beeper bag.
 
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue
+Credits: Kylie Jue, Tyler Yep
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
@@ -18,7 +18,25 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
-from stanfordkarel.karel_definitions import *
+from stanfordkarel.karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
+
+NEXT_DIRECTION_MAP = {
+    Direction.NORTH: Direction.WEST,
+    Direction.WEST: Direction.SOUTH,
+    Direction.SOUTH: Direction.EAST,
+    Direction.EAST: Direction.NORTH,
+}
+NEXT_DIRECTION_MAP_RIGHT = {v: k for k, v in NEXT_DIRECTION_MAP.items()}
+
+# This map associates directions with the delta that Karel
+# undergoes if it were to move one step in that direction
+# delta is in terms of (avenue, street)
+DIRECTION_DELTA_MAP = {
+    Direction.NORTH: (0, 1),
+    Direction.EAST: (1, 0),
+    Direction.SOUTH: (0, -1),
+    Direction.WEST: (-1, 0),
+}
 
 
 class Karel:

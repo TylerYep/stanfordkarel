@@ -6,7 +6,7 @@ must include the following line:
 	from stanfordkarel import *
 
 Original Author: Nicholas Bowman
-Credits: Kylie Jue
+Credits: Kylie Jue, Tyler Yep
 License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
@@ -20,7 +20,6 @@ import tkinter as tk
 
 from stanfordkarel.karel import Karel
 from stanfordkarel.karel_application import KarelApplication
-from stanfordkarel.karel_definitions import DEFAULT_WORLD_FILE
 from stanfordkarel.karel_world import KarelWorld
 
 
