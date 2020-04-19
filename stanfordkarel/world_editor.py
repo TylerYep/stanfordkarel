@@ -382,7 +382,7 @@ class WorldBuilderApplication(tk.Frame):
         elif action == "reset_corner":
             apply_function(self.world.reset_corner)
         elif action == "paint_corner":
-            apply_function(self.world.paint_corner, COLOR_MAP[self.color_var.get()])
+            apply_function(self.world.paint_corner, self.color_var.get())
         elif action == "add_wall":
             wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
             if wall:

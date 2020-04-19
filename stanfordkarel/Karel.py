@@ -432,8 +432,8 @@ class Karel:
 
     def paint_corner(self, color):
         """
-		This function makes Karel paint it's current corner the indicated color.
-		This function will raise a KarelExcpetion if the indicated color is not one
+		This function makes Karel paint its current corner the indicated color.
+		This function will raise a KarelException if the indicated color is not one
 		of the valid predefined colors. For this list of colors, check the
 		kareldefinitions.py file.
 
@@ -441,7 +441,7 @@ class Karel:
 			color (str) - The color string specifying which color to paint the corner
 		Returns: None
 		"""
-        if color and color not in COLOR_MAP.values():
+        if color is not None and color not in COLOR_MAP:
             raise KarelException(
                 self._avenue,
                 self._street,

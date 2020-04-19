@@ -24,9 +24,6 @@ class Direction(Enum):
     NORTH = 3 * math.pi / 2
 
 
-# World Editor, Karel World, Karel
-INFINITY = -1
-
 # Karel Application + World Editor
 PAD_X = 75
 PAD_Y = 10
@@ -35,7 +32,8 @@ LIGHT_GREY = "#e5e5e5"
 # Karel Application + World Editor + Karel Canvas
 DEFAULT_ICON = "karel"
 
-# Karel, World Editor
+# Karel, World Editor, Karel World
+INFINITY = -1
 COLOR_MAP = {
     "Red": "red",
     "Black": "black",

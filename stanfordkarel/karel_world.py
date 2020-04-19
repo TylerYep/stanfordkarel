@@ -46,6 +46,7 @@ import re
 import sys
 
 from stanfordkarel.karel_definitions import (
+    COLOR_MAP,
     DIRECTIONS_MAP,
     DIRECTIONS_MAP_INVERSE,
     INFINITY,
@@ -55,7 +56,6 @@ from stanfordkarel.karel_definitions import (
 
 INIT_SPEED = 50
 VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag", "color"]
-VALID_DIRECTIONS = ["east", "west", "north", "south"]
 KEYWORD_DELIM = ":"
 PARAM_DELIM = ";"
 DEFAULT_WORLD_FILE = "default_world.w"
@@ -176,90 +176,84 @@ class KarelWorld:
         return self._walls
 
     def load_from_file(self):
-        def parse_line(line):
-            # Ignore blank lines and lines with no comma delineator
-            if not line or ":" not in line:
-                return None, None, False
-
+        def parse_parameters(keyword, param_str):
             params = {}
-            components = line.strip().split(KEYWORD_DELIM)
-            keyword = components[0].lower()
+            for param in param_str.split(PARAM_DELIM):
+                param = param.strip()
 
-            # only accept valid keywords as defined in world file spec
-            if keyword not in VALID_WORLD_KEYWORDS:
-                return None, None, False
+                # check to see if parameter encodes a location
+                coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
+                if coordinate:
+                    avenue = int(coordinate.group(1))
+                    street = int(coordinate.group(2))
+                    params["location"] = (avenue, street)
+                    continue
 
-            param_list = components[1].split(PARAM_DELIM)
+                # check to see if the parameter is a direction value
+                if param in DIRECTIONS_MAP:
+                    params["direction"] = DIRECTIONS_MAP[param]
 
-            for param in param_list:
-                param = param.strip().lower()
-
-                # first check to see if the parameter is a direction value
-                if param in VALID_DIRECTIONS:
-                    params["dir"] = DIRECTIONS_MAP[param]
-                else:
-                    # next check to see if parameter encodes a location
-                    coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
-                    if coordinate:
-                        avenue = int(coordinate.group(1))
-                        street = int(coordinate.group(2))
-                        params["loc"] = (avenue, street)
+                # check to see if parameter encodes a numerical value or color string
+                elif keyword == "color":
+                    if param.title() in COLOR_MAP:
+                        params["color"] = param.title()
                     else:
-                        # finally check to see if parameter encodes a numerical value or color string
-                        val = None
-                        if param.isdigit():
-                            val = int(param)
-                        elif keyword == "speed":
-                            # double values are only allowed for speed parameter
-                            try:
-                                val = int(100 * float(param))
-                            except ValueError:
-                                # invalid parameter value, do not process
-                                continue
-                        elif keyword == "beeperbag":
-                            # handle the edge case where Karel has infinite beepers
-                            if param in ("infinity", "infinite"):
-                                val = INFINITY
-                        elif keyword == "color":
-                            # TODO: add check for valid color?
-                            val = param
-                        # only store non-null values
-                        if val is not None:
-                            params["val"] = val
+                        raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
 
-            return keyword.lower(), params, True
+                # handle the edge case where Karel has infinite beepers
+                elif param in ("infinity", "infinite") and keyword == "beeperbag":
+                    params["val"] = INFINITY
+
+                # float values are only valid for the speed parameter.
+                elif keyword == "speed":
+                    try:
+                        params["val"] = int(100 * float(param))
+                    except ValueError:
+                        raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+
+                # must be a digit then
+                elif param.isdigit():
+                    params["val"] = int(param)
+
+                else:
+                    raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+
+            return params
 
         for i, line in enumerate(self._world_file):
-            keyword, params, is_valid = parse_line(line)
-
-            # skip invalid lines (comments, incorrectly formatted, invalid keyword)
-            if not is_valid:
-                # print(f"Ignoring line {i} of world file: {line.strip()}")
+            # Ignore blank lines and lines with no comma delineator
+            line = line.strip()
+            if not line:
                 continue
 
+            if ":" not in line:
+                print(f"Incorrectly formatted line - ignoring line {i} of world file: {line}")
+                continue
+
+            keyword, param_str = line.lower().split(KEYWORD_DELIM)
+
+            # only accept valid keywords as defined in world file spec
             # TODO: add error detection for keywords with insufficient parameters
+            params = parse_parameters(keyword, param_str)
 
             # handle all different possible keyword cases
             if keyword == "dimension":
                 # set world dimensions based on location values
-                self._num_avenues, self._num_streets = params["loc"]
+                self._num_avenues, self._num_streets = params["location"]
 
             elif keyword == "wall":
                 # build a wall at the specified location
-                avenue, street = params["loc"]
-                direction = params["dir"]
+                (avenue, street), direction = params["location"], params["direction"]
                 self._walls.add(Wall(avenue, street, direction))
 
             elif keyword == "beeper":
                 # add the specified number of beepers to the world
-                avenue, street = params["loc"]
-                count = params["val"]
+                (avenue, street), count = params["location"], params["val"]
                 self._beepers[(avenue, street)] += count
 
             elif keyword == "karel":
                 # Give Karel initial state values
-                avenue, street = params["loc"]
-                direction = params["dir"]
+                (avenue, street), direction = params["location"], params["direction"]
                 self._karel_starting_location = (avenue, street)
                 self._karel_starting_direction = direction
 
@@ -271,13 +265,16 @@ class KarelWorld:
             elif keyword == "speed":
                 # Set delay speed of program execution
                 speed = params["val"]
+                # double values are only allowed for speed parameter
                 self._init_speed = speed
 
             elif keyword == "color":
                 # Set corner color to be specified color
-                avenue, street = params["loc"]
-                color = params["val"]
+                (avenue, street), color = params["location"], params["color"]
                 self._corner_colors[(avenue, street)] = color
+
+            else:
+                print(f"Invalid keyword - ignoring line {i} of world file: {line}")
 
     def add_beeper(self, avenue, street):
         self._beepers[(avenue, street)] += 1
