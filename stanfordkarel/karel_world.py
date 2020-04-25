@@ -248,30 +248,24 @@ class KarelWorld:
 
             elif keyword == "beeper":
                 # add the specified number of beepers to the world
-                (avenue, street), count = params["location"], params["val"]
-                self._beepers[(avenue, street)] += count
+                self._beepers[params["location"]] += params["val"]
 
             elif keyword == "karel":
                 # Give Karel initial state values
-                (avenue, street), direction = params["location"], params["direction"]
-                self._karel_starting_location = (avenue, street)
-                self._karel_starting_direction = direction
+                self._karel_starting_location = params["location"]
+                self._karel_starting_direction = params["direction"]
 
             elif keyword == "beeperbag":
                 # Set Karel's initial beeper bag count
-                count = params["val"]
-                self._karel_starting_beeper_count = count
+                self._karel_starting_beeper_count = params["val"]
 
             elif keyword == "speed":
                 # Set delay speed of program execution
-                speed = params["val"]
-                # double values are only allowed for speed parameter
-                self._init_speed = speed
+                self._init_speed = params["val"]
 
             elif keyword == "color":
                 # Set corner color to be specified color
-                (avenue, street), color = params["location"], params["color"]
-                self._corner_colors[(avenue, street)] = color
+                self._corner_colors[params["location"]] = params["color"]
 
             else:
                 print(f"Invalid keyword - ignoring line {i} of world file: {line}")
