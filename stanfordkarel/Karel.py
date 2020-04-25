@@ -17,7 +17,7 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-
+from stanfordkarel.karel_ascii import karel_ascii
 from stanfordkarel.karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
 
 NEXT_DIRECTION_MAP = {
@@ -42,19 +42,22 @@ DIRECTION_DELTA_MAP = {
 class Karel:
     def __init__(self, world):
         """
-		This functions instantiates a new Karel instance and sets its
-		location and current number of beepers to be the default starting
-		values as indicated by the given world object.
+        This functions instantiates a new Karel instance and sets its
+        location and current number of beepers to be the default starting
+        values as indicated by the given world object.
 
-		Parameters:
-			world (KarelWorld) - The world that Karel should exists in
+        Parameters:
+            world (KarelWorld) - The world that Karel should exists in
 
-		Returns: None
-		"""
+        Returns: None
+        """
         self._world = world
         self._avenue, self._street = self._world.karel_starting_location
         self._direction = self._world.karel_starting_direction
         self._num_beepers = self._world.karel_starting_beeper_count
+
+    def __repr__(self):
+        return karel_ascii(self._world, self.street, self.avenue)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -62,99 +65,99 @@ class Karel:
     @property
     def avenue(self):
         """
-		This property can be used to access Karel's current avenue location.
+        This property can be used to access Karel's current avenue location.
 
-		Parameters: None
-		Returns:
-			avenue (int) - The current avenue Karel is standing on.
-		"""
+        Parameters: None
+        Returns:
+            avenue (int) - The current avenue Karel is standing on.
+        """
         return self._avenue
 
     @avenue.setter
     def avenue(self, val):
         """
-		This property can be used to set Karel's current avenue location.
+        This property can be used to set Karel's current avenue location.
 
-		Parameters:
-			val (int) - The new avenue that Karel will be standing on.
-		Returns: None
-		"""
+        Parameters:
+            val (int) - The new avenue that Karel will be standing on.
+        Returns: None
+        """
         self._avenue = val
 
     @property
     def street(self):
         """
-		This property can be used to access Karel's current street location.
+        This property can be used to access Karel's current street location.
 
-		Parameters: None
-		Returns:
-			street (int) - The current street Karel is standing on.
-		"""
+        Parameters: None
+        Returns:
+            street (int) - The current street Karel is standing on.
+        """
         return self._street
 
     @street.setter
     def street(self, val):
         """
-		This property can be used to set Karel's current street location.
+        This property can be used to set Karel's current street location.
 
-		Parameters:
-			val (int) - The new street that Karel will be standing on.
-		Returns: None
-		"""
+        Parameters:
+            val (int) - The new street that Karel will be standing on.
+        Returns: None
+        """
         self._street = val
 
     @property
     def direction(self):
         """
-		This property can be used to access Karel's current direction.
+        This property can be used to access Karel's current direction.
 
-		Parameters: None
-		Returns:
-			street (Direction[Enum]) - The current direction Karel is facing.
-		"""
+        Parameters: None
+        Returns:
+            street (Direction[Enum]) - The current direction Karel is facing.
+        """
         return self._direction
 
     @direction.setter
     def direction(self, val):
         """
-		This property can be used to set Karel's current direction.
+        This property can be used to set Karel's current direction.
 
-		Parameters:
-			val (Direction[Enum]) - The new direction that Karel will be facing.
-		Returns: None
-		"""
+        Parameters:
+            val (Direction[Enum]) - The new direction that Karel will be facing.
+        Returns: None
+        """
         self._direction = val
 
     @property
     def num_beepers(self):
         """
-		This property can be used to access Karel's current number of beepers.
+        This property can be used to access Karel's current number of beepers.
 
-		Parameters: None
-		Returns:
-			num_beepers (int) - The current number of beepers Karel has.
-		"""
+        Parameters: None
+        Returns:
+            num_beepers (int) - The current number of beepers Karel has.
+        """
         return self._num_beepers
 
     @num_beepers.setter
     def num_beepers(self, val):
         """
-		This property can be used to set Karel's current number of beepers.
+        This property can be used to set Karel's current number of beepers.
 
-		Parameters:
-			val (int) - The new number of beepers that Karel will have.
-		Returns: None
-		"""
+        Parameters:
+            val (int) - The new number of beepers that Karel will have.
+        Returns: None
+        """
         self._num_beepers = val
 
     def reset_state(self):
         """
-		This function is used to reset Karel's location and direction to the original
-		starting parameters as indicated by the world that Karel lives in.
+        This function is used to reset Karel's location and direction to the original
+        starting parameters as indicated by the world that Karel lives in.
 
-		Parameters: None
-		Returns: None
-		"""
+        Parameters: None
+        Returns: None
+        """
         self._avenue, self._street = self._world.karel_starting_location
         self._direction = self._world.karel_starting_direction
 
@@ -162,13 +165,13 @@ class Karel:
 
     def move(self):
         """
-		This function moves Karel forward one space in the direction that it is
-		currently facing. If Karel's front is not clear (blocked by wall or boundary
-		of world) then a KarelException will be raised).
+        This function moves Karel forward one space in the direction that it is
+        currently facing. If Karel's front is not clear (blocked by wall or boundary
+        of world) then a KarelException will be raised).
 
-		Parameters: None
-		Returns: None
-		"""
+        Parameters: None
+        Returns: None
+        """
         if not self.front_is_clear():
             raise KarelException(
                 self._avenue,
@@ -183,22 +186,22 @@ class Karel:
 
     def turn_left(self):
         """
-		This function turns Karel 90 degrees counterclockwise.
+        This function turns Karel 90 degrees counterclockwise.
 
-		Parameters: None
-		Returns: None
-		"""
+        Parameters: None
+        Returns: None
+        """
         self._direction = NEXT_DIRECTION_MAP[self._direction]
 
     def put_beeper(self):
         """
-		This function places a beeper on the corner that Karel is currently standing
-		on and decreases Karel's beeper count by 1. If Karel has no more beepers in its
-		beeper bag, then this function raises a KarelException.
+        This function places a beeper on the corner that Karel is currently standing
+        on and decreases Karel's beeper count by 1. If Karel has no more beepers in its
+        beeper bag, then this function raises a KarelException.
 
-		Parameters: None
-		Returns: None
-		"""
+        Parameters: None
+        Returns: None
+        """
         if self._num_beepers == 0:
             raise KarelException(
                 self._avenue,
@@ -214,13 +217,13 @@ class Karel:
 
     def pick_beeper(self):
         """
-		This function removes a beeper from the corner that Karel is currently standing on
-		and increases Karel's beeper count by 1. If there are no beepers on Karel's current
-		corner, then this function raises a KarelException.
+        This function removes a beeper from the corner that Karel is currently standing on
+        and increases Karel's beeper count by 1. If there are no beepers on Karel's current
+        corner, then this function raises a KarelException.
 
-		Parameters: None
-		Returns: None
-		"""
+        Parameters: None
+        Returns: None
+        """
         if not self.beepers_present():
             raise KarelException(
                 self._avenue,
@@ -236,28 +239,28 @@ class Karel:
 
     def front_is_clear(self):
         """
-		This function returns a boolean indicating whether or not there is a wall
-		in front of Karel.
+        This function returns a boolean indicating whether or not there is a wall
+        in front of Karel.
 
-		Parameters: None
-		Returns:
-			is_clear (Bool) - True if there is no wall in front of Karel
-							  False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_clear (Bool) - True if there is no wall in front of Karel
+                              False otherwise
+        """
         return self.direction_is_clear(self._direction)
 
     def direction_is_clear(self, direction):
         """
-		This is a helper function that returns a boolean indicating whether
-		or not there is a barrier in the specified direction of Karel.
+        This is a helper function that returns a boolean indicating whether
+        or not there is a barrier in the specified direction of Karel.
 
-		Parameters:
-			direction (Direction[Enum]) - The direction in which to check for a barrier
+        Parameters:
+            direction (Direction[Enum]) - The direction in which to check for a barrier
 
-		Returns:
-			is_clear (Bool) - True if there is no barrier in the specified direction
-							  False otherwise
-		"""
+        Returns:
+            is_clear (Bool) - True if there is no barrier in the specified direction
+                              False otherwise
+        """
         delta_avenue, delta_street = DIRECTION_DELTA_MAP[direction]
         next_avenue = self._avenue + delta_avenue
         next_street = self._street + delta_street
@@ -280,74 +283,74 @@ class Karel:
 
     def front_is_blocked(self):
         """
-		This function returns a boolean indicating whether there is a wall
-		in front of Karel.
+        This function returns a boolean indicating whether there is a wall
+        in front of Karel.
 
-		Parameters: None
-		Returns:
-			is_blocked (Bool) - True if there is a wall in front of Karel
-							  	False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_blocked (Bool) - True if there is a wall in front of Karel
+                                  False otherwise
+        """
         return not self.front_is_clear()
 
     def left_is_clear(self):
         """
-		This function returns a boolean indicating whether or not there is a wall
-		to the left of Karel.
+        This function returns a boolean indicating whether or not there is a wall
+        to the left of Karel.
 
-		Parameters: None
-		Returns:
-			is_clear (Bool) - True if there is no wall to the left of Karel
-							  False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_clear (Bool) - True if there is no wall to the left of Karel
+                              False otherwise
+        """
         return self.direction_is_clear(NEXT_DIRECTION_MAP[self._direction])
 
     def left_is_blocked(self):
         """
-		This function returns a boolean indicating whether there is a wall
-		to the left of Karel.
+        This function returns a boolean indicating whether there is a wall
+        to the left of Karel.
 
-		Parameters: None
-		Returns:
-			is_blocked (Bool) - True if there is a wall to the left of Karel
-							  	False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_blocked (Bool) - True if there is a wall to the left of Karel
+                                  False otherwise
+        """
         return not self.left_is_clear()
 
     def right_is_clear(self):
         """
-		This function returns a boolean indicating whether or not there is a wall
-		to the right of Karel.
+        This function returns a boolean indicating whether or not there is a wall
+        to the right of Karel.
 
-		Parameters: None
-		Returns:
-			is_clear (Bool) - True if there is no wall to the right of Karel
-							  False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_clear (Bool) - True if there is no wall to the right of Karel
+                              False otherwise
+        """
         return self.direction_is_clear(NEXT_DIRECTION_MAP_RIGHT[self._direction])
 
     def right_is_blocked(self):
         """
-		This function returns a boolean indicating whether there is a wall
-		to the right of Karel.
+        This function returns a boolean indicating whether there is a wall
+        to the right of Karel.
 
-		Parameters: None
-		Returns:
-			is_blocked (Bool) - True if there is a wall to the right of Karel
-							  	False otherwise
-		"""
+        Parameters: None
+        Returns:
+            is_blocked (Bool) - True if there is a wall to the right of Karel
+                                  False otherwise
+        """
         return not self.right_is_clear()
 
     def beepers_present(self):
         """
-		This function returns a boolean indicating whether or not there is
-		a beeper on Karel's current corner.
+        This function returns a boolean indicating whether or not there is
+        a beeper on Karel's current corner.
 
-		Parameters: None
-		Returns:
-			beepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
-									   False otherwise
-		"""
+        Parameters: None
+        Returns:
+            beepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
+                                       False otherwise
+        """
         return self._world.beepers[(self.avenue, self.street)] != 0
 
     def no_beepers_present(self):
@@ -355,14 +358,14 @@ class Karel:
 
     def beepers_in_bag(self):
         """
-		This function returns a boolean indicating whether or not there is
-		at least one beeper in Karel's beeper bag.
+        This function returns a boolean indicating whether or not there is
+        at least one beeper in Karel's beeper bag.
 
-		Parameters: None
-		Returns:
-			beepers_in_bag (Bool) - True if there is at least one beeper in Karel's bag
-									False otherwise
-		"""
+        Parameters: None
+        Returns:
+            beepers_in_bag (Bool) - True if there is at least one beeper in Karel's bag
+                                    False otherwise
+        """
         # Can't check > 0 because INFINITY beepers is -1
         return self._num_beepers != 0
 
@@ -372,14 +375,14 @@ class Karel:
 
     def facing_north(self):
         """
-		This function returns a boolean indicating whether or not Karel is currently
-		facing North.
+        This function returns a boolean indicating whether or not Karel is currently
+        facing North.
 
-		Parameters: None
-		Returns:
-			facing_north (Bool) - True if Karel is currently facing North
-								  False otherwise
-		"""
+        Parameters: None
+        Returns:
+            facing_north (Bool) - True if Karel is currently facing North
+                                  False otherwise
+        """
         return self.direction == Direction.NORTH
 
     def not_facing_north(self):
@@ -387,14 +390,14 @@ class Karel:
 
     def facing_east(self):
         """
-		This function returns a boolean indicating whether or not Karel is currently
-		facing East.
+        This function returns a boolean indicating whether or not Karel is currently
+        facing East.
 
-		Parameters: None
-		Returns:
-			facing_east (Bool) - True if Karel is currently facing East
-								 False otherwise
-		"""
+        Parameters: None
+        Returns:
+            facing_east (Bool) - True if Karel is currently facing East
+                                 False otherwise
+        """
         return self.direction == Direction.EAST
 
     def not_facing_east(self):
@@ -402,14 +405,14 @@ class Karel:
 
     def facing_west(self):
         """
-		This function returns a boolean indicating whether or not Karel is currently
-		facing West.
+        This function returns a boolean indicating whether or not Karel is currently
+        facing West.
 
-		Parameters: None
-		Returns:
-			facing_west (Bool) - True if Karel is currently facing West
-								 False otherwise
-		"""
+        Parameters: None
+        Returns:
+            facing_west (Bool) - True if Karel is currently facing West
+                                 False otherwise
+        """
         return self.direction == Direction.WEST
 
     def not_facing_west(self):
@@ -417,14 +420,14 @@ class Karel:
 
     def facing_south(self):
         """
-		This function returns a boolean indicating whether or not Karel is currently
-		facing South.
+        This function returns a boolean indicating whether or not Karel is currently
+        facing South.
 
-		Parameters: None
-		Returns:
-			facing_south (Bool) - True if Karel is currently facing South
-								  False otherwise
-		"""
+        Parameters: None
+        Returns:
+            facing_south (Bool) - True if Karel is currently facing South
+                                  False otherwise
+        """
         return self.direction == Direction.SOUTH
 
     def not_facing_south(self):
@@ -432,15 +435,15 @@ class Karel:
 
     def paint_corner(self, color):
         """
-		This function makes Karel paint its current corner the indicated color.
-		This function will raise a KarelException if the indicated color is not one
-		of the valid predefined colors. For this list of colors, check the
-		kareldefinitions.py file.
+        This function makes Karel paint its current corner the indicated color.
+        This function will raise a KarelException if the indicated color is not one
+        of the valid predefined colors. For this list of colors, check the
+        kareldefinitions.py file.
 
-		Parameters:
-			color (str) - The color string specifying which color to paint the corner
-		Returns: None
-		"""
+        Parameters:
+            color (str) - The color string specifying which color to paint the corner
+        Returns: None
+        """
         if color is not None and color not in COLOR_MAP:
             raise KarelException(
                 self._avenue,
@@ -452,13 +455,13 @@ class Karel:
 
     def corner_color_is(self, color):
         """
-		This function returns a boolean indicating whether or not Karel's current
-		corner is the specified color.
+        This function returns a boolean indicating whether or not Karel's current
+        corner is the specified color.
 
-		Parameters:
-			color (str) - Color string representing the color to check the current corner for
-		Returns:
-			is_color (Bool) - True if Karel's current corner is the specified color
-							  False otherwise
-		"""
+        Parameters:
+            color (str) - Color string representing the color to check the current corner for
+        Returns:
+            is_color (Bool) - True if Karel's current corner is the specified color
+                              False otherwise
+        """
         return self._world.corner_color(self.avenue, self.street) == color

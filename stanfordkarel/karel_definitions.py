@@ -62,6 +62,8 @@ DIRECTIONS_MAP_INVERSE = {v: k for k, v in DIRECTIONS_MAP.items()}
 
 # Karel World, Karel Canvas
 class Wall:
+    """ Note that the World Editor only uses West & South to denote wall directions. """
+
     def __init__(self, avenue, street, direction):
         self._avenue = avenue
         self._street = street

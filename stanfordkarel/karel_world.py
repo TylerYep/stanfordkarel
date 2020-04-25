@@ -13,23 +13,23 @@ World File Constraints:
   KEYWORD: PARAMETERS
 - Any lines with no colon delimiter will be ignored
 - The accepted KEYWORD, PARAMETER combinations are as follows:
-	- Dimension: (num_avenues, num_streets)
-	- Wall: (avenue, street); direction
-	- Beeper: (avenue, street) count
-	- Karel: (avenue, street); direction
-	- Color: (avenue, street); color
-	- Speed: delay
-	- BeeperBag: num_beepers
+    - Dimension: (num_avenues, num_streets)
+    - Wall: (avenue, street); direction
+    - Beeper: (avenue, street) count
+    - Karel: (avenue, street); direction
+    - Color: (avenue, street); color
+    - Speed: delay
+    - BeeperBag: num_beepers
 - Multiple parameter values for the same keyword should be separated by a semicolon
 - All numerical values (except delay) must be expressed as ints. The exception
   to this is that the number of beepers can also be INFINITY
 - Any specified color values must be valid TKinter color strings, and are limited
   to the set of colors
 - Direction is case-insensitive and can be one of the following values:
-	- East
-	- West
-	- North
-	- South
+    - East
+    - West
+    - North
+    - South
 
 Original Author: Nicholas Bowman
 Credits: Kylie Jue, Tyler Yep
@@ -64,10 +64,10 @@ DEFAULT_WORLD_FILE = "default_world.w"
 class KarelWorld:
     def __init__(self, world_file=None):
         """
-		Karel World constructor
-		Parameters:
-			world_file: filename of world file containing the initial state of Karel's world
-		"""
+        Karel World constructor
+        Parameters:
+            world_file: filename of world file containing the initial state of Karel's world
+        """
         self._world_file = self.process_world(world_file) if world_file else None
 
         # Map of beeper locations to the count of beepers at that location
@@ -327,15 +327,15 @@ class KarelWorld:
 
     def reset_world(self):
         """
-		Reset initial state of beepers in the world
-		"""
+        Reset initial state of beepers in the world
+        """
         self._beepers = copy.deepcopy(self._init_beepers)
         self._corner_colors = collections.defaultdict(lambda: "")
 
     def reload_world(self, filename=None):
         """
-		Reloads world using constructor.
-		"""
+        Reloads world using constructor.
+        """
         self.__init__(filename)
 
     def save_to_file(self, filename, karel):
