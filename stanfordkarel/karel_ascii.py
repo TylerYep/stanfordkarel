@@ -1,4 +1,4 @@
-from stanfordkarel.karel_definitions import Direction
+from .karel_definitions import Direction
 
 CHAR_WIDTH = 6
 HORIZONTAL, VERTICAL = "─", "│"
@@ -12,6 +12,68 @@ class Tile:
 
 
 def karel_ascii(world, karel_street, karel_avenue):
+    """ Creates a Karel World in ASCII Art! """
+
+    def tile_pair_has_wall(r, c, direction):
+        """ Checks if the tile at r, c should have a wall by checking itself and its neighbors. """
+
+        def tile_has_wall(r, c, direction):
+            if r >= 0 and c >= 0 and r < world.num_streets and c < world.num_avenues:
+                tile = world_arr[r][c]
+                return direction in tile.walls
+            return False
+
+        if direction == Direction.SOUTH:
+            return tile_has_wall(r, c, Direction.SOUTH) or tile_has_wall(r + 1, c, Direction.NORTH)
+        elif direction == Direction.NORTH:
+            return tile_has_wall(r, c, Direction.NORTH) or tile_has_wall(r - 1, c, Direction.SOUTH)
+        elif direction == Direction.WEST:
+            return tile_has_wall(r, c, Direction.WEST) or tile_has_wall(r, c - 1, Direction.EAST)
+        elif direction == Direction.EAST:
+            return tile_has_wall(r, c, Direction.EAST) or tile_has_wall(r, c + 1, Direction.WEST)
+
+    def get_next_line(r, c, next_block_start):
+        """ Given a tile, figures out what the lower line of the ASCII art should be. """
+
+        if tile_pair_has_wall(r, c, Direction.SOUTH):
+            if (
+                next_block_start == HORIZONTAL
+                and tile_pair_has_wall(r, c, Direction.WEST)
+                and tile_pair_has_wall(r + 1, c, Direction.WEST)
+            ):
+                next_block_start = "┼"
+            elif (
+                next_block_start == " "
+                and tile_pair_has_wall(r, c, Direction.WEST)
+                and tile_pair_has_wall(r + 1, c, Direction.WEST)
+            ):
+                next_block_start = "├"
+            elif tile_pair_has_wall(r + 1, c, Direction.WEST):
+                next_block_start = "┌"
+            elif tile_pair_has_wall(r, c, Direction.WEST):
+                next_block_start = "└"
+            next_line = next_block_start + HORIZONTAL * (CHAR_WIDTH - 1)
+            next_block_start = HORIZONTAL
+        else:
+            if (
+                next_block_start == HORIZONTAL
+                and tile_pair_has_wall(r, c, Direction.WEST)
+                and tile_pair_has_wall(r + 1, c, Direction.WEST)
+            ):
+                next_block_start = "┤"
+            elif next_block_start == HORIZONTAL and tile_pair_has_wall(r + 1, c, Direction.WEST):
+                next_block_start = "┐"
+            elif next_block_start == HORIZONTAL and tile_pair_has_wall(r, c, Direction.WEST):
+                next_block_start = "┘"
+            elif tile_pair_has_wall(r, c, Direction.WEST) and tile_pair_has_wall(
+                r + 1, c, Direction.WEST
+            ):
+                next_block_start = VERTICAL
+
+            next_line = next_block_start + " " * (CHAR_WIDTH - 1)
+            next_block_start = " "
+        return next_line, next_block_start
+
     world_arr = [[Tile() for _ in range(world.num_avenues)] for _ in range(world.num_streets)]
 
     world_arr[world.num_streets - karel_street][karel_avenue - 1].value = "K"
@@ -22,49 +84,7 @@ def karel_ascii(world, karel_street, karel_avenue):
         avenue, street, direction = wall.avenue, wall.street, wall.direction
         world_arr[world.num_streets - street][avenue - 1].walls.append(direction)
 
-    def _get_next_line(tile, r, c, next_block_start):
-        tile_below = world_arr[r + 1][c] if r + 1 < world.num_streets else None
-        if Direction.SOUTH in tile.walls:
-            if (
-                Direction.WEST in tile.walls
-                and tile_below
-                and Direction.WEST in tile_below.walls
-                and next_block_start == HORIZONTAL
-            ):
-                next_block_start = "┼"
-            elif (
-                Direction.WEST in tile.walls
-                and tile_below
-                and Direction.WEST in tile_below.walls
-                and next_block_start == " "
-            ):
-                next_block_start = "├"
-            elif tile_below and Direction.WEST in tile_below.walls:
-                next_block_start = "┌"
-            elif Direction.WEST in tile.walls:
-                next_block_start = "└"
-            next_line = next_block_start + HORIZONTAL * (CHAR_WIDTH - 1)
-            next_block_start = HORIZONTAL
-        else:
-            if (
-                next_block_start == HORIZONTAL
-                and Direction.WEST in tile.walls
-                and tile_below
-                and Direction.WEST in tile_below.walls
-            ):
-                next_block_start = " ┤"
-            elif (
-                next_block_start == HORIZONTAL and tile_below and Direction.WEST in tile_below.walls
-            ):
-                next_block_start = "┐"
-            elif next_block_start == HORIZONTAL and Direction.WEST in tile.walls:
-                next_block_start = "┘"
-            elif Direction.WEST in tile.walls and tile_below and Direction.WEST in tile_below.walls:
-                next_block_start = VERTICAL
-
-            next_line = next_block_start + " " * (CHAR_WIDTH - 1)
-            next_block_start = " "
-        return next_line, next_block_start
+    # TODO handle colors = world.corner_color(avenue, street)
 
     result = f"┌{HORIZONTAL * (CHAR_WIDTH * world.num_avenues + 1)}┐\n"
     for r in range(world.num_streets):
@@ -73,9 +93,9 @@ def karel_ascii(world, karel_street, karel_avenue):
         next_block_start = " "
         for c in range(world.num_avenues):
             tile = world_arr[r][c]
-            line, next_block_start = _get_next_line(tile, r, c, next_block_start)
+            line, next_block_start = get_next_line(r, c, next_block_start)
             next_line += line
-            result += VERTICAL if Direction.WEST in tile.walls else " "
+            result += VERTICAL if tile_pair_has_wall(r, c, Direction.WEST) else " "
 
             if tile.value == "K":
                 result += " <K> " if tile.beepers > 0 else "  K  "

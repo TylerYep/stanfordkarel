@@ -20,8 +20,8 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 
-from stanfordkarel.karel_canvas import KarelCanvas
-from stanfordkarel.karel_definitions import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelException
+from .karel_canvas import KarelCanvas
+from .karel_definitions import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelException
 
 
 class StudentCode:

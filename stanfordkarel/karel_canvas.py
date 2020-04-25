@@ -18,7 +18,7 @@ import cmath
 import math
 import tkinter as tk
 
-from stanfordkarel.karel_definitions import DEFAULT_ICON, Direction, Wall
+from .karel_definitions import DEFAULT_ICON, Direction, Wall
 
 WALL_DETECTION_THRESHOLD = 0.1
 BORDER_OFFSET = 17

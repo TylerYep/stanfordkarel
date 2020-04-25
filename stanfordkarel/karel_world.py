@@ -45,7 +45,7 @@ import os
 import re
 import sys
 
-from stanfordkarel.karel_definitions import (
+from .karel_definitions import (
     COLOR_MAP,
     DIRECTIONS_MAP,
     DIRECTIONS_MAP_INVERSE,

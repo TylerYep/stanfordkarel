@@ -18,9 +18,9 @@ import os
 import sys
 import tkinter as tk
 
-from stanfordkarel.karel import Karel
-from stanfordkarel.karel_application import KarelApplication
-from stanfordkarel.karel_world import KarelWorld
+from .karel import Karel
+from .karel_application import KarelApplication
+from .karel_world import KarelWorld
 
 
 """

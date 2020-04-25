@@ -17,8 +17,8 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-from stanfordkarel.karel_ascii import karel_ascii
-from stanfordkarel.karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
+from .karel_ascii import karel_ascii
+from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
 
 NEXT_DIRECTION_MAP = {
     Direction.NORTH: Direction.WEST,

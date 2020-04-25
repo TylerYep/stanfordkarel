@@ -15,9 +15,9 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-from stanfordkarel.karel import Karel
-from stanfordkarel.karel_canvas import KarelCanvas
-from stanfordkarel.karel_definitions import (
+from .karel import Karel
+from .karel_canvas import KarelCanvas
+from .karel_definitions import (
     COLOR_MAP,
     DEFAULT_ICON,
     DIRECTIONS_MAP,
@@ -27,7 +27,7 @@ from stanfordkarel.karel_definitions import (
     PAD_X,
     PAD_Y,
 )
-from stanfordkarel.karel_world import KarelWorld
+from .karel_world import KarelWorld
 
 MIN_DIMENSIONS = 1
 MAX_DIMENSIONS = 50
