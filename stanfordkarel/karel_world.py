@@ -68,6 +68,7 @@ class KarelWorld:
         Parameters:
             world_file: filename of world file containing the initial state of Karel's world
         """
+        self.world_name = world_file
         self._world_file = self.process_world(world_file) if world_file else None
 
         # Map of beeper locations to the count of beepers at that location
@@ -184,8 +185,7 @@ class KarelWorld:
                 # check to see if parameter encodes a location
                 coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
                 if coordinate:
-                    avenue = int(coordinate.group(1))
-                    street = int(coordinate.group(2))
+                    avenue, street = int(coordinate.group(1)), int(coordinate.group(2))
                     params["location"] = (avenue, street)
                     continue
 

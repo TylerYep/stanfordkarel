@@ -1,3 +1,6 @@
+from enum import Enum, unique
+from pprint import pformat
+
 from .karel_definitions import Direction
 
 CHAR_WIDTH = 6
@@ -22,6 +25,75 @@ class Tile:
         else:
             result += f"  {self.value}  "
         return result
+
+
+@unique
+class Color(Enum):
+    PURPLE = "\033[95m"
+    CYAN = "\033[96m"
+    DARKCYAN = "\033[36m"
+    BLUE = "\033[94m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    RED = "\033[91m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+    END = "\033[0m"
+
+
+def compare_output(first, second, options):
+    """ Compares Karel Output and gets the results. """
+
+    def create_two_column_string(col1, col2):
+        """ col1 and col2 are Lists. """
+        return map(lambda x: f"{x[0]}{' ' * SPACING}{x[1]}", zip(col1, col2))
+
+    def symmetric_difference(a, b):
+        extra_a, extra_b = {}, {}
+        for k in a:
+            if k not in b:
+                extra_a[k] = a[k]
+            elif a[k] - b[k] > 0:
+                extra_a[k] = a[k] - b[k]
+        for k in b:
+            if k not in a:
+                extra_b[k] = b[k]
+            elif b[k] - a[k] > 0:
+                extra_b[k] = b[k] - a[k]
+        return extra_a, extra_b
+
+    # if not two_column_output:
+    # print(f"\n\nStudent output:\n{self}")
+    # print(f"\nExpected output:\n{other}")
+
+    this, that = str(first).split("\n"), str(second).split("\n")
+    world_width = len(this[0])
+    SPACING = 10
+    header1, header2 = "Student Output:", "Expected Output:"
+    text_spacing = " " * (world_width - len(header1) + SPACING + 1)
+    two_columns = create_two_column_string(this, that)
+    output = "\n".join(two_columns)
+    fancy_arrows = f"{Color.RED.value}❯{Color.YELLOW.value}❯{Color.GREEN.value}❯ "
+
+    result = f"\n\n{fancy_arrows} {Color.YELLOW.value}{first._world.world_name}{Color.END.value}"
+    result += f"\n{header1}{text_spacing}{header2}\n{output}\n"
+
+    check_karel_location = first.avenue == second.avenue
+    if first.avenue != second.avenue or first.street != second.street:
+        result += (
+            f"Karel did not end up in the same location in both worlds:\n"
+            f"Student: {(first.avenue, first.street)}\n"
+            f"Expected: {(second.avenue, second.street)}\n\n"
+        )
+    if first._world.beepers != second._world.beepers:
+        extra_a, extra_b = symmetric_difference(first._world.beepers, second._world.beepers)
+        result += (
+            f"Beepers do not match: "
+            f"(Only beepers that appear in one world but not the other are shown)\n"
+            f"Student: {extra_a}\n"
+            f"Expected: {extra_b}\n\n"
+        )
+    return result
 
 
 def karel_ascii(world, karel_street, karel_avenue):

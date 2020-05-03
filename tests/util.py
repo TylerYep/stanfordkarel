@@ -14,19 +14,27 @@ PROBLEMS = [
     "StoneMasonKarel",
 ]
 
+PROBLEM_FILES = [
+    "checkerboard_karel",
+    "collect_newspaper_karel",
+    "midpoint_karel",
+    "triple_karel",
+    "stone_mason_karel",
+]
+
 
 def create_solution_worlds():
     for problem_name in PROBLEMS:
         world = KarelWorld(problem_name)
         karel = Karel(world)
-        student_code = StudentCode(problem_name + "Solution.py", karel)
+        student_code = StudentCode(problem_name + "_solution.py", karel)
         student_code.mod.main()
         world.save_to_file(os.path.join("worlds", problem_name + "End.w"), karel)
 
 
 def get_solutions_for_testing():
     for problem_name in PROBLEMS:
-        src = os.path.join("examples", problem_name + "Solution.py")
+        src = os.path.join("examples", problem_name + "_solution.py")
         dest = os.path.join(".", problem_name + ".py")
         shutil.copy(src, dest)
 

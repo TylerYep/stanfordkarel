@@ -17,7 +17,7 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-from .karel_ascii import karel_ascii
+from .karel_ascii import compare_output, karel_ascii
 from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
 
 NEXT_DIRECTION_MAP = {
@@ -61,6 +61,16 @@ class Karel:
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
+
+    def compare_with(self, other, options=None):
+        """
+        Options:
+            two_columns: bool (default=True)
+        """
+        if self == other:
+            return True
+        print(compare_output(self, other, options))
+        return False
 
     @property
     def avenue(self):

@@ -31,7 +31,10 @@ class StudentCode:
     """
 
     def __init__(self, code_file, karel=None):
-        self.module_name = os.path.splitext(os.path.basename(code_file))[0]
+        assert os.path.isfile(code_file), f"{code_file} could not be found."
+        self.module_name = os.path.basename(code_file)
+        if self.module_name.endswith(".py"):
+            self.module_name = os.path.splitext(self.module_name)[0]
         spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
         try:
             self.mod = importlib.util.module_from_spec(spec)
