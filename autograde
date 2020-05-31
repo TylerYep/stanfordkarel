@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Remember to `chmod +x autograde` in order to run this file as a script.
+
+pytest --tb=line -s -vv

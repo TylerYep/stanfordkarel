@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# Remember to `chmod +x autograder` in order to run this as a script.
-
-pytest --tb=line -s

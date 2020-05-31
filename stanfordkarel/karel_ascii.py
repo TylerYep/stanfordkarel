@@ -1,5 +1,4 @@
 from enum import Enum, unique
-from pprint import pformat
 
 from .karel_definitions import Direction
 
@@ -78,7 +77,6 @@ def compare_output(first, second, options):
     result = f"\n\n{fancy_arrows} {Color.YELLOW.value}{first._world.world_name}{Color.END.value}"
     result += f"\n{header1}{text_spacing}{header2}\n{output}\n"
 
-    check_karel_location = first.avenue == second.avenue
     if first.avenue != second.avenue or first.street != second.street:
         result += (
             f"Karel did not end up in the same location in both worlds:\n"
@@ -89,7 +87,7 @@ def compare_output(first, second, options):
         extra_a, extra_b = symmetric_difference(first._world.beepers, second._world.beepers)
         result += (
             f"Beepers do not match: "
-            f"(Only beepers that appear in one world but not the other are shown)\n"
+            f"(Only beepers that appear in one world but not the other are listed)\n"
             f"Student: {extra_a}\n"
             f"Expected: {extra_b}\n\n"
         )

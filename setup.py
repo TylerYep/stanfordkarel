@@ -5,7 +5,7 @@ with open("README.md") as fh:
 
 setuptools.setup(
     name="stanfordkarel",
-    version="0.0.6",
+    version="0.0.7",
     author="Nicholas Bowman, Kylie Jue, Tyler Yep",
     author_email="tyep10@gmail.com",
     description="Official Stanford Karel library used in CS 106A",
