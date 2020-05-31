@@ -151,9 +151,8 @@ def run_karel_program(world_file=None):
         base_filename = os.path.basename(student_code_file)
         world_file = os.path.splitext(base_filename)[0]
 
-    world = KarelWorld(world_file)
-
     # Create Karel and assign it to live in the newly created world
+    world = KarelWorld(world_file)
     karel = Karel(world)
 
     # Initialize root Tk Window and spawn Karel application

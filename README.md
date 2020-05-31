@@ -6,13 +6,12 @@
 
 This is a Python implementation of Karel for Stanford's CS 106A. This package is available on PyPI and allows you to run Karel programs without any additional setup!
 
-Huge thank you to @nickbowman for rewriting this project from scratch!
-
+Huge credits to @nickbowman for rewriting this project from scratch!
 
 **StanfordKarel now supports:**
 - Pip-installable package means you can run Karel programs from anywhere.
 - Solution code no longer needed to grade assignments. Instead, the output world is compared.
-- Karel in Ascii!
+- Karel in ASCII!
 - Improved autograding, testing, linting, and auto-formatting.
 
 
@@ -63,11 +62,18 @@ To run the World Editor from the repository, simply run `python world_editor.py`
 `./autograde` runs the available tests using pytest in the `tests/` folder and prints out any output differences in the world.
 The tests use the student's code and the expected world output to determine correctness. If the output is not the same, the test driver will print out an ASCII representation of the differences.
 
-![Autograder](./autograder.png)
+![Autograder](images/autograder.png)
 
 
 ## Development
-Everything important is located in stanfordkarel/.
+Everything important is located in `stanfordkarel/`.
+
+- `stanfordkarel/` is the exported package, which contains all of the available functions and commands for students to use.
+- `karel_application.py` is responsible for loading student code and displaying it to the screen.
+
+
+# Contributing
+All issues and pull requests are much appreciated! To run all tests and other auto-formatting tools, check out `scripts/run-tests`.
 
 
 ## Future Milestones
@@ -77,3 +83,6 @@ In the future, I hope to add:
 - Autograde more worlds, broken down by assignment
 - Allow students to autograde their own work
 - Accessibility for visually-impaired students (using ascii karel)
+
+### Minor TODOs
+- Use f2string to convert all f strings to format strings for Python 3.5 compatibility
