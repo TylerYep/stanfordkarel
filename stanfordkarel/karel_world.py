@@ -109,11 +109,15 @@ class KarelWorld:
         )
 
     @staticmethod
-    def process_world(world_file):
+    def process_world(world_file, worlds_path="worlds"):
         # Find world file that matches program name in the worlds/ directory
-        worlds_prefix = os.path.join("worlds", world_file + ".w")
-        if not os.path.isdir("worlds"):
-            print("Could not find worlds/ folder. Please store worlds in a folder with this name.")
+        no_world_folder = False
+        worlds_prefix = os.path.join(worlds_path, world_file + ".w")
+        if not os.path.isfile(worlds_prefix):
+            worlds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "worlds")
+            worlds_prefix = os.path.join(worlds_path, world_file + ".w")
+            if not os.path.isdir(worlds_path):
+                no_world_folder = True
 
         if os.path.isfile(worlds_prefix):
             # First look inside the worlds folder for this file
@@ -121,14 +125,23 @@ class KarelWorld:
         elif os.path.isfile(world_file):
             # Attempt to open the exact filename that has been specified
             world_file = open(world_file)
-        else:
-            default_world = os.path.join("worlds", DEFAULT_WORLD_FILE)
+        elif no_world_folder:
+            default_world = os.path.join(worlds_path, DEFAULT_WORLD_FILE)
             print(f"Could not find world file: {world_file}.w. Using default world instead.")
             if os.path.isfile(default_world):
                 world_file = open(default_world)
             else:
                 print("Could not find default world to use. Please specify a valid world filename.")
                 sys.exit()
+        else:
+            print(
+                "Could not find worlds/ folder, and the specified file was not one of "
+                "the provided worlds. Please store custom worlds in a folder named worlds/, "
+                "or use a world listed below: "
+            )
+            for world in sorted(os.listdir(worlds_path)):
+                print((" " * 4) + world)
+            sys.exit()
 
         return world_file
 
