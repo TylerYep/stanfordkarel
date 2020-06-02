@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: GardenKarel.py
+File: garden_karel.py
 ----------------------------
 When you finish writing it, GardenKarel should lay a fence of beepers
 on the outer edge of the world it started in. For more in-depth problem
@@ -25,4 +25,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("garden_karel")

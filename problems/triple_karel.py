@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: TripleKarel.py
+File: triple_karel.py
 --------------------
 When you finish writing this file, TripleKarel should be
 able to paint the exterior of three buildings in a given
@@ -25,4 +25,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("triple_karel")

@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: CheckerboardKarel.py
+File: checkerboard_karel.py
 ----------------------------
 When you finish writing it, CheckerboardKarel should draw
 a checkerboard using beepers, as described in Assignment 1.
@@ -24,4 +24,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("checkerboard_karel")

@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: MidpointKarel.py
+File: midpoint_karel.py
 ----------------------
 When you finish writing it, MidpointKarel should
 leave a beeper on the corner closest to the center of 1st Street
@@ -27,4 +27,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("midpoint_karel")

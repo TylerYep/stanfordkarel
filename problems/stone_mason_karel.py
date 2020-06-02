@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: StoneMasonKarel.py
+File: stone_mason_karel.py
 ------------------------
 When you finish writing code in this file, StoneMasonKarel should
 solve the "repair the quad" problem from Assignment 1. You
@@ -24,4 +24,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("stone_mason_karel")

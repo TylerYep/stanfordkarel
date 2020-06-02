@@ -62,14 +62,14 @@ class Karel:
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def compare_with(self, other, options=None):
+    def compare_with(self, other):
         """
         Options:
             two_columns: bool (default=True)
         """
         if self == other:
             return True
-        print(compare_output(self, other, options))
+        print(compare_output(self, other))
         return False
 
     @property

@@ -157,7 +157,9 @@ disable=print-statement,
         attribute-defined-outside-init,
         too-many-public-methods,
         too-many-ancestors,
-        invalid-name
+        invalid-name,
+        protected-access, # TODO REMOVE THIS AND FIX ERRORS
+        broad-except,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

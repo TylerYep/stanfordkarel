@@ -14,7 +14,6 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 
-import os
 import sys
 import tkinter as tk
 
@@ -147,9 +146,6 @@ BLANK = ""
 def run_karel_program(world_file=None):
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
-    if world_file is None:
-        base_filename = os.path.basename(student_code_file)
-        world_file = os.path.splitext(base_filename)[0]
 
     # Create Karel and assign it to live in the newly created world
     world = KarelWorld(world_file)

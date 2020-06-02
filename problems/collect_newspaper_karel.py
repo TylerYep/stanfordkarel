@@ -2,7 +2,7 @@ from stanfordkarel import *
 
 
 """
-File: CollectNewspaperKarel.py
+File: collect_newspaper.py
 ------------------------------
 At present, the CollectNewspaperKarel file does nothing.
 Your job in the assignment is to add the necessary code to
@@ -25,4 +25,4 @@ def main():
 # There is no need to edit code beyond this point
 
 if __name__ == "__main__":
-    run_karel_program()
+    run_karel_program("collect_newspaper_karel")

@@ -40,7 +40,7 @@ class Color(Enum):
     END = "\033[0m"
 
 
-def compare_output(first, second, options):
+def compare_output(first, second):
     """ Compares Karel Output and gets the results. """
 
     def create_two_column_string(col1, col2):

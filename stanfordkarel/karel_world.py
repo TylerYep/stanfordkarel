@@ -185,8 +185,8 @@ class KarelWorld:
                 # check to see if parameter encodes a location
                 coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
                 if coordinate:
-                    avenue, street = int(coordinate.group(1)), int(coordinate.group(2))
-                    params["location"] = (avenue, street)
+                    # avenue, street
+                    params["location"] = (int(coordinate.group(1)), int(coordinate.group(2)))
                     continue
 
                 # check to see if the parameter is a direction value
@@ -195,10 +195,9 @@ class KarelWorld:
 
                 # check to see if parameter encodes a numerical value or color string
                 elif keyword == "color":
-                    if param.title() in COLOR_MAP:
-                        params["color"] = param.title()
-                    else:
+                    if param.title() not in COLOR_MAP:
                         raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+                    params["color"] = param.title()
 
                 # handle the edge case where Karel has infinite beepers
                 elif param in ("infinity", "infinite") and keyword == "beeperbag":
