@@ -6,7 +6,7 @@
 
 This is a Python implementation of Karel for Stanford's CS 106A. This package is available on PyPI and allows you to run Karel programs without any additional setup!
 
-Huge credits to @nickbowman for rewriting this project from scratch!
+Huge credits to @nick-bowman for rewriting this project from scratch!
 
 **StanfordKarel now supports:**
 - Pip-installable package means you can run Karel programs from anywhere.
@@ -25,8 +25,8 @@ or
 
 # Documentation
 ## Running Karel
-First, ensure that Karel is correctly installed using pip.
-If so, then any `.py` file can become a Karel program!
+First, ensure that StanfordKarel is correctly installed using pip.
+Any `.py` file can become a Karel program!
 
 ```python
 from stanfordkarel import *
