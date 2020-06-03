@@ -16,4 +16,4 @@ git add .
 find . -iname "*.py" | xargs pylint
 
 # Testing
-./autograde
+pytest tests/

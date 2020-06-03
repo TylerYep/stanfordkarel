@@ -131,17 +131,18 @@ class KarelWorld:
             if os.path.isfile(default_world):
                 world_file = open(default_world)
             else:
-                print("Could not find default world to use. Please specify a valid world filename.")
-                sys.exit()
+                sys.tracebacklimit = 0
+                raise FileNotFoundError(
+                    "Could not find default world to use. Please specify a valid world filename."
+                )
         else:
-            print(
+            sys.tracebacklimit = 0
+            raise FileNotFoundError(
                 "Could not find worlds/ folder, and the specified file was not one of "
-                "the provided worlds. Please store custom worlds in a folder named worlds/, "
-                "or use a world listed below: "
+                "the provided worlds.\nPlease store custom worlds in a folder named worlds/, "
+                "or use a world listed below:\n"
+                + "\n".join([(" " * 4) + world for world in sorted(os.listdir(worlds_path))])
             )
-            for world in sorted(os.listdir(worlds_path)):
-                print((" " * 4) + world)
-            sys.exit()
 
         return world_file
 

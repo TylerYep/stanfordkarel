@@ -19,7 +19,6 @@ import tkinter as tk
 
 from .karel import Karel
 from .karel_application import KarelApplication
-from .karel_world import KarelWorld
 
 
 """
@@ -153,10 +152,9 @@ def run_karel_program(world_file=None):
     #     world_file = os.path.splitext(base_filename)[0]
 
     # Create Karel and assign it to live in the newly created world
-    world = KarelWorld(world_file)
-    karel = Karel(world)
+    karel = Karel(world_file)
 
     # Initialize root Tk Window and spawn Karel application
     root = tk.Tk()
-    app = KarelApplication(karel, world, student_code_file, master=root)
+    app = KarelApplication(karel, student_code_file, master=root)
     app.mainloop()

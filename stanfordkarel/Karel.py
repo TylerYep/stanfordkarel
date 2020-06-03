@@ -19,6 +19,7 @@ Last Modified: 3/31/2020
 """
 from .karel_ascii import compare_output, karel_ascii
 from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
+from .karel_world import KarelWorld
 
 NEXT_DIRECTION_MAP = {
     Direction.NORTH: Direction.WEST,
@@ -40,7 +41,7 @@ DIRECTION_DELTA_MAP = {
 
 
 class Karel:
-    def __init__(self, world):
+    def __init__(self, world_file=None):
         """
         This functions instantiates a new Karel instance and sets its
         location and current number of beepers to be the default starting
@@ -51,13 +52,13 @@ class Karel:
 
         Returns: None
         """
-        self._world = world
-        self._avenue, self._street = self._world.karel_starting_location
-        self._direction = self._world.karel_starting_direction
-        self._num_beepers = self._world.karel_starting_beeper_count
+        self.world = KarelWorld() if world_file is None else KarelWorld(world_file)
+        self._avenue, self._street = self.world.karel_starting_location
+        self._direction = self.world.karel_starting_direction
+        self._num_beepers = self.world.karel_starting_beeper_count
 
     def __repr__(self):
-        return karel_ascii(self._world, self.street, self.avenue)
+        return karel_ascii(self.world, self.street, self.avenue)
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
@@ -168,10 +169,10 @@ class Karel:
         Parameters: None
         Returns: None
         """
-        self._avenue, self._street = self._world.karel_starting_location
-        self._direction = self._world.karel_starting_direction
+        self._avenue, self._street = self.world.karel_starting_location
+        self._direction = self.world.karel_starting_direction
 
-        self._num_beepers = self._world.karel_starting_beeper_count
+        self._num_beepers = self.world.karel_starting_beeper_count
 
     def move(self):
         """
@@ -223,7 +224,7 @@ class Karel:
         if self._num_beepers != INFINITY:
             self._num_beepers -= 1
 
-        self._world.add_beeper(self._avenue, self._street)
+        self.world.add_beeper(self._avenue, self._street)
 
     def pick_beeper(self):
         """
@@ -245,7 +246,7 @@ class Karel:
         if self._num_beepers != INFINITY:
             self._num_beepers += 1
 
-        self._world.remove_beeper(self._avenue, self._street)
+        self.world.remove_beeper(self._avenue, self._street)
 
     def front_is_clear(self):
         """
@@ -276,16 +277,16 @@ class Karel:
         next_street = self._street + delta_street
 
         # front is not clear if we are about to go out of bounds
-        if not self._world.in_bounds(next_avenue, next_street):
+        if not self.world.in_bounds(next_avenue, next_street):
             return False
 
         # front is not clear if wall exists in same direction of where we're currently facing
-        if self._world.wall_exists(self._avenue, self._street, direction):
+        if self.world.wall_exists(self._avenue, self._street, direction):
             return False
 
         # must also check for alternate possible representation of wall
         opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[direction]]
-        if self._world.wall_exists(next_avenue, next_street, opposite_direction):
+        if self.world.wall_exists(next_avenue, next_street, opposite_direction):
             return False
 
         # If all previous conditions checked out, then the front is clear
@@ -361,7 +362,7 @@ class Karel:
             beepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
                                        False otherwise
         """
-        return self._world.beepers[(self.avenue, self.street)] != 0
+        return self.world.beepers[(self.avenue, self.street)] != 0
 
     def no_beepers_present(self):
         return not self.beepers_present()
@@ -461,7 +462,7 @@ class Karel:
                 self._direction,
                 f"Karel attempted to paint the corner with color {color}, which is not valid.",
             )
-        self._world.paint_corner(self.avenue, self.street, color)
+        self.world.paint_corner(self.avenue, self.street, color)
 
     def corner_color_is(self, color):
         """
@@ -474,4 +475,4 @@ class Karel:
             is_color (Bool) - True if Karel's current corner is the specified color
                               False otherwise
         """
-        return self._world.corner_color(self.avenue, self.street) == color
+        return self.world.corner_color(self.avenue, self.street) == color

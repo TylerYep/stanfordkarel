@@ -4,7 +4,6 @@ import shutil
 
 from stanfordkarel.karel import Karel
 from stanfordkarel.karel_application import StudentCode
-from stanfordkarel.karel_world import KarelWorld
 
 PROBLEMS = [
     "CheckerboardKarel",
@@ -23,13 +22,21 @@ PROBLEM_FILES = [
 ]
 
 
+def execute_karel_code(problem_name, folder_path="solutions"):
+    karel = Karel(problem_name)
+    student_code = StudentCode(os.path.join(folder_path, problem_name + ".py"), karel)
+    student_code.mod.main()
+    assert karel.compare_with(
+        Karel(f"{problem_name}_end")
+    ), "Expected end result of world did not match."
+
+
 def create_solution_worlds():
     for problem_name in PROBLEMS:
-        world = KarelWorld(problem_name)
-        karel = Karel(world)
+        karel = Karel(problem_name)
         student_code = StudentCode(problem_name + "_solution.py", karel)
         student_code.mod.main()
-        world.save_to_file(os.path.join("worlds", problem_name + "End.w"), karel)
+        karel.world.save_to_file(os.path.join("worlds", problem_name + "_end.w"), karel)
 
 
 def get_solutions_for_testing():

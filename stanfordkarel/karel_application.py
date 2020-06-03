@@ -94,7 +94,6 @@ class KarelApplication(tk.Frame):
     def __init__(
         self,
         karel,
-        world,
         code_file,
         master=None,
         window_width=800,
@@ -115,7 +114,7 @@ class KarelApplication(tk.Frame):
         super().__init__(master, background=LIGHT_GREY)
 
         self.karel = karel
-        self.world = world
+        self.world = karel.world
         self.student_code = StudentCode(code_file, self.karel)
         if not self.student_code.mod:
             master.destroy()

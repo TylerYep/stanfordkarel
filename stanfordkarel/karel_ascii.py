@@ -74,7 +74,7 @@ def compare_output(first, second):
     output = "\n".join(two_columns)
     fancy_arrows = f"{Color.RED.value}❯{Color.YELLOW.value}❯{Color.GREEN.value}❯ "
 
-    result = f"\n\n{fancy_arrows} {Color.YELLOW.value}{first._world.world_name}{Color.END.value}"
+    result = f"\n\n{fancy_arrows} {Color.YELLOW.value}{first.world.world_name}{Color.END.value}"
     result += f"\n{header1}{text_spacing}{header2}\n{output}\n"
 
     if first.avenue != second.avenue or first.street != second.street:
@@ -83,8 +83,8 @@ def compare_output(first, second):
             f"Student: {(first.avenue, first.street)}\n"
             f"Expected: {(second.avenue, second.street)}\n\n"
         )
-    if first._world.beepers != second._world.beepers:
-        extra_a, extra_b = symmetric_difference(first._world.beepers, second._world.beepers)
+    if first.world.beepers != second.world.beepers:
+        extra_a, extra_b = symmetric_difference(first.world.beepers, second.world.beepers)
         result += (
             f"Beepers do not match: "
             f"(Only beepers that appear in one world but not the other are listed)\n"

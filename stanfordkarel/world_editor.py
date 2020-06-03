@@ -27,7 +27,6 @@ from .karel_definitions import (
     PAD_X,
     PAD_Y,
 )
-from .karel_world import KarelWorld
 
 MIN_DIMENSIONS = 1
 MAX_DIMENSIONS = 50
@@ -116,8 +115,7 @@ class WorldBuilderApplication(tk.Frame):
                 # In this case, we can just cancel execution and return to existing world
                 return
         if init:
-            self.world = KarelWorld()
-            self.karel = Karel(self.world)
+            self.karel = Karel()
         else:
             self.world.reload_world()
             self.karel.reset_state()
@@ -141,9 +139,8 @@ class WorldBuilderApplication(tk.Frame):
             return
 
         if init:
-            self.world = KarelWorld()
-            self.world.reload_world(filename=filename)
-            self.karel = Karel(self.world)
+            self.karel = Karel(filename)
+            self.world = self.karel.world
         else:
             self.world.reload_world(filename=filename)
             self.karel.reset_state()
