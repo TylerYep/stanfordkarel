@@ -4,6 +4,7 @@ from .karel_definitions import Direction
 
 CHAR_WIDTH = 6
 HORIZONTAL, VERTICAL = "─", "│"
+SPACING = 10
 
 
 class Tile:
@@ -67,15 +68,17 @@ def compare_output(first, second):
 
     this, that = str(first).split("\n"), str(second).split("\n")
     world_width = len(this[0])
-    SPACING = 10
+
     header1, header2 = "Student Output:", "Expected Output:"
     text_spacing = " " * (world_width - len(header1) + SPACING + 1)
     two_columns = create_two_column_string(this, that)
     output = "\n".join(two_columns)
     fancy_arrows = f"{Color.RED.value}❯{Color.YELLOW.value}❯{Color.GREEN.value}❯ "
 
-    result = f"\n\n{fancy_arrows} {Color.YELLOW.value}{first.world.world_name}{Color.END.value}"
-    result += f"\n{header1}{text_spacing}{header2}\n{output}\n"
+    result = (
+        f"\n\n{fancy_arrows} {Color.YELLOW.value}{first.world.world_name}{Color.END.value}"
+        f"\n{header1}{text_spacing}{header2}\n{output}\n"
+    )
 
     if first.avenue != second.avenue or first.street != second.street:
         result += (

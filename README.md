@@ -6,12 +6,12 @@
 
 This is a Python implementation of Karel for Stanford's CS 106A. This package is available on PyPI and allows you to run Karel programs without any additional setup!
 
-Huge credits to @nick-bowman for rewriting this project from scratch!
+Huge props to @nick-bowman for rewriting this project from scratch!
 
 **StanfordKarel now supports:**
-- Pip-installable package means you can run Karel programs from anywhere.
-- Solution code no longer needed to grade assignments. Instead, the output world is compared.
-- Karel in ASCII!
+- Pip-installable package means you can run Karel programs from anywhere!
+- Solution code no longer needed to grade assignments - instead, the output worlds are compared.
+- Karel in ASCII! Plus autograder support.
 - Improved autograding, testing, linting, and auto-formatting.
 
 
@@ -28,6 +28,7 @@ or
 First, ensure that StanfordKarel is correctly installed using pip.
 Any `.py` file can become a Karel program!
 
+**collect_newspaper_karel.py**
 ```python
 from stanfordkarel import *
 
@@ -43,7 +44,15 @@ if __name__ == "__main__":
     run_karel_program()
 ```
 
-To run a specific problem, ensure that the Python file name and the world file name matches exactly.
+Save the file and run:
+```
+python collect_newspaper_karel.py
+```
+
+![Karel Program](images/karel_program.png)
+
+
+You can set a default world by passing a world name to run_karel_program, e.g. `run_karel_program("collect_newspaper_karel")`
 
 ### Folder structure
 - `assignment1/`
@@ -57,6 +66,9 @@ To run a specific problem, ensure that the Python file name and the world file n
 If using the pip-installed version, simply run `python -m stanfordkarel.world_editor`.
 
 To run the World Editor from the repository, simply run `python world_editor.py`.
+
+![World Editor](images/world_editor.png)
+
 
 ## Grading
 `./autograde` runs the available tests using pytest in the `tests/` folder and prints out any output differences in the world.
