@@ -359,7 +359,7 @@ class Karel:
 
         Parameters: None
         Returns:
-            beepers_on_corner (Bool) - True if there is at least one beeper on Karel's current corner
+            beepers_on_corner (Bool) - True if there's at least one beeper on Karel's current corner
                                        False otherwise
         """
         return self.world.beepers[(self.avenue, self.street)] != 0

@@ -353,7 +353,8 @@ class KarelWorld:
             # Next, output all walls
             for wall in self._walls:
                 f.write(
-                    f"Wall: ({wall.avenue}, {wall.street}); {DIRECTIONS_MAP_INVERSE[wall.direction]}\n"
+                    f"Wall: ({wall.avenue}, {wall.street}); "
+                    f"{DIRECTIONS_MAP_INVERSE[wall.direction]}\n"
                 )
 
             # Next, output all beepers
@@ -367,7 +368,8 @@ class KarelWorld:
 
             # Next, output Karel information
             f.write(
-                f"Karel: ({karel.avenue}, {karel.street}); {DIRECTIONS_MAP_INVERSE[karel.direction]}\n"
+                f"Karel: ({karel.avenue}, {karel.street}); "
+                f"{DIRECTIONS_MAP_INVERSE[karel.direction]}\n"
             )
 
             # Finally, output beeperbag info
