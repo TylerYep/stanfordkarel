@@ -52,7 +52,7 @@ class Karel:
 
         Returns: None
         """
-        self.world = KarelWorld() if world_file is None else KarelWorld(world_file)
+        self.world = KarelWorld(world_file)
         self._avenue, self._street = self.world.karel_starting_location
         self._direction = self.world.karel_starting_direction
         self._num_beepers = self.world.karel_starting_beeper_count

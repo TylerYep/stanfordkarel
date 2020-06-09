@@ -62,14 +62,14 @@ DEFAULT_WORLD_FILE = "default_world.w"
 
 
 class KarelWorld:
-    def __init__(self, world_file=None):
+    def __init__(self, world_file):
         """
         Karel World constructor
         Parameters:
             world_file: filename of world file containing the initial state of Karel's world
         """
         self.world_name = world_file
-        self._world_file = self.process_world(world_file) if world_file else None
+        self._world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
         self._beepers = collections.defaultdict(int)
@@ -115,7 +115,7 @@ class KarelWorld:
         Find world file that matches program name in the current worlds/ directory.
         If not found, search the provided default worlds directory.
         """
-        default_worlds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "worlds")
+        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         if not world_file:
             default_world = os.path.join(default_worlds_path, DEFAULT_WORLD_FILE)
             if os.path.isfile(default_world):
@@ -126,6 +126,9 @@ class KarelWorld:
                 "Please raise an issue on the stanfordkarel GitHub.".format(default_worlds_path)
             )
 
+        if os.path.isfile(world_file):
+            return open(world_file)
+
         for worlds_path in ("worlds", default_worlds_path):
             if os.path.isdir(worlds_path):
                 full_world_path = os.path.join(worlds_path, world_file + ".w")
@@ -133,7 +136,7 @@ class KarelWorld:
                     return open(full_world_path)
 
         if not os.path.isdir("worlds"):
-            print("Could not find worlds/ folder in current directory.")
+            print("Could not find worlds/ folder in current directory.\n")
 
         sys.tracebacklimit = 0
         raise FileNotFoundError(

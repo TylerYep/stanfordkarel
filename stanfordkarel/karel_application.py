@@ -330,8 +330,9 @@ class KarelApplication(tk.Frame):
         self.update()
 
     def load_world(self):
+        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = askopenfilename(
-            initialdir="../worlds",
+            initialdir=default_worlds_path,
             title="Select Karel World",
             filetypes=[("Karel Worlds", "*.w")],
             parent=self.master,

@@ -116,6 +116,7 @@ class WorldBuilderApplication(tk.Frame):
                 return
         if init:
             self.karel = Karel()
+            self.world = self.karel.world
         else:
             self.world.reload_world()
             self.karel.reset_state()
@@ -126,8 +127,9 @@ class WorldBuilderApplication(tk.Frame):
             self.canvas.redraw_all()
 
     def load_world(self, init=False):
+        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = askopenfilename(
-            initialdir="./worlds",
+            initialdir=default_worlds_path,
             title="Select Karel World",
             filetypes=[("Karel Worlds", "*.w")],
             parent=self.master,
@@ -392,8 +394,9 @@ class WorldBuilderApplication(tk.Frame):
                 self.canvas.redraw_walls()
 
     def save_world(self):
+        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = asksaveasfilename(
-            initialdir="./worlds",
+            initialdir=default_worlds_path,
             title="Save Karel World",
             filetypes=[("Karel Worlds", "*.w")],
             parent=self.master,
