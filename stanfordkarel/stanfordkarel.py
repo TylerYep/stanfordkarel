@@ -142,7 +142,7 @@ YELLOW = "yellow"
 BLANK = ""
 
 
-def run_karel_program(world_file=None):
+def run_karel_program(world_file=""):
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
 

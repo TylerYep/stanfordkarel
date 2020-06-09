@@ -109,46 +109,46 @@ class KarelWorld:
         )
 
     @staticmethod
-    def process_world(world_file, worlds_path="worlds"):
-        # Find world file that matches program name in the worlds/ directory
-        no_worlds_folder = False
-        worlds_prefix = os.path.join(worlds_path, world_file + ".w")
-        if not os.path.isfile(worlds_prefix):
-            worlds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "worlds")
-            worlds_prefix = os.path.join(worlds_path, world_file + ".w")
-            if not os.path.isdir(worlds_path):
-                no_worlds_folder = True
-
-        if os.path.isfile(worlds_prefix):
-            # First look inside the worlds folder for this file
-            world_file = open(worlds_prefix)
-        elif os.path.isfile(world_file):
-            # Attempt to open the exact filename that has been specified
-            world_file = open(world_file)
-        elif no_worlds_folder:
-            default_world = os.path.join(worlds_path, DEFAULT_WORLD_FILE)
-            print(f"Could not find world file: {world_file}.w. Using default world instead.")
-            print(worlds_path)
+    def process_world(world_file):
+        """
+        If no world_file is provided, use default world.
+        Find world file that matches program name in the current worlds/ directory.
+        If not found, search the provided default worlds directory.
+        """
+        default_worlds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "worlds")
+        if not world_file:
+            default_world = os.path.join(default_worlds_path, DEFAULT_WORLD_FILE)
             if os.path.isfile(default_world):
-                world_file = open(default_world)
-            else:
-                sys.tracebacklimit = 0
-                raise FileNotFoundError(
-                    "Could not find default world to use. Please specify a valid world filename."
-                )
-        else:
-            print(worlds_path)
-            sys.tracebacklimit = 0
+                print("Using default world...")
+                return open(default_world)
             raise FileNotFoundError(
-                "Could not find worlds/ folder, and the specified file was not one of "
-                "the provided worlds.\nPlease store custom worlds in a folder named worlds/, "
-                "or use a world listed below:\n"
-                + "\n".join([(" " * 4) + world for world in sorted(os.listdir(worlds_path))])
-                + "\n\nSet the default world by using the name in run_karel_program().\n"
-                "    e.g. run_karel_program('checkerboard_karel')"
+                "Default world cannot be found in: {}\n"
+                "Please raise an issue on the stanfordkarel GitHub.".format(default_worlds_path)
             )
 
-        return world_file
+        for worlds_path in ("worlds", default_worlds_path):
+            if os.path.isdir(worlds_path):
+                full_world_path = os.path.join(worlds_path, world_file + ".w")
+                if os.path.isfile(full_world_path):
+                    return open(full_world_path)
+
+        if not os.path.isdir("worlds"):
+            print("Could not find worlds/ folder in current directory.")
+
+        sys.tracebacklimit = 0
+        raise FileNotFoundError(
+            "The specified file was not one of the provided worlds.\n"
+            "Please store custom worlds in a folder named worlds/, or use a world listed below:\n{}"
+            "\nPass the default world as a parameter in run_karel_program().\n"
+            "    e.g. run_karel_program('checkerboard_karel')".format(
+                "\n".join(
+                    [
+                        (" " * 4) + os.path.splitext(world)[0]
+                        for world in sorted(os.listdir(default_worlds_path))
+                    ]
+                )
+            )
+        )
 
     @property
     def karel_starting_location(self):
@@ -214,7 +214,9 @@ class KarelWorld:
                 # check to see if parameter encodes a numerical value or color string
                 elif keyword == "color":
                     if param.title() not in COLOR_MAP:
-                        raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+                        raise ValueError(
+                            "Error: {} is invalid parameter for {}.".format(param, keyword)
+                        )
                     params["color"] = param.title()
 
                 # handle the edge case where Karel has infinite beepers
@@ -226,14 +228,18 @@ class KarelWorld:
                     try:
                         params["val"] = int(100 * float(param))
                     except ValueError:
-                        raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+                        raise ValueError(
+                            "Error: {} is invalid parameter for {}.".format(param, keyword)
+                        )
 
                 # must be a digit then
                 elif param.isdigit():
                     params["val"] = int(param)
 
                 else:
-                    raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
+                    raise ValueError(
+                        "Error: {} is invalid parameter for {}.".format(param, keyword)
+                    )
 
             return params
 
@@ -244,7 +250,11 @@ class KarelWorld:
                 continue
 
             if ":" not in line:
-                print(f"Incorrectly formatted line - ignoring line {i} of world file: {line}")
+                print(
+                    "Incorrectly formatted line - ignoring line {} of world file: {}".format(
+                        i, line
+                    )
+                )
                 continue
 
             keyword, param_str = line.lower().split(KEYWORD_DELIM)
@@ -285,7 +295,7 @@ class KarelWorld:
                 self._corner_colors[params["location"]] = params["color"]
 
             else:
-                print(f"Invalid keyword - ignoring line {i} of world file: {line}")
+                print("Invalid keyword - ignoring line {} of world file: {}".format(i, line))
 
     def add_beeper(self, avenue, street):
         self._beepers[(avenue, street)] += 1
@@ -352,30 +362,30 @@ class KarelWorld:
     def save_to_file(self, filename, karel):
         with open(filename, "w") as f:
             # First, output dimensions of world
-            f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
+            f.write("Dimension: ({}, {})\n".format(self.num_avenues, self.num_streets))
 
             # Next, output all walls
             for wall in self._walls:
                 f.write(
-                    f"Wall: ({wall.avenue}, {wall.street}); "
-                    f"{DIRECTIONS_MAP_INVERSE[wall.direction]}\n"
+                    "Wall: ({}, {}); "
+                    "{}\n".format(wall.avenue, wall.street, DIRECTIONS_MAP_INVERSE[wall.direction])
                 )
 
             # Next, output all beepers
             for loc, count in self._beepers.items():
-                f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
+                f.write("Beeper: ({}, {}); {}\n".format(loc[0], loc[1], count))
 
             # Next, output all color information
             for loc, color in self._corner_colors.items():
                 if color:
-                    f.write(f"Color: ({loc[0]}, {loc[1]}); {color}\n")
+                    f.write("Color: ({}, {}); {}\n".format(loc[0], loc[1], color))
 
             # Next, output Karel information
             f.write(
-                f"Karel: ({karel.avenue}, {karel.street}); "
-                f"{DIRECTIONS_MAP_INVERSE[karel.direction]}\n"
+                "Karel: ({}, {}); "
+                "{}\n".format(karel.avenue, karel.street, DIRECTIONS_MAP_INVERSE[karel.direction])
             )
 
             # Finally, output beeperbag info
             beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
-            f.write(f"BeeperBag: {beeper_output}\n")
+            f.write("BeeperBag: {}\n".format(beeper_output))

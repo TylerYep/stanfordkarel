@@ -22,7 +22,7 @@ def execute_karel_code(problem_name, folder_path):
     student_code = StudentCode(os.path.join(folder_path, problem_name + ".py"), karel)
     student_code.mod.main()
     assert karel.compare_with(
-        Karel(f"{problem_name}_end")
+        Karel("{}_end".format(problem_name))
     ), "Expected end result of world did not match."
 
 

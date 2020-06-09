@@ -31,7 +31,7 @@ class StudentCode:
     """
 
     def __init__(self, code_file, karel=None):
-        assert os.path.isfile(code_file), f"{code_file} could not be found."
+        assert os.path.isfile(code_file), "{} could not be found.".format(code_file)
         self.module_name = os.path.basename(code_file)
         if self.module_name.endswith(".py"):
             self.module_name = os.path.splitext(self.module_name)[0]
@@ -41,7 +41,7 @@ class StudentCode:
             spec.loader.exec_module(self.mod)
         except Exception as e:
             # Handle syntax errors and only print location of error
-            print(f"Syntax Error: {e}")
+            print("Syntax Error: {}".format(e))
             print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
             sys.exit()
 
@@ -293,7 +293,7 @@ class KarelApplication(tk.Frame):
                 display_frames.append((frame, lineno))
 
         print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
-        print(f"{type(e).__name__}: {str(e)}")
+        print("{}: {}".format(type(e).__name__, str(e)))
 
     def run_program(self):
         # Error checking for existence of main function completed in prior file
@@ -345,7 +345,7 @@ class KarelApplication(tk.Frame):
         # Reset speed slider
         self.scale.set(self.world.init_speed)
         self.status_label.configure(
-            text=f"Loaded world from {os.path.basename(filename)}.", fg="black"
+            text="Loaded world from {}.".format(os.path.basename(filename)), fg="black"
         )
 
         # Make sure program control button is set to 'run' mode

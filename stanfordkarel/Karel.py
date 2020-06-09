@@ -460,7 +460,9 @@ class Karel:
                 self._avenue,
                 self._street,
                 self._direction,
-                f"Karel attempted to paint the corner with color {color}, which is not valid.",
+                "Karel attempted to paint the corner with color {}, which is not valid.".format(
+                    color
+                ),
             )
         self.world.paint_corner(self.avenue, self.street, color)
 
