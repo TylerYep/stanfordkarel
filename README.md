@@ -35,9 +35,9 @@ from stanfordkarel import *
 
 def main():
     """ Karel code goes here! """
-    turnLeft()
+    turn_left()
     move()
-    turnLeft()
+    turn_left()
 
 
 if __name__ == "__main__":
@@ -51,6 +51,20 @@ python collect_newspaper_karel.py
 
 ![Karel Program](images/karel_program.png)
 
+Follow the Karel tutorial on the [Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
+
+## Available Commands
+|                    |                      |                           |
+|--------------------|----------------------|---------------------------|
+| move()             | right_is_clear()     | facing_east()             |
+| turn_left()        | right_is_blocked()   | not_facing_east()         |
+| put_beeper()       | beepers_present()    | facing_west()             |
+| pick_beeper()      | no_beepers_present() | not_facing_west()         |
+| front_is_clear()   | beepers_in_bag()     | facing_south()            |
+| front_is_blocked() | no_beepers_in_bag()  | not_facing_south()        |
+| left_is_clear()    | facing_north()       | paint_corner(_color_)     |
+| left_is_blocked()  | not_facing_north()   | corner_color_is(_color_)  |
+
 
 You can set a default world by passing a world name to run_karel_program, e.g. `run_karel_program("collect_newspaper_karel")`
 
@@ -63,9 +77,14 @@ You can set a default world by passing a world name to run_karel_program, e.g. `
 
 
 ## Creating Worlds
-If using the pip-installed version, simply run `python -m stanfordkarel.world_editor`.
+If using the pip-installed version, create a Python file containing:
+```python
+from stanfordkarel.world_editor import run_world_editor
 
-To run the World Editor from the repository, simply run `python world_editor.py`.
+if __name__ == "__main__":
+    run_world_editor()
+```
+Then run `python world_editor.py`.
 
 ![World Editor](images/world_editor.png)
 
@@ -90,11 +109,9 @@ All issues and pull requests are much appreciated! To run all tests and other au
 
 ## Future Milestones
 In the future, I hope to add:
-- Automatic style checking
+- Error messages should automatically suggest turn_left() if you misspell the command (e.g. turnLeft)
+- Automatic student style checking
 - Ways of determining the student's strategy or approach from observing Karel movements
 - Autograde more worlds, broken down by assignment
 - Allow students to autograde their own work
 - Accessibility for visually-impaired students (using ascii karel)
-
-### Minor TODOs
-- Use f2string to convert all f strings to format strings for Python 3.5 compatibility
