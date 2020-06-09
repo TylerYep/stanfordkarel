@@ -111,13 +111,13 @@ class KarelWorld:
     @staticmethod
     def process_world(world_file, worlds_path="worlds"):
         # Find world file that matches program name in the worlds/ directory
-        no_world_folder = False
+        no_worlds_folder = False
         worlds_prefix = os.path.join(worlds_path, world_file + ".w")
         if not os.path.isfile(worlds_prefix):
             worlds_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "worlds")
             worlds_prefix = os.path.join(worlds_path, world_file + ".w")
             if not os.path.isdir(worlds_path):
-                no_world_folder = True
+                no_worlds_folder = True
 
         if os.path.isfile(worlds_prefix):
             # First look inside the worlds folder for this file
@@ -125,9 +125,10 @@ class KarelWorld:
         elif os.path.isfile(world_file):
             # Attempt to open the exact filename that has been specified
             world_file = open(world_file)
-        elif no_world_folder:
+        elif no_worlds_folder:
             default_world = os.path.join(worlds_path, DEFAULT_WORLD_FILE)
             print(f"Could not find world file: {world_file}.w. Using default world instead.")
+            print(worlds_path)
             if os.path.isfile(default_world):
                 world_file = open(default_world)
             else:
@@ -136,12 +137,15 @@ class KarelWorld:
                     "Could not find default world to use. Please specify a valid world filename."
                 )
         else:
+            print(worlds_path)
             sys.tracebacklimit = 0
             raise FileNotFoundError(
                 "Could not find worlds/ folder, and the specified file was not one of "
                 "the provided worlds.\nPlease store custom worlds in a folder named worlds/, "
                 "or use a world listed below:\n"
                 + "\n".join([(" " * 4) + world for world in sorted(os.listdir(worlds_path))])
+                + "\n\nSet the default world by using the name in run_karel_program().\n"
+                "    e.g. run_karel_program('checkerboard_karel')"
             )
 
         return world_file
