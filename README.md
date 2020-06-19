@@ -54,7 +54,7 @@ python collect_newspaper_karel.py
 Follow the Karel tutorial on the [Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
 
 ## Available Commands
-|                    |                      |                           |
+| Karel Commands     |                      |                           |
 |--------------------|----------------------|---------------------------|
 | move()             | right_is_clear()     | facing_east()             |
 | turn_left()        | right_is_blocked()   | not_facing_east()         |
@@ -66,9 +66,12 @@ Follow the Karel tutorial on the [Karel Reader!](https://compedu.stanford.edu/ka
 | left_is_blocked()  | not_facing_north()   | corner_color_is(_color_)  |
 
 
-You can set a default world by passing a world name to run_karel_program, e.g. `run_karel_program("collect_newspaper_karel")`
-
 ### Folder structure
+You can set a default world by passing a world name to run_karel_program,
+e.g. `run_karel_program("collect_newspaper_karel")`
+
+Worlds should be saved/loaded in a `worlds/` folder in the same folder as the file being run.
+
 - `assignment1/`
     - `worlds/` (additional worlds go here)
         - `collect_newspaper_karel.w`
@@ -91,14 +94,20 @@ Then run `python world_editor.py`.
 
 ## Grading
 `./autograde` runs the available tests using pytest in the `tests/` folder and prints out any output differences in the world.
+
+### Functionality
 The tests use the student's code and the expected world output to determine correctness. If the output is not the same, the test driver will print out an ASCII representation of the differences.
 
 ![Autograder](images/autograder.png)
+
+### Style
+The autograde command also runs the builtin Karel Style Checker that performs
 
 
 ## Development
 Everything important is located in `stanfordkarel/`.
 
+- Python 3.5 is required because of `importlib.util.module_from_spec`
 - `stanfordkarel/` is the exported package, which contains all of the available functions and commands for students to use.
 - `karel_application.py` is responsible for loading student code and displaying it to the screen.
 

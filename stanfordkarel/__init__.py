@@ -39,4 +39,3 @@ from stanfordkarel.stanfordkarel import (
     run_karel_program,
     turn_left,
 )
-from stanfordkarel.world_editor import run_world_editor

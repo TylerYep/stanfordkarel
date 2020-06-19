@@ -8,12 +8,13 @@ set -e
 cd "${0%/*}/.."
 
 # Auto-code formatters
+f2format -q --no-archive .
 isort -y
 black . -l 100
 git add .
 
 # Style Checking
-find . -iname "*.py" | xargs pylint
+pylint **py
 
 # Testing
 pytest tests/

@@ -1,3 +1,11 @@
+"""
+This file defines the Karel ASCII program.
+
+Original Author: Tyler Yep
+License: MIT
+Version: 1.0.0
+Email: tyep@cs.stanford.edu
+"""
 from enum import Enum, unique
 
 from .karel_definitions import Direction

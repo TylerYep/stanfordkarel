@@ -50,8 +50,11 @@ class StudentCode:
             print("Couldn't find the main() function. Are you sure you have one?")
             sys.exit()
 
-        if karel:
+        if karel is not None:
             self.inject_namespace(karel)
+
+    def __repr__(self):
+        return inspect.getsource(self.mod)
 
     def inject_namespace(self, karel):
         """
