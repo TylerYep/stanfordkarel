@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: checkerboard_karel.py
 ----------------------------

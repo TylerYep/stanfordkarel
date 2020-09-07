@@ -452,9 +452,7 @@ class KarelCanvas(tk.Canvas):
 
     @staticmethod
     def rotate_points(center, points, direction):
-        """
-		Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
-		"""
+        """ Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm """
         cangle = cmath.exp(direction * 1j)
         center = complex(center[0], center[1])
         for i in range(0, len(points), 2):

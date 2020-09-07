@@ -31,7 +31,6 @@ def style_test(func):
 
 class StyleChecker:
     """
-    #TODO check variable name lengths
     #TODO some measure of decomposition
     #TODO check recursion
     """

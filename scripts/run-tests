@@ -4,17 +4,21 @@
 set -e
 
 # Ensure that we're always inside the root of our application,
-# no matter which directory we run script: Run `./scripts/run-tests.bash`
+# no matter which directory we run script: Run `./scripts/run-tests`
 cd "${0%/*}/.."
+
+# Type Checking
+# mypy .
 
 # Auto-code formatters
 f2format -q --no-archive .
-isort -y
+isort .
 black . -l 100
 git add .
 
 # Style Checking
-pylint **py
+flake8 .
+find . -iname "*.py" | xargs pylint
 
 # Testing
-pytest tests/
+pytest --cov=stanfordkarel --cov-report=html tests/

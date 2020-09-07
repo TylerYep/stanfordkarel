@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: midpoint_karel.py
 ----------------------

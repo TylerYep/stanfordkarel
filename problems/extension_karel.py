@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: extension_karel.py
 -----------------------

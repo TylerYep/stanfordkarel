@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: stone_mason_karel.py
 ------------------------

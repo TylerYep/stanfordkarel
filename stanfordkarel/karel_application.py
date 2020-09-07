@@ -9,7 +9,6 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-
 import importlib.util
 import inspect
 import os
@@ -31,10 +30,13 @@ class StudentCode:
     """
 
     def __init__(self, code_file, karel=None):
-        assert os.path.isfile(code_file), "{} could not be found.".format(code_file)
+        if not os.path.isfile(code_file):
+            raise FileNotFoundError("{} could not be found.".format(code_file))
+
         self.module_name = os.path.basename(code_file)
         if self.module_name.endswith(".py"):
             self.module_name = os.path.splitext(self.module_name)[0]
+
         spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
         try:
             self.mod = importlib.util.module_from_spec(spec)
@@ -58,11 +60,11 @@ class StudentCode:
 
     def inject_namespace(self, karel):
         """
-		This function is responsible for doing some Python hackery
-		that associates the generic commands the student wrote in their
-		file with specific commands relating to the Karel object that exists
-		in the world.
-		"""
+        This function is responsible for doing some Python hackery
+        that associates the generic commands the student wrote in their
+        file with specific commands relating to the Karel object that exists
+        in the world.
+        """
         functions_to_override = [
             "move",
             "turn_left",
@@ -169,10 +171,10 @@ class KarelApplication(tk.Frame):
 
     def create_slider(self):
         """
-		This method creates a frame containing three widgets:
-		two labels on either side of a scale slider to control
-		Karel execution speed.
-		"""
+        This method creates a frame containing three widgets:
+        two labels on either side of a scale slider to control
+        Karel execution speed.
+        """
         self.slider_frame = tk.Frame(self, bg=LIGHT_GREY)
         self.slider_frame.grid(row=3, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
@@ -191,10 +193,7 @@ class KarelApplication(tk.Frame):
         self.scale.pack()
 
     def create_canvas(self):
-        """
-		This method creates the canvas on which Karel and Karel's
-		world are drawn.
-		"""
+        """ This method creates the canvas on which Karel and Karel's world are drawn. """
         self.canvas = KarelCanvas(
             self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel
         )
@@ -203,10 +202,10 @@ class KarelApplication(tk.Frame):
 
     def create_buttons(self):
         """
-		This method creates the three buttons that appear on the left
-		side of the screen. These buttons control the start of Karel
-		execution, resetting Karel's state, and loading new worlds.
-		"""
+        This method creates the three buttons that appear on the left
+        side of the screen. These buttons control the start of Karel
+        execution, resetting Karel's state, and loading new worlds.
+        """
         self.program_control_button = tk.Button(
             self, highlightthickness=0, highlightbackground="white"
         )
@@ -220,9 +219,7 @@ class KarelApplication(tk.Frame):
         self.load_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
     def create_status_label(self):
-        """
-		This function creates the status label at the bottom of the window.
-		"""
+        """ This function creates the status label at the bottom of the window. """
         self.status_label = tk.Label(self.master, text="Welcome to Karel!", bg=LIGHT_GREY)
         self.status_label.grid(row=1, column=0, columnspan=2)
 
@@ -264,11 +261,11 @@ class KarelApplication(tk.Frame):
 
     def inject_decorator_namespace(self):
         """
-		This function is responsible for doing some Python hackery
-		that associates the generic commands the student wrote in their
-		file with specific commands relating to the Karel object that exists
-		in the world.
-		"""
+        This function is responsible for doing some Python hackery
+        that associates the generic commands the student wrote in their
+        file with specific commands relating to the Karel object that exists
+        in the world.
+        """
         self.student_code.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
         self.student_code.mod.move = self.karel_action_decorator(self.karel.move)
         self.student_code.mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)

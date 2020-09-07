@@ -230,10 +230,10 @@ class KarelWorld:
                 elif keyword == "speed":
                     try:
                         params["val"] = int(100 * float(param))
-                    except ValueError:
+                    except ValueError as e:
                         raise ValueError(
                             "Error: {} is invalid parameter for {}.".format(param, keyword)
-                        )
+                        ) from e
 
                 # must be a digit then
                 elif param.isdigit():
@@ -350,16 +350,12 @@ class KarelWorld:
         return 0 < avenue <= self._num_avenues and 0 < street <= self._num_streets
 
     def reset_world(self):
-        """
-        Reset initial state of beepers in the world
-        """
+        """ Reset initial state of beepers in the world """
         self._beepers = copy.deepcopy(self._init_beepers)
         self._corner_colors = collections.defaultdict(lambda: "")
 
     def reload_world(self, filename=None):
-        """
-        Reloads world using constructor.
-        """
+        """ Reloads world using constructor. """
         self.__init__(filename)
 
     def save_to_file(self, filename, karel):

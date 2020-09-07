@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: collect_newspaper.py
 ------------------------------

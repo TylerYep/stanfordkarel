@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: triple_karel.py
 --------------------

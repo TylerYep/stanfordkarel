@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: square_karel.py
 ----------------------------

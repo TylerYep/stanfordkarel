@@ -15,7 +15,7 @@ HORIZONTAL, VERTICAL = "─", "│"
 SPACING = 10
 
 
-class Tile:
+class Tile:  # pylint: disable=too-few-public-methods
     def __init__(self, value="·"):
         self.value = value
         self.walls = []
@@ -69,10 +69,6 @@ def compare_output(first, second):
             elif b[k] - a[k] > 0:
                 extra_b[k] = b[k] - a[k]
         return extra_a, extra_b
-
-    # if not two_column_output:
-    # print(f"\n\nStudent output:\n{self}")
-    # print(f"\nExpected output:\n{other}")
 
     this, that = str(first).split("\n"), str(second).split("\n")
     world_width = len(this[0])

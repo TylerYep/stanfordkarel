@@ -1,6 +1,5 @@
 from stanfordkarel import *
 
-
 """
 File: garden_karel.py
 ----------------------------

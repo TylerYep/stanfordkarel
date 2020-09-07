@@ -93,9 +93,7 @@ class Wall:
 
 # Karel Application + Karel
 class KarelException(Exception):
-    """
-	The following classes define Karel-specific exceptions.
-	"""
+    """ The following classes define Karel-specific exceptions. """
 
     def __init__(self, avenue, street, direction, message):
         super().__init__()
@@ -106,8 +104,7 @@ class KarelException(Exception):
 
     def __str__(self):
         return (
-            "Karel crashed while on avenue {} and street {}, "
-            "facing {}\nInvalid action: {}".format(
+            "Karel crashed while on avenue {} and street {}, facing {}\nInvalid action: {}".format(
                 self.avenue, self.street, self.direction, self.message
             )
         )

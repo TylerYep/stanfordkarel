@@ -3,7 +3,7 @@ This file defines the necessary functions and definitions that students must
 import in order to be able to write a new Karel program. Any new Karel file
 must include the following line:
 
-	from stanfordkarel import *
+from stanfordkarel import *
 
 Original Author: Nicholas Bowman
 Credits: Kylie Jue, Tyler Yep
@@ -19,7 +19,6 @@ import tkinter as tk
 
 from .karel import Karel
 from .karel_application import KarelApplication
-
 
 """
 The following function definitions are defined as stubs so that IDEs can recognize
