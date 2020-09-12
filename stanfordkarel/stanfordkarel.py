@@ -13,7 +13,7 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-
+import os
 import sys
 import tkinter as tk
 
@@ -145,10 +145,13 @@ def run_karel_program(world_file=""):
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
 
-    # Can uncomment this code to allow the file name to match the intended file
-    # if world_file is None:
-    #     base_filename = os.path.basename(student_code_file)
-    #     world_file = os.path.splitext(base_filename)[0]
+    # Special case - if filename matches a specified world name,
+    # Set the default world to the world with that name.
+    # I personally recommend removing this functionality completely.
+    if world_file == "":
+        base_filename = os.path.basename(student_code_file)
+        if base_filename in os.listdir("worlds"):
+            world_file = os.path.splitext(base_filename)[0]
 
     # Create Karel and assign it to live in the newly created world
     karel = Karel(world_file)

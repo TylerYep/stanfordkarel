@@ -15,7 +15,7 @@ PROBLEMS = [
     "stone_mason_karel",
 ]
 STUDENT_CODE_DIR = "solutions"
-TIMEOUT = 30
+TIMEOUT = 10
 
 
 def execute_karel_code(code_file):
