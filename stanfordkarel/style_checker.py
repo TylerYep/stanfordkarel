@@ -63,9 +63,15 @@ class StyleChecker:
     @style_test
     def check_line_lengths(self, max_line_length=88) -> bool:
         self.print_status_message("Checking line lengths...")
-        long_idxs = [i for i, line in enumerate(self.module_lines) if len(line) > max_line_length]
+        long_idxs = [
+            i for i, line in enumerate(self.module_lines) if len(line) > max_line_length
+        ]
         if long_idxs:
-            print("Lines {} are longer than {} characters.\n".format(long_idxs, max_line_length))
+            print(
+                "Lines {} are longer than {} characters.\n".format(
+                    long_idxs, max_line_length
+                )
+            )
         return len(long_idxs) == 0
 
     @style_test
@@ -75,7 +81,9 @@ class StyleChecker:
         seen_already = set()
         for f in self.function_list:
             if f in seen_already:
-                print("There are multiple functions defined that are called {}".format(f))
+                print(
+                    "There are multiple functions defined that are called {}".format(f)
+                )
                 ok = False
             seen_already.add(f)
             if len(f) < min_name_length and f not in ("main", "move"):
@@ -89,11 +97,15 @@ class StyleChecker:
         self.print_status_message("Checking function and variable names...")
         stanfordkarel_names = dir(stanfordkarel)
         root = ast.parse(str(self.student_code))
-        names = sorted({node.id for node in ast.walk(root) if isinstance(node, ast.Name)})
+        names = sorted(
+            {node.id for node in ast.walk(root) if isinstance(node, ast.Name)}
+        )
         filtered_names = [name for name in names if name not in stanfordkarel_names]
 
         short_names = [
-            f for f in filtered_names if len(f) < min_name_length and f not in ("main", "_")
+            f
+            for f in filtered_names
+            if len(f) < min_name_length and f not in ("main", "_")
         ]
         if short_names:
             print("Functions {} have pretty short names.".format(short_names))
@@ -109,6 +121,8 @@ class StyleChecker:
         num_functions = len(self.function_list)
         if num_functions < min_required:
             print(
-                "Expected at least {} functions, only found {}.".format(min_required, num_functions)
+                "Expected at least {} functions, only found {}.".format(
+                    min_required, num_functions
+                )
             )
         return num_functions >= min_required

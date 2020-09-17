@@ -37,7 +37,9 @@ class StudentCode:
         if self.module_name.endswith(".py"):
             self.module_name = os.path.splitext(self.module_name)[0]
 
-        spec = importlib.util.spec_from_file_location(self.module_name, os.path.abspath(code_file))
+        spec = importlib.util.spec_from_file_location(
+            self.module_name, os.path.abspath(code_file)
+        )
         try:
             self.mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(self.mod)
@@ -193,9 +195,13 @@ class KarelApplication(tk.Frame):
         self.scale.pack()
 
     def create_canvas(self):
-        """ This method creates the canvas on which Karel and Karel's world are drawn. """
+        """ This method creates the canvas on which Karel and the world are drawn. """
         self.canvas = KarelCanvas(
-            self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel
+            self.canvas_width,
+            self.canvas_height,
+            self.master,
+            world=self.world,
+            karel=self.karel,
         )
         self.canvas.grid(column=1, row=0, sticky="NESW")
         self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
@@ -211,16 +217,22 @@ class KarelApplication(tk.Frame):
         )
         self.program_control_button["text"] = "Run Program"
         self.program_control_button["command"] = self.run_program
-        self.program_control_button.grid(column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
+        self.program_control_button.grid(
+            column=0, row=0, padx=PAD_X, pady=PAD_Y, sticky="ew"
+        )
 
         self.load_world_button = tk.Button(
             self, highlightthickness=0, text="Load World", command=self.load_world
         )
-        self.load_world_button.grid(column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew")
+        self.load_world_button.grid(
+            column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew"
+        )
 
     def create_status_label(self):
         """ This function creates the status label at the bottom of the window. """
-        self.status_label = tk.Label(self.master, text="Welcome to Karel!", bg=LIGHT_GREY)
+        self.status_label = tk.Label(
+            self.master, text="Welcome to Karel!", bg=LIGHT_GREY
+        )
         self.status_label.grid(row=1, column=0, columnspan=2)
 
     def karel_action_decorator(self, karel_fn):
@@ -266,11 +278,19 @@ class KarelApplication(tk.Frame):
         file with specific commands relating to the Karel object that exists
         in the world.
         """
-        self.student_code.mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
+        self.student_code.mod.turn_left = self.karel_action_decorator(
+            self.karel.turn_left
+        )
         self.student_code.mod.move = self.karel_action_decorator(self.karel.move)
-        self.student_code.mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)
-        self.student_code.mod.put_beeper = self.beeper_action_decorator(self.karel.put_beeper)
-        self.student_code.mod.paint_corner = self.corner_action_decorator(self.karel.paint_corner)
+        self.student_code.mod.pick_beeper = self.beeper_action_decorator(
+            self.karel.pick_beeper
+        )
+        self.student_code.mod.put_beeper = self.beeper_action_decorator(
+            self.karel.put_beeper
+        )
+        self.student_code.mod.paint_corner = self.corner_action_decorator(
+            self.karel.paint_corner
+        )
 
     def disable_buttons(self):
         self.program_control_button.configure(state="disabled")
@@ -292,7 +312,9 @@ class KarelApplication(tk.Frame):
             if self.student_code.module_name + ".py" in filename:
                 display_frames.append((frame, lineno))
 
-        print(("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip())
+        print(
+            ("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip()
+        )
         print("{}: {}".format(type(e).__name__, str(e)))
 
     def run_program(self):
@@ -310,7 +332,9 @@ class KarelApplication(tk.Frame):
             )
             self.display_error_traceback(e)
             self.update()
-            showwarning("Karel Error", "Karel Crashed!\nCheck the terminal for more details.")
+            showwarning(
+                "Karel Error", "Karel Crashed!\nCheck the terminal for more details."
+            )
 
         finally:
             # Update program control button to force user

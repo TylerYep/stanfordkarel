@@ -150,7 +150,9 @@ def run_karel_program(world_file=""):
     # I personally recommend removing this functionality completely.
     if world_file == "":
         base_filename = os.path.basename(student_code_file)
-        if base_filename in os.listdir("worlds"):
+        if base_filename in os.listdir(
+            os.path.join(os.path.dirname(__file__), "worlds")
+        ):
             world_file = os.path.splitext(base_filename)[0]
 
     # Create Karel and assign it to live in the newly created world

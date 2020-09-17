@@ -110,8 +110,12 @@ class KarelCanvas(tk.Canvas):
 
         # Calculate the maximum possible cell size in both directions
         # We will use the smaller of the two as the bounding cell size
-        horizontal_cell_size = (self.winfo_width() - 2 * BORDER_OFFSET) / self.world.num_avenues
-        vertical_cell_size = (self.winfo_height() - 2 * BORDER_OFFSET) / self.world.num_streets
+        horizontal_cell_size = (
+            self.winfo_width() - 2 * BORDER_OFFSET
+        ) / self.world.num_avenues
+        vertical_cell_size = (
+            self.winfo_height() - 2 * BORDER_OFFSET
+        ) / self.world.num_streets
 
         # Save this as an instance variable for later use
         self.cell_size = min(horizontal_cell_size, vertical_cell_size)
@@ -127,10 +131,18 @@ class KarelCanvas(tk.Canvas):
 
     def draw_bounding_rectangle(self):
         # Draw the external bounding lines of Karel's world
-        self.create_line(self.left_x, self.top_y, self.right_x, self.top_y, width=LINE_WIDTH)
-        self.create_line(self.left_x, self.top_y, self.left_x, self.bottom_y, width=LINE_WIDTH)
-        self.create_line(self.right_x, self.top_y, self.right_x, self.bottom_y, width=LINE_WIDTH)
-        self.create_line(self.left_x, self.bottom_y, self.right_x, self.bottom_y, width=LINE_WIDTH)
+        self.create_line(
+            self.left_x, self.top_y, self.right_x, self.top_y, width=LINE_WIDTH
+        )
+        self.create_line(
+            self.left_x, self.top_y, self.left_x, self.bottom_y, width=LINE_WIDTH
+        )
+        self.create_line(
+            self.right_x, self.top_y, self.right_x, self.bottom_y, width=LINE_WIDTH
+        )
+        self.create_line(
+            self.left_x, self.bottom_y, self.right_x, self.bottom_y, width=LINE_WIDTH
+        )
 
     def label_axes(self):
         # Label the avenue axes
@@ -204,7 +216,9 @@ class KarelCanvas(tk.Canvas):
         self.create_polygon(points, fill="light grey", tag="beeper")
 
         if count > 1:
-            self.create_text(corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper")
+            self.create_text(
+                corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper"
+            )
 
     def draw_all_walls(self):
         for wall in self.world.walls:
@@ -259,12 +273,20 @@ class KarelCanvas(tk.Canvas):
 
         if self.icon == "karel":
             karel_origin_x = (
-                corner_x - self.cell_size / 2 + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
+                corner_x
+                - self.cell_size / 2
+                + KAREL_LEFT_HORIZONTAL_PAD * self.cell_size
             )
-            karel_origin_y = corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
+            karel_origin_y = (
+                corner_y - self.cell_size / 2 + KAREL_VERTICAL_OFFSET * self.cell_size
+            )
 
-            self.draw_karel_body(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
-            self.draw_karel_legs(karel_origin_x, karel_origin_y, center, self.karel.direction.value)
+            self.draw_karel_body(
+                karel_origin_x, karel_origin_y, center, self.karel.direction.value
+            )
+            self.draw_karel_legs(
+                karel_origin_x, karel_origin_y, center, self.karel.direction.value
+            )
         elif self.icon == "simple":
             self.draw_simple_karel_icon(center, self.karel.direction.value)
 
@@ -328,8 +350,8 @@ class KarelCanvas(tk.Canvas):
         outer_points = self.generate_external_karel_points(x, y, center, direction)
         inner_points = self.generate_internal_karel_points(x, y, center, direction)
 
-        # Non-convex polygon that determines Karel's entire body is a
-        # combination of the two sets of points defining internal and external components
+        # Non-convex polygon that determines Karel's entire body is a combination
+        # of the two sets of points defining internal and external components
         entire_body_points = outer_points + inner_points
 
         # First draw the filled non-convex polygon
@@ -373,7 +395,10 @@ class KarelCanvas(tk.Canvas):
         points += [x - leg_length, y + vertical_offset]
         points += [x - leg_length, y + vertical_offset + foot_length]
         points += [x - leg_length + leg_foot_width, y + vertical_offset + foot_length]
-        points += [x - leg_length + leg_foot_width, y + vertical_offset + leg_foot_width]
+        points += [
+            x - leg_length + leg_foot_width,
+            y + vertical_offset + leg_foot_width,
+        ]
         points += [x, y + vertical_offset + leg_foot_width]
         points += [x, y + vertical_offset]
 
@@ -389,7 +414,10 @@ class KarelCanvas(tk.Canvas):
         points += [x + horizontal_offset, y + leg_length]
         points += [x + horizontal_offset + foot_length, y + leg_length]
         points += [x + horizontal_offset + foot_length, y + leg_length - leg_foot_width]
-        points += [x + horizontal_offset + leg_foot_width, y + leg_length - leg_foot_width]
+        points += [
+            x + horizontal_offset + leg_foot_width,
+            y + leg_length - leg_foot_width,
+        ]
         points += [x + horizontal_offset + leg_foot_width, y]
         points += [x + horizontal_offset, y]
 
@@ -401,12 +429,21 @@ class KarelCanvas(tk.Canvas):
         simple_karel_height = self.cell_size * SIMPLE_KAREL_HEIGHT
         center_x, center_y = center
         points = []
-        points += [center_x - simple_karel_width / 2, center_y - simple_karel_height / 2]
-        points += [center_x - simple_karel_width / 2, center_y + simple_karel_height / 2]
+        points += [
+            center_x - simple_karel_width / 2,
+            center_y - simple_karel_height / 2,
+        ]
+        points += [
+            center_x - simple_karel_width / 2,
+            center_y + simple_karel_height / 2,
+        ]
         points += [center_x, center_y + simple_karel_height / 2]
         points += [center_x + simple_karel_width / 2, center_y]
         points += [center_x, center_y - simple_karel_height / 2]
-        points += [center_x - simple_karel_width / 2, center_y - simple_karel_height / 2]
+        points += [
+            center_x - simple_karel_width / 2,
+            center_y - simple_karel_height / 2,
+        ]
         self.rotate_points(center, points, direction)
         self.create_polygon(points, fill="white")
 
@@ -414,7 +451,11 @@ class KarelCanvas(tk.Canvas):
         return self.left_x + self.cell_size / 2 + (avenue - 1) * self.cell_size
 
     def calculate_corner_y(self, street):
-        return self.top_y + self.cell_size / 2 + (self.world.num_streets - street) * self.cell_size
+        return (
+            self.top_y
+            + self.cell_size / 2
+            + (self.world.num_streets - street) * self.cell_size
+        )
 
     def click_in_world(self, x, y):
         x = x - self.left_x
@@ -452,7 +493,9 @@ class KarelCanvas(tk.Canvas):
 
     @staticmethod
     def rotate_points(center, points, direction):
-        """ Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm """
+        """
+        Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
+        """
         cangle = cmath.exp(direction * 1j)
         center = complex(center[0], center[1])
         for i in range(0, len(points), 2):

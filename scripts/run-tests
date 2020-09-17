@@ -13,7 +13,7 @@ cd "${0%/*}/.."
 # Auto-code formatters
 f2format -q --no-archive .
 isort .
-black . -l 100
+black .
 git add .
 
 # Style Checking

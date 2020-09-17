@@ -55,7 +55,15 @@ from .karel_definitions import (
 )
 
 INIT_SPEED = 50
-VALID_WORLD_KEYWORDS = ["dimension", "wall", "beeper", "karel", "speed", "beeperbag", "color"]
+VALID_WORLD_KEYWORDS = [
+    "dimension",
+    "wall",
+    "beeper",
+    "karel",
+    "speed",
+    "beeperbag",
+    "color",
+]
 KEYWORD_DELIM = ":"
 PARAM_DELIM = ";"
 DEFAULT_WORLD_FILE = "default_world.w"
@@ -66,7 +74,7 @@ class KarelWorld:
         """
         Karel World constructor
         Parameters:
-            world_file: filename of world file containing the initial state of Karel's world
+            world_file: filename containing the initial state of Karel's world
         """
         self.world_name = world_file
         self._world_file = self.process_world(world_file)
@@ -123,7 +131,9 @@ class KarelWorld:
                 return open(default_world)
             raise FileNotFoundError(
                 "Default world cannot be found in: {}\n"
-                "Please raise an issue on the stanfordkarel GitHub.".format(default_worlds_path)
+                "Please raise an issue on the stanfordkarel GitHub.".format(
+                    default_worlds_path
+                )
             )
 
         if os.path.isfile(world_file):
@@ -141,7 +151,8 @@ class KarelWorld:
         sys.tracebacklimit = 0
         raise FileNotFoundError(
             "The specified file was not one of the provided worlds.\n"
-            "Please store custom worlds in a folder named worlds/, or use a world listed below:\n{}"
+            "Please store custom worlds in a folder named worlds/, "
+            "or use a world listed below:\n{}"
             "\nPass the default world as a parameter in run_karel_program().\n"
             "    e.g. run_karel_program('checkerboard_karel')".format(
                 "\n".join(
@@ -207,7 +218,10 @@ class KarelWorld:
                 coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
                 if coordinate:
                     # avenue, street
-                    params["location"] = (int(coordinate.group(1)), int(coordinate.group(2)))
+                    params["location"] = (
+                        int(coordinate.group(1)),
+                        int(coordinate.group(2)),
+                    )
                     continue
 
                 # check to see if the parameter is a direction value
@@ -218,7 +232,9 @@ class KarelWorld:
                 elif keyword == "color":
                     if param.title() not in COLOR_MAP:
                         raise ValueError(
-                            "Error: {} is invalid parameter for {}.".format(param, keyword)
+                            "Error: {} is invalid parameter for {}.".format(
+                                param, keyword
+                            )
                         )
                     params["color"] = param.title()
 
@@ -232,7 +248,9 @@ class KarelWorld:
                         params["val"] = int(100 * float(param))
                     except ValueError as e:
                         raise ValueError(
-                            "Error: {} is invalid parameter for {}.".format(param, keyword)
+                            "Error: {} is invalid parameter for {}.".format(
+                                param, keyword
+                            )
                         ) from e
 
                 # must be a digit then
@@ -254,9 +272,8 @@ class KarelWorld:
 
             if ":" not in line:
                 print(
-                    "Incorrectly formatted line - ignoring line {} of world file: {}".format(
-                        i, line
-                    )
+                    "Incorrectly formatted line - "
+                    "ignoring line {} of world file: {}".format(i, line)
                 )
                 continue
 
@@ -298,7 +315,11 @@ class KarelWorld:
                 self._corner_colors[params["location"]] = params["color"]
 
             else:
-                print("Invalid keyword - ignoring line {} of world file: {}".format(i, line))
+                print(
+                    "Invalid keyword - ignoring line {} of world file: {}".format(
+                        i, line
+                    )
+                )
 
     def add_beeper(self, avenue, street):
         self._beepers[(avenue, street)] += 1
@@ -366,8 +387,9 @@ class KarelWorld:
             # Next, output all walls
             for wall in self._walls:
                 f.write(
-                    "Wall: ({}, {}); "
-                    "{}\n".format(wall.avenue, wall.street, DIRECTIONS_MAP_INVERSE[wall.direction])
+                    "Wall: ({}, {}); {}\n".format(
+                        wall.avenue, wall.street, DIRECTIONS_MAP_INVERSE[wall.direction]
+                    )
                 )
 
             # Next, output all beepers
@@ -381,8 +403,9 @@ class KarelWorld:
 
             # Next, output Karel information
             f.write(
-                "Karel: ({}, {}); "
-                "{}\n".format(karel.avenue, karel.street, DIRECTIONS_MAP_INVERSE[karel.direction])
+                "Karel: ({}, {}); {}\n".format(
+                    karel.avenue, karel.street, DIRECTIONS_MAP_INVERSE[karel.direction]
+                )
             )
 
             # Finally, output beeperbag info

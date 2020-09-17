@@ -233,9 +233,9 @@ class Karel:
 
     def pick_beeper(self):
         """
-        This function removes a beeper from the corner that Karel is currently standing on
-        and increases Karel's beeper count by 1. If there are no beepers on Karel's current
-        corner, then this function raises a KarelException.
+        This function removes a beeper from the corner that Karel is currently
+        standing on and increases Karel's beeper count by 1. If there are no beepers
+        on Karel's current corner, then this function raises a KarelException.
 
         Parameters: None
         Returns: None
@@ -245,7 +245,8 @@ class Karel:
                 self._avenue,
                 self._street,
                 self._direction,
-                "Karel attempted to pick up a beeper, but there were none on the current corner.",
+                "Karel attempted to pick up a beeper, "
+                "but there were none on the current corner.",
             )
 
         if self._num_beepers != INFINITY:
@@ -285,7 +286,7 @@ class Karel:
         if not self.world.in_bounds(next_avenue, next_street):
             return False
 
-        # front is not clear if wall exists in same direction of where we're currently facing
+        # front is not clear if wall exists in same direction we're currently facing
         if self.world.wall_exists(self._avenue, self._street, direction):
             return False
 
@@ -364,8 +365,8 @@ class Karel:
 
         Parameters: None
         Returns:
-            beepers_on_corner (Bool) - True if there's at least one beeper on Karel's current corner
-                                       False otherwise
+            beepers_on_corner (Bool) - True if there's at least one beeper
+                                       on Karel's current corner, False otherwise
         """
         return self.world.beepers[(self.avenue, self.street)] != 0
 
@@ -386,7 +387,7 @@ class Karel:
         return self._num_beepers != 0
 
     def no_beepers_in_bag(self):
-        # Only 0 beepers in bag indicates empty bag – negative numbers represent INFINITY
+        # Only 0 beepers in bag indicates empty bag – negative represents INFINITY
         return self._num_beepers == 0
 
     def facing_north(self):
@@ -465,9 +466,8 @@ class Karel:
                 self._avenue,
                 self._street,
                 self._direction,
-                "Karel attempted to paint the corner with color {}, which is not valid.".format(
-                    color
-                ),
+                "Karel attempted to paint the corner with color {}, "
+                "which is not valid.".format(color),
             )
         self.world.paint_corner(self.avenue, self.street, color)
 
@@ -477,7 +477,8 @@ class Karel:
         corner is the specified color.
 
         Parameters:
-            color (str) - Color string representing the color to check the current corner for
+            color (str) - Color string representing the color to
+            check the current corner for
         Returns:
             is_color (Bool) - True if Karel's current corner is the specified color
                               False otherwise

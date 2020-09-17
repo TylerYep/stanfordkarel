@@ -42,7 +42,12 @@ def run_world_editor():
 
 class WorldBuilderApplication(tk.Frame):
     def __init__(
-        self, master=None, window_width=800, window_height=400, canvas_width=600, canvas_height=400
+        self,
+        master=None,
+        window_width=800,
+        window_height=400,
+        canvas_width=600,
+        canvas_height=400,
     ):
         # set window background to contrast white Karel canvas
         master.configure(background=LIGHT_GREY)
@@ -51,7 +56,9 @@ class WorldBuilderApplication(tk.Frame):
         master.rowconfigure(0, weight=1)
         master.columnconfigure(1, weight=1)
 
-        super().__init__(master, width=window_width, height=window_height, background=LIGHT_GREY)
+        super().__init__(
+            master, width=window_width, height=window_height, background=LIGHT_GREY
+        )
         self.icon = DEFAULT_ICON
         self.window_width = window_width
         self.window_height = window_height
@@ -98,7 +105,7 @@ class WorldBuilderApplication(tk.Frame):
             if default:
                 num_avenues = DEFAULT_SIZE
             else:
-                # In this case, we can just cancel execution and return to existing world
+                # Cancel execution and return to existing world
                 return
 
         num_streets = simpledialog.askinteger(
@@ -112,7 +119,7 @@ class WorldBuilderApplication(tk.Frame):
             if default:
                 num_streets = DEFAULT_SIZE
             else:
-                # In this case, we can just cancel execution and return to existing world
+                # Cancel execution and return to existing world
                 return
         if init:
             self.karel = Karel()
@@ -156,7 +163,11 @@ class WorldBuilderApplication(tk.Frame):
         world are drawn.
         """
         self.canvas = KarelCanvas(
-            self.canvas_width, self.canvas_height, self.master, world=self.world, karel=self.karel
+            self.canvas_width,
+            self.canvas_height,
+            self.master,
+            world=self.world,
+            karel=self.karel,
         )
         self.canvas.grid(column=1, row=0, sticky="NESW")
         self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
@@ -198,7 +209,9 @@ class WorldBuilderApplication(tk.Frame):
         self.karel_direction_var.set(DIRECTIONS_MAP_INVERSE[self.karel.direction])
         self.karel_direction_var.trace("w", self.update_karel_direction)
 
-        dir_label = tk.Label(self.dir_radio_frame, text="Karel Direction: ", bg=LIGHT_GREY)
+        dir_label = tk.Label(
+            self.dir_radio_frame, text="Karel Direction: ", bg=LIGHT_GREY
+        )
         dir_label.pack(side="left")
         tk.Radiobutton(
             self.dir_radio_frame,
@@ -231,13 +244,17 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_beeper_bag_radio_buttons(self):
         self.beeper_bag_radio_frame = tk.Frame(self, bg=LIGHT_GREY)
-        self.beeper_bag_radio_frame.grid(row=4, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
+        self.beeper_bag_radio_frame.grid(
+            row=4, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew"
+        )
 
         self.beeper_bag_var = tk.IntVar()
         self.beeper_bag_var.set(self.karel.num_beepers)
         self.beeper_bag_var.trace("w", self.update_karel_num_beepers)
 
-        beeper_bag_label = tk.Label(self.beeper_bag_radio_frame, text="Beeper Bag: ", bg=LIGHT_GREY)
+        beeper_bag_label = tk.Label(
+            self.beeper_bag_radio_frame, text="Beeper Bag: ", bg=LIGHT_GREY
+        )
         beeper_bag_label.pack(side="left")
         tk.Radiobutton(
             self.beeper_bag_radio_frame,
@@ -256,7 +273,9 @@ class WorldBuilderApplication(tk.Frame):
 
     def create_action_radio_buttons(self):
         self.action_radio_frame = tk.Frame(self, bg=LIGHT_GREY)
-        self.action_radio_frame.grid(row=5, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
+        self.action_radio_frame.grid(
+            row=5, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew"
+        )
 
         self.action_var = tk.StringVar()
         self.action_var.set("move_karel")

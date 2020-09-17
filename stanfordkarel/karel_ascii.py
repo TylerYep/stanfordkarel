@@ -54,7 +54,9 @@ def compare_output(first, second):
 
     def create_two_column_string(col1, col2):
         """ col1 and col2 are Lists. """
-        return map(lambda x: "{}{}{}".format(x[0], " " * SPACING, x[1]), zip(col1, col2))
+        return map(
+            lambda x: "{}{}{}".format(x[0], " " * SPACING, x[1]), zip(col1, col2)
+        )
 
     def symmetric_difference(a, b):
         extra_a, extra_b = {}, {}
@@ -77,7 +79,9 @@ def compare_output(first, second):
     text_spacing = " " * (world_width - len(header1) + SPACING + 1)
     two_columns = create_two_column_string(this, that)
     output = "\n".join(two_columns)
-    fancy_arrows = "{}❯{}❯{}❯ ".format(Color.RED.value, Color.YELLOW.value, Color.GREEN.value)
+    fancy_arrows = "{}❯{}❯{}❯ ".format(
+        Color.RED.value, Color.YELLOW.value, Color.GREEN.value
+    )
 
     result = "\n\n{} {}{}{}" "\n{}{}{}\n{}\n".format(
         fancy_arrows,
@@ -94,10 +98,14 @@ def compare_output(first, second):
         result += (
             "Karel did not end up in the same location in both worlds:\n"
             "Student: {}\n"
-            "Expected: {}\n\n".format((first.avenue, first.street), (second.avenue, second.street))
+            "Expected: {}\n\n".format(
+                (first.avenue, first.street), (second.avenue, second.street)
+            )
         )
     if first.world.beepers != second.world.beepers:
-        extra_a, extra_b = symmetric_difference(first.world.beepers, second.world.beepers)
+        extra_a, extra_b = symmetric_difference(
+            first.world.beepers, second.world.beepers
+        )
         result += (
             "Beepers do not match: "
             "(Only beepers that appear in one world but not the other are listed)\n"
@@ -111,7 +119,10 @@ def karel_ascii(world, karel_street, karel_avenue):
     """ Creates a Karel World in ASCII Art! """
 
     def tile_pair_has_wall(r, c, direction):
-        """ Checks if the tile at r, c should have a wall by checking itself and its neighbors. """
+        """
+        Checks whether the tile at r, c should have a wall by
+        checking itself and its neighbors.
+        """
 
         def tile_has_wall(r, c, direction):
             if 0 <= r < world.num_streets and 0 <= c < world.num_avenues:
@@ -120,16 +131,24 @@ def karel_ascii(world, karel_street, karel_avenue):
             return False
 
         if direction == Direction.SOUTH:
-            return tile_has_wall(r, c, Direction.SOUTH) or tile_has_wall(r + 1, c, Direction.NORTH)
+            return tile_has_wall(r, c, Direction.SOUTH) or tile_has_wall(
+                r + 1, c, Direction.NORTH
+            )
         if direction == Direction.NORTH:
-            return tile_has_wall(r, c, Direction.NORTH) or tile_has_wall(r - 1, c, Direction.SOUTH)
+            return tile_has_wall(r, c, Direction.NORTH) or tile_has_wall(
+                r - 1, c, Direction.SOUTH
+            )
         if direction == Direction.WEST:
-            return tile_has_wall(r, c, Direction.WEST) or tile_has_wall(r, c - 1, Direction.EAST)
+            return tile_has_wall(r, c, Direction.WEST) or tile_has_wall(
+                r, c - 1, Direction.EAST
+            )
         if direction == Direction.EAST:
-            return tile_has_wall(r, c, Direction.EAST) or tile_has_wall(r, c + 1, Direction.WEST)
+            return tile_has_wall(r, c, Direction.EAST) or tile_has_wall(
+                r, c + 1, Direction.WEST
+            )
 
     def get_next_line(r, c, next_block_start):
-        """ Given a tile, figures out what the lower line of the ASCII art should be. """
+        """ Given a tile, figures out the lower line of the ASCII art. """
 
         if tile_pair_has_wall(r, c, Direction.SOUTH):
             if (
@@ -157,9 +176,13 @@ def karel_ascii(world, karel_street, karel_avenue):
                 and tile_pair_has_wall(r + 1, c, Direction.WEST)
             ):
                 next_block_start = "┤"
-            elif next_block_start == HORIZONTAL and tile_pair_has_wall(r + 1, c, Direction.WEST):
+            elif next_block_start == HORIZONTAL and tile_pair_has_wall(
+                r + 1, c, Direction.WEST
+            ):
                 next_block_start = "┐"
-            elif next_block_start == HORIZONTAL and tile_pair_has_wall(r, c, Direction.WEST):
+            elif next_block_start == HORIZONTAL and tile_pair_has_wall(
+                r, c, Direction.WEST
+            ):
                 next_block_start = "┘"
             elif tile_pair_has_wall(r, c, Direction.WEST) and tile_pair_has_wall(
                 r + 1, c, Direction.WEST
@@ -170,7 +193,9 @@ def karel_ascii(world, karel_street, karel_avenue):
             next_block_start = " "
         return next_line, next_block_start
 
-    world_arr = [[Tile() for _ in range(world.num_avenues)] for _ in range(world.num_streets)]
+    world_arr = [
+        [Tile() for _ in range(world.num_avenues)] for _ in range(world.num_streets)
+    ]
 
     world_arr[world.num_streets - karel_street][karel_avenue - 1].value = "K"
     for (avenue, street), count in world.beepers.items():

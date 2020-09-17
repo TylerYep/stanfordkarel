@@ -104,7 +104,6 @@ class KarelException(Exception):
 
     def __str__(self):
         return (
-            "Karel crashed while on avenue {} and street {}, facing {}\nInvalid action: {}".format(
-                self.avenue, self.street, self.direction, self.message
-            )
-        )
+            "Karel crashed while on avenue {} and street {}, facing {}\n"
+            "Invalid action: {}"
+        ).format(self.avenue, self.street, self.direction, self.message)
