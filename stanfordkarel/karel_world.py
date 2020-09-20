@@ -116,6 +116,50 @@ class KarelWorld:
             and self.corner_colors == other.corner_colors
         )
 
+    @property
+    def karel_starting_location(self):
+        return self._karel_starting_location
+
+    @property
+    def karel_starting_direction(self):
+        return self._karel_starting_direction
+
+    @property
+    def karel_starting_beeper_count(self):
+        return self._karel_starting_beeper_count
+
+    @property
+    def init_speed(self):
+        return self._init_speed
+
+    @property
+    def num_streets(self):
+        return self._num_streets
+
+    @num_streets.setter
+    def num_streets(self, val):
+        self._num_streets = val
+
+    @property
+    def num_avenues(self):
+        return self._num_avenues
+
+    @num_avenues.setter
+    def num_avenues(self, val):
+        self._num_avenues = val
+
+    @property
+    def beepers(self):
+        return self._beepers
+
+    @property
+    def corner_colors(self):
+        return self._corner_colors
+
+    @property
+    def walls(self):
+        return self._walls
+
     @staticmethod
     def process_world(world_file):
         """
@@ -164,106 +208,67 @@ class KarelWorld:
             )
         )
 
-    @property
-    def karel_starting_location(self):
-        return self._karel_starting_location
+    @staticmethod
+    def get_alt_wall(wall):
+        if wall.direction == Direction.NORTH:
+            return Wall(wall.avenue, wall.street + 1, Direction.SOUTH)
+        if wall.direction == Direction.SOUTH:
+            return Wall(wall.avenue, wall.street - 1, Direction.NORTH)
+        if wall.direction == Direction.EAST:
+            return Wall(wall.avenue + 1, wall.street, Direction.WEST)
+        if wall.direction == Direction.WEST:
+            return Wall(wall.avenue - 1, wall.street, Direction.EAST)
+        raise ValueError
 
-    @property
-    def karel_starting_direction(self):
-        return self._karel_starting_direction
+    @staticmethod
+    def parse_parameters(keyword, param_str):
+        params = {}
+        for param in param_str.split(PARAM_DELIM):
+            param = param.strip()
 
-    @property
-    def karel_starting_beeper_count(self):
-        return self._karel_starting_beeper_count
+            # check to see if parameter encodes a location
+            coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
+            if coordinate:
+                # avenue, street
+                params["location"] = int(coordinate.group(1)), int(coordinate.group(2))
+                continue
 
-    @property
-    def init_speed(self):
-        return self._init_speed
+            # check to see if the parameter is a direction value
+            if param in DIRECTIONS_MAP:
+                params["direction"] = DIRECTIONS_MAP[param]
 
-    @property
-    def num_streets(self):
-        return self._num_streets
-
-    @num_streets.setter
-    def num_streets(self, val):
-        self._num_streets = val
-
-    @property
-    def num_avenues(self):
-        return self._num_avenues
-
-    @num_avenues.setter
-    def num_avenues(self, val):
-        self._num_avenues = val
-
-    @property
-    def beepers(self):
-        return self._beepers
-
-    @property
-    def corner_colors(self):
-        return self._corner_colors
-
-    @property
-    def walls(self):
-        return self._walls
-
-    def load_from_file(self):
-        def parse_parameters(keyword, param_str):
-            params = {}
-            for param in param_str.split(PARAM_DELIM):
-                param = param.strip()
-
-                # check to see if parameter encodes a location
-                coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
-                if coordinate:
-                    # avenue, street
-                    params["location"] = (
-                        int(coordinate.group(1)),
-                        int(coordinate.group(2)),
-                    )
-                    continue
-
-                # check to see if the parameter is a direction value
-                if param in DIRECTIONS_MAP:
-                    params["direction"] = DIRECTIONS_MAP[param]
-
-                # check to see if parameter encodes a numerical value or color string
-                elif keyword == "color":
-                    if param.title() not in COLOR_MAP:
-                        raise ValueError(
-                            "Error: {} is invalid parameter for {}.".format(
-                                param, keyword
-                            )
-                        )
-                    params["color"] = param.title()
-
-                # handle the edge case where Karel has infinite beepers
-                elif param in ("infinity", "infinite") and keyword == "beeperbag":
-                    params["val"] = INFINITY
-
-                # float values are only valid for the speed parameter.
-                elif keyword == "speed":
-                    try:
-                        params["val"] = int(100 * float(param))
-                    except ValueError as e:
-                        raise ValueError(
-                            "Error: {} is invalid parameter for {}.".format(
-                                param, keyword
-                            )
-                        ) from e
-
-                # must be a digit then
-                elif param.isdigit():
-                    params["val"] = int(param)
-
-                else:
+            # check to see if parameter encodes a numerical value or color string
+            elif keyword == "color":
+                if param.title() not in COLOR_MAP:
                     raise ValueError(
                         "Error: {} is invalid parameter for {}.".format(param, keyword)
                     )
+                params["color"] = param.title()
 
-            return params
+            # handle the edge case where Karel has infinite beepers
+            elif param in ("infinity", "infinite") and keyword == "beeperbag":
+                params["val"] = INFINITY
 
+            # float values are only valid for the speed parameter.
+            elif keyword == "speed":
+                try:
+                    params["val"] = int(100 * float(param))
+                except ValueError as e:
+                    raise ValueError(
+                        "Error: {} is invalid parameter for {}.".format(param, keyword)
+                    ) from e
+
+            # must be a digit then
+            elif param.isdigit():
+                params["val"] = int(param)
+
+            else:
+                raise ValueError(
+                    "Error: {} is invalid parameter for {}.".format(param, keyword)
+                )
+        return params
+
+    def load_from_file(self):
         for i, line in enumerate(self._world_file):
             # Ignore blank lines and lines with no comma delineator
             line = line.strip()
@@ -281,7 +286,7 @@ class KarelWorld:
 
             # only accept valid keywords as defined in world file spec
             # TODO: add error detection for keywords with insufficient parameters
-            params = parse_parameters(keyword, param_str)
+            params = self.parse_parameters(keyword, param_str)
 
             # handle all different possible keyword cases
             if keyword == "dimension":
@@ -340,18 +345,6 @@ class KarelWorld:
             self._walls.remove(wall)
         if alt_wall in self._walls:
             self._walls.remove(alt_wall)
-
-    @staticmethod
-    def get_alt_wall(wall):
-        if wall.direction == Direction.NORTH:
-            return Wall(wall.avenue, wall.street + 1, Direction.SOUTH)
-        if wall.direction == Direction.SOUTH:
-            return Wall(wall.avenue, wall.street - 1, Direction.NORTH)
-        if wall.direction == Direction.EAST:
-            return Wall(wall.avenue + 1, wall.street, Direction.WEST)
-        if wall.direction == Direction.WEST:
-            return Wall(wall.avenue - 1, wall.street, Direction.EAST)
-        raise ValueError
 
     def paint_corner(self, avenue, street, color):
         self._corner_colors[(avenue, street)] = color

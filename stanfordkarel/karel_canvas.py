@@ -59,10 +59,22 @@ class KarelCanvas(tk.Canvas):
         self.draw_world()
         self.draw_karel()
 
-    def create_polygon(
-        self, points, fill="black", outline="black", width=KAREL_LINE_WIDTH, tag="karel"
-    ):
-        super().create_polygon(points, fill=fill, outline=outline, width=width, tag=tag)
+    @staticmethod
+    def rotate_points(center, points, direction):
+        """
+        Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
+        """
+        cangle = cmath.exp(direction * 1j)
+        center = complex(center[0], center[1])
+        for i in range(0, len(points), 2):
+            x, y = points[i], points[i + 1]
+            v = cangle * (complex(x, y) - center) + center
+            points[i], points[i + 1] = v.real, v.imag
+
+    def create_polygon(self, points, fill="black", outline="black", tag="karel"):
+        super().create_polygon(
+            points, fill=fill, outline=outline, width=KAREL_LINE_WIDTH, tag=tag
+        )
 
     def set_icon(self, icon):
         self.icon = icon
@@ -490,15 +502,3 @@ class KarelCanvas(tk.Canvas):
 
         # No wall within threshold distance
         return None
-
-    @staticmethod
-    def rotate_points(center, points, direction):
-        """
-        Rotation logic derived from http://effbot.org/zone/tkinter-complex-canvas.htm
-        """
-        cangle = cmath.exp(direction * 1j)
-        center = complex(center[0], center[1])
-        for i in range(0, len(points), 2):
-            x, y = points[i], points[i + 1]
-            v = cangle * (complex(x, y) - center) + center
-            points[i], points[i + 1] = v.real, v.imag
