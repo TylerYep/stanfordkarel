@@ -17,9 +17,11 @@ import os
 import sys
 import tkinter as tk
 
+from .didyoumean import didyoumean_hook
 from .karel import Karel
 from .karel_application import KarelApplication
 
+sys.excepthook = didyoumean_hook
 """
 The following function definitions are defined as stubs so that IDEs can recognize
 the function definitions in student code. These names are re-bound upon program
