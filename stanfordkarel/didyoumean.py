@@ -16,8 +16,8 @@ ScopedObj = namedtuple("ScopedObj", "obj scope")
 
 
 def merge_dict(*dicts):
-    """Merge dicts and return a dictionary mapping key to list of values.
-
+    """
+    Merge dicts and return a dictionary mapping key to list of values.
     Order of the values corresponds to the order of the original dicts.
     """
     ret = {}
@@ -95,20 +95,18 @@ def suggest_name_not_defined(value, frame, groups):
     return itertools.chain(suggest_name_as_name_typo(name, objs))
 
 
-def get_suggestion_string(sugg):
-    """Return the suggestion list as a string."""
-    return ". Did you mean " + ", ".join(list(sugg)) + "?" if sugg else ""
-
-
 def get_suggestions_for_exception(value, traceback):
     """Get suggestions for an exception."""
     frame = get_last_frame(traceback)
-    return itertools.chain.from_iterable(
+    suggestions = itertools.chain.from_iterable(
         func(value, frame)
         for error_type, functions in SUGGESTION_FUNCTIONS.items()
         if isinstance(value, error_type)
         for func in functions
     )
+    if suggestions:
+        return ". Did you mean {}?".format(", ".join(list(suggestions)))
+    return ""
 
 
 def get_close_matches(word, possibilities):
@@ -143,7 +141,8 @@ def add_string_to_exception(value, string):
     # (for `str()`, not for `repr()`).
     # Also, elements in args might not be strings or args might me empty
     # so we add to the first string and add the element otherwise.
-    assert isinstance(value.args, tuple)
+    if not isinstance(value.args, tuple):
+        raise RuntimeError
     if string:
         lst_args = list(value.args)
         for i, arg in enumerate(lst_args):
@@ -172,8 +171,6 @@ def get_last_frame(traceback):
 
 def didyoumean_hook(type_, value, traceback, prev_hook=sys.excepthook):
     """Hook to be substituted to sys.excepthook to enhance exceptions."""
-    add_string_to_exception(
-        value,
-        get_suggestion_string(get_suggestions_for_exception(value, traceback)),
-    )
+    if type_ in (NameError,):
+        add_string_to_exception(value, get_suggestions_for_exception(value, traceback))
     return prev_hook(type_, value, traceback)

@@ -30,10 +30,7 @@ def style_test(func):
 
 
 class StyleChecker:
-    """
-    #TODO some measure of decomposition
-    #TODO check recursion
-    """
+    """ Style Checker for Karel. """
 
     def __init__(self, code_file):
         self.student_code = StudentCode(code_file)
@@ -87,7 +84,7 @@ class StyleChecker:
                 ok = False
             seen_already.add(f)
             if len(f) < min_name_length and f not in ("main", "move"):
-                print("function {} has a pretty short name.".format(f))
+                print("Function {} has a pretty short name.".format(f))
                 ok = False
         return ok
 
