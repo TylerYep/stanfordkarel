@@ -1,8 +1,9 @@
 # stanford-karel
 
 [![Python 3.5+](https://img.shields.io/badge/python-3.5+-blue.svg)](https://www.python.org/downloads/release/python-350/)
+[![Build Status](https://travis-ci.com/TylerYep/stanfordkarel.svg?branch=master)](https://travis-ci.com/TylerYep/stanfordkarel)
 [![PyPI version](https://badge.fury.io/py/stanfordkarel.svg)](https://badge.fury.io/py/stanfordkarel)
-[![GitHub license](https://img.shields.io/github/license/TylerYep/stanford-karel)](https://github.com/TylerYep/stanford-karel/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/TylerYep/stanfordkarel)](https://github.com/TylerYep/stanfordkarel/blob/master/LICENSE)
 [![Downloads](https://pepy.tech/badge/stanfordkarel)](https://pepy.tech/project/stanfordkarel)
 
 This is a Python implementation of Karel for Stanford's CS 106A. This package is available on PyPI and allows you to run Karel programs without any additional setup!
@@ -124,7 +125,11 @@ Everything important is located in `stanfordkarel/`.
 
 # Contributing
 
-All issues and pull requests are much appreciated! To run all tests and other auto-formatting tools, check out `scripts/run-tests`.
+All issues and pull requests are much appreciated!
+
+- First, run `pre-commit install`.
+- To see test coverage scripts and other auto-formatting tools, use `pre-commit run`.
+- To run all tests, run `pytest`.
 
 ## Future Milestones
 

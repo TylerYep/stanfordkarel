@@ -332,7 +332,7 @@ class WorldBuilderApplication(tk.Frame):
             bg=LIGHT_GREY,
         ).pack(side="left")
         self.color_dropdown = tk.OptionMenu(
-            color_selection_frame, self.color_var, *sorted(COLOR_MAP.keys())
+            color_selection_frame, self.color_var, *sorted(COLOR_MAP)
         )
         self.color_dropdown["bg"] = LIGHT_GREY
         self.color_dropdown.pack(side="left")

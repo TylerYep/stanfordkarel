@@ -1,5 +1,12 @@
-# -*- coding: utf-8
-"""Logic to add suggestions to exceptions."""
+"""
+This file defines the logic to add suggestions to exceptions.
+
+Original Author: Tyler Yep
+Credits: Sylvain Desodt
+License: MIT
+Version: 1.0.0
+Email: tyep@cs.stanford.edu
+"""
 import difflib
 import itertools
 import re
