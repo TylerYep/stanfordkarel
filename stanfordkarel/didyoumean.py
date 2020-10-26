@@ -12,9 +12,10 @@ import itertools
 import re
 import sys
 from collections import namedtuple
+from typing import Any, Dict, List
 
 # To be used in `get_suggestions_for_exception`.
-SUGGESTION_FUNCTIONS = {}
+SUGGESTION_FUNCTIONS = {}  # type: Dict[Any, List[Any]]
 VAR_NAME = r"[^\d\W]\w*"
 NAMENOTDEFINED_RE = r"^(?:global )?name '(?P<name>{0})' " r"is not defined$".format(
     VAR_NAME

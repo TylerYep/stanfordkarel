@@ -12,7 +12,7 @@ Last Modified: 3/31/2020
 
 import os
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox, simpledialog  # type: ignore
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
 from .karel import Karel

@@ -22,10 +22,6 @@ Huge props to @nick-bowman for rewriting this project from scratch!
 
 `pip install stanfordkarel`
 
-or
-
-`git clone https://github.com/tyleryep/stanfordkarel.git`
-
 # Documentation
 
 ## Running Karel
@@ -58,7 +54,8 @@ python collect_newspaper_karel.py
 
 ![Karel Program](images/karel_program.png)
 
-Follow the Karel tutorial on the [Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
+Follow the Karel tutorial on the
+[Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
 
 ## Available Commands
 
