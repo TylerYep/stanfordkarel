@@ -2,12 +2,11 @@
 # pylint: disable=line-too-long
 from conftest import PROBLEMS
 from stanfordkarel.karel import KarelProgram
-from stanfordkarel.karel_ascii import karel_ascii
 
 
 def test_karel_ascii() -> None:
     karel = KarelProgram(PROBLEMS[4])
-    result = karel_ascii(karel.world, *karel.world.karel_start_location)
+    result = str(karel)
 
     assert result == (  # noqa
         "┌───────────────────────────────────────────────────────────────────────────────┐\n"

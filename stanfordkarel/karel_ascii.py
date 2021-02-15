@@ -233,8 +233,3 @@ def compare_output(first: Any, second: Any) -> str:
             f"Expected: {extra_b}\n\n"
         )
     return result
-
-
-def karel_ascii(world: Any, karel_street: int, karel_avenue: int) -> str:
-    """ Creates a Karel World in ASCII Art! """
-    return str(AsciiKarelWorld(world, karel_street, karel_avenue))

@@ -19,7 +19,7 @@ Last Modified: 3/31/2020
 """
 from __future__ import annotations
 
-from .karel_ascii import compare_output, karel_ascii
+from .karel_ascii import AsciiKarelWorld, compare_output
 from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
 from .karel_world import KarelWorld
 
@@ -66,7 +66,8 @@ class KarelProgram:
         self.num_beepers = self.world.karel_start_beeper_count
 
     def __repr__(self) -> str:
-        return karel_ascii(self.world, self.street, self.avenue)
+        """ Creates a Karel World in ASCII Art! """
+        return str(AsciiKarelWorld(self.world, self.street, self.avenue))
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelProgram):
