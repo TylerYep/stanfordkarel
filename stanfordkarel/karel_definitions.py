@@ -65,30 +65,18 @@ class Wall:
     """ Note that the World Editor only uses West & South to denote wall directions. """
 
     def __init__(self, avenue, street, direction):
-        self._avenue = avenue
-        self._street = street
-        self._direction = direction
+        self.avenue = avenue
+        self.street = street
+        self.direction = direction
 
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
     def __hash__(self):
-        return hash((self._avenue, self._street, self._direction))
+        return hash((self.avenue, self.street, self.direction))
 
     def __repr__(self):
-        return f"({self._avenue}, {self._street}) {self._direction}"
-
-    @property
-    def avenue(self):
-        return self._avenue
-
-    @property
-    def street(self):
-        return self._street
-
-    @property
-    def direction(self):
-        return self._direction
+        return f"({self.avenue}, {self.street}) {self.direction}"
 
 
 # Karel Application + Karel
