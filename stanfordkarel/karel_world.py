@@ -46,10 +46,25 @@ import copy
 import os
 import re
 import sys
-from typing import Any
+from enum import Enum, unique
+from typing import Any, NamedTuple
 
-from .karel_definitions import COLOR_MAP, INFINITY, Direction, Wall
-
+INFINITY = -1
+COLOR_MAP = {
+    "Red": "red",
+    "Black": "black",
+    "Cyan": "cyan",
+    "Dark Gray": "gray30",
+    "Gray": "gray55",
+    "Green": "green",
+    "Light Gray": "gray80",
+    "Magenta": "magenta3",
+    "Orange": "orange",
+    "Pink": "pink",
+    "White": "snow",
+    "Blue": "blue",
+    "Yellow": "yellow",
+}
 INIT_SPEED = 50
 VALID_WORLD_KEYWORDS = [
     "dimension",
@@ -353,3 +368,22 @@ class KarelWorld:
                 else "INFINITY"
             )
             f.write(f"BeeperBag: {beeper_output}\n")
+
+
+@unique
+class Direction(Enum):
+    EAST = "east"
+    SOUTH = "south"
+    WEST = "west"
+    NORTH = "north"
+
+    def __repr__(self) -> str:
+        return str(self.value)
+
+
+class Wall(NamedTuple):
+    """ Note that the World Editor only uses West & South to denote wall directions. """
+
+    avenue: int
+    street: int
+    direction: Direction

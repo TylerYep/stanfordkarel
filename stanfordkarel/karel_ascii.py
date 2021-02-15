@@ -11,7 +11,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import Any, Iterator
 
-from .karel_definitions import Direction
+from .karel_world import Direction, KarelWorld
 
 CHAR_WIDTH = 6
 HORIZONTAL, VERTICAL = "─", "│"
@@ -39,7 +39,7 @@ class Tile:  # pylint: disable=too-few-public-methods
 
 
 class AsciiKarelWorld:
-    def __init__(self, world: Any, karel_street: int, karel_avenue: int) -> None:
+    def __init__(self, world: KarelWorld, karel_street: int, karel_avenue: int) -> None:
         num_sts, num_aves = world.num_streets, world.num_avenues
         # Initialize Tiles
         self.world_arr = [[Tile() for _ in range(num_aves)] for _ in range(num_sts)]

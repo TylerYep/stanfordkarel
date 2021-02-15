@@ -23,9 +23,8 @@ from tkinter.messagebox import showwarning
 from types import FrameType
 from typing import Any, Callable
 
-from .karel import KarelProgram
-from .karel_canvas import KarelCanvas
-from .karel_definitions import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelException
+from .karel import KarelException, KarelProgram
+from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 
 
 class StudentCode:

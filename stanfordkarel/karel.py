@@ -20,8 +20,7 @@ Last Modified: 3/31/2020
 from __future__ import annotations
 
 from .karel_ascii import AsciiKarelWorld, compare_output
-from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
-from .karel_world import KarelWorld
+from .karel_world import COLOR_MAP, INFINITY, Direction, KarelWorld
 
 NEXT_DIRECTION_MAP = {
     Direction.NORTH: Direction.WEST,
@@ -406,3 +405,22 @@ class KarelProgram:
                               False otherwise
         """
         return self.world.corner_color(self.avenue, self.street) == color
+
+
+class KarelException(Exception):
+    """ The following classes define Karel-specific exceptions. """
+
+    def __init__(
+        self, avenue: int, street: int, direction: Direction, message: str
+    ) -> None:
+        super().__init__()
+        self.avenue = avenue
+        self.street = street
+        self.direction = direction.value.capitalize()
+        self.message = message
+
+    def __str__(self) -> str:
+        return (
+            f"Karel crashed while on avenue {self.avenue} and street {self.street}, "
+            f"facing {self.direction}\nInvalid action: {self.message}"
+        )

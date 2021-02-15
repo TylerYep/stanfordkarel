@@ -18,16 +18,8 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 from typing import Any, Callable
 
 from .karel import KarelProgram
-from .karel_canvas import KarelCanvas
-from .karel_definitions import (
-    COLOR_MAP,
-    DEFAULT_ICON,
-    INFINITY,
-    LIGHT_GREY,
-    PAD_X,
-    PAD_Y,
-    Direction,
-)
+from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
+from .karel_world import COLOR_MAP, INFINITY, Direction
 
 MIN_DIMENSIONS = 1
 MAX_DIMENSIONS = 50

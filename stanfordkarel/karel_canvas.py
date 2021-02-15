@@ -20,8 +20,7 @@ import math
 import tkinter as tk
 
 from .karel import KarelProgram
-from .karel_definitions import DEFAULT_ICON, Direction, Wall
-from .karel_world import KarelWorld
+from .karel_world import Direction, KarelWorld, Wall
 
 DIRECTION_TO_RADIANS = {
     Direction.EAST: 0,
@@ -29,6 +28,13 @@ DIRECTION_TO_RADIANS = {
     Direction.WEST: math.pi,
     Direction.NORTH: 3 * math.pi / 2,
 }
+
+# Karel Application + World Editor
+DEFAULT_ICON = "karel"
+PAD_X = 75
+PAD_Y = 10
+LIGHT_GREY = "#e5e5e5"
+
 WALL_DETECTION_THRESHOLD = 0.1
 BORDER_OFFSET = 17
 LABEL_OFFSET = 7
