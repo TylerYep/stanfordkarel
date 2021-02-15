@@ -15,7 +15,7 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog  # type: ignore
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 
-from .karel import Karel
+from .karel import KarelProgram
 from .karel_canvas import KarelCanvas
 from .karel_definitions import (
     COLOR_MAP,
@@ -125,7 +125,7 @@ class WorldBuilderApplication(tk.Frame):
                 # Cancel execution and return to existing world
                 return
         if init:
-            self.karel = Karel()
+            self.karel = KarelProgram()
             self.world = self.karel.world
         else:
             self.world.reload_world()
@@ -151,7 +151,7 @@ class WorldBuilderApplication(tk.Frame):
             return
 
         if init:
-            self.karel = Karel(filename)
+            self.karel = KarelProgram(filename)
             self.world = self.karel.world
         else:
             self.world.reload_world(filename=filename)

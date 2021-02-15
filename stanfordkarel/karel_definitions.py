@@ -76,7 +76,7 @@ class Wall:
         return hash((self.avenue, self.street, self.direction))
 
     def __repr__(self):
-        return f"({self.avenue}, {self.street}) {self.direction}"
+        return f"Wall({self.avenue}, {self.street}, {self.direction})"
 
 
 # Karel Application + Karel

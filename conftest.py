@@ -4,7 +4,7 @@ This also contains helper methods for running tests or autograders.
 """
 import os
 
-from stanfordkarel.karel import Karel
+from stanfordkarel.karel import KarelProgram
 from stanfordkarel.karel_application import StudentCode
 
 PROBLEMS = [
@@ -22,17 +22,17 @@ def execute_karel_code(code_file):
     module_name = os.path.basename(code_file)
     if module_name.endswith(".py"):
         module_name = os.path.splitext(module_name)[0]
-    karel = Karel(module_name)
+    karel = KarelProgram(module_name)
     student_code = StudentCode(code_file, karel)
     student_code.mod.main()
     assert karel.compare_with(
-        Karel(f"{module_name}_end")
+        KarelProgram(f"{module_name}_end")
     ), "Resulting world did not match expected result."
 
 
 def create_solution_worlds():
     for problem_name in PROBLEMS:
-        karel = Karel(problem_name)
+        karel = KarelProgram(problem_name)
         student_code = StudentCode(problem_name, karel)
         student_code.mod.main()
         karel.world.save_to_file(os.path.join("worlds", problem_name + "_end.w"), karel)

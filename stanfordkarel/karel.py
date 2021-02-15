@@ -40,7 +40,7 @@ DIRECTION_DELTA_MAP = {
 }
 
 
-class Karel:
+class KarelProgram:
     def __init__(self, world_file=None):
         """
         This functions instantiates a new Karel instance and sets its

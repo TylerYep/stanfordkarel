@@ -149,7 +149,7 @@ class KarelWorld:
         sys.tracebacklimit = 0
         available_worlds = "\n".join(
             [
-                (" " * 4) + os.path.splitext(world)[0]
+                f"  {os.path.splitext(world)[0]}"
                 for world in sorted(os.listdir(default_worlds_path))
             ]
         )

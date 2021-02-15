@@ -18,7 +18,7 @@ import sys
 import tkinter as tk
 
 from .didyoumean import didyoumean_hook
-from .karel import Karel
+from .karel import KarelProgram
 from .karel_application import KarelApplication
 
 sys.excepthook = didyoumean_hook
@@ -158,7 +158,7 @@ def run_karel_program(world_file=""):
             world_file = os.path.splitext(base_filename)[0]
 
     # Create Karel and assign it to live in the newly created world
-    karel = Karel(world_file)
+    karel = KarelProgram(world_file)
 
     # Initialize root Tk Window and spawn Karel application
     root = tk.Tk()

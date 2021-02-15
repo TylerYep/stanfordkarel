@@ -35,7 +35,7 @@ class Tile:  # pylint: disable=too-few-public-methods
         return result.center(5)
 
 
-class TileWorld:
+class AsciiKarelWorld:
     def __init__(self, world, karel_street, karel_avenue):
         num_sts, num_aves = world.num_streets, world.num_avenues
         # Initialize Tiles
@@ -229,4 +229,4 @@ def compare_output(first, second):
 
 def karel_ascii(world, karel_street, karel_avenue):
     """ Creates a Karel World in ASCII Art! """
-    return str(TileWorld(world, karel_street, karel_avenue))
+    return str(AsciiKarelWorld(world, karel_street, karel_avenue))
