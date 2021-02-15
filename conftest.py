@@ -4,8 +4,8 @@ This also contains helper methods for running tests or autograders.
 """
 import os
 
-from stanfordkarel.karel import KarelProgram
 from stanfordkarel.karel_application import StudentCode
+from stanfordkarel.karel_program import KarelProgram
 
 PROBLEMS = [
     "checkerboard_karel",

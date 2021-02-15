@@ -17,8 +17,8 @@ from tkinter import messagebox, simpledialog  # type: ignore
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from typing import Any, Callable
 
-from .karel import KarelProgram
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
+from .karel_program import KarelProgram
 from .karel_world import COLOR_MAP, INFINITY, Direction
 
 MIN_DIMENSIONS = 1

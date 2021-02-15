@@ -1,5 +1,5 @@
 """
-This file defines the Karel class, which provides the actual
+This file defines the KarelProgram class, which provides the actual
 implementation of all functions described in the Karel Reference
 Guide.
 

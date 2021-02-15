@@ -19,7 +19,7 @@ import cmath
 import math
 import tkinter as tk
 
-from .karel import KarelProgram
+from .karel_program import KarelProgram
 from .karel_world import Direction, KarelWorld, Wall
 
 DIRECTION_TO_RADIANS = {

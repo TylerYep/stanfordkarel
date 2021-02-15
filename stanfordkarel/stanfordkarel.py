@@ -18,8 +18,8 @@ import sys
 import tkinter as tk
 
 from .didyoumean import didyoumean_hook  # type: ignore
-from .karel import KarelProgram
 from .karel_application import KarelApplication
+from .karel_program import KarelProgram
 
 sys.excepthook = didyoumean_hook
 """

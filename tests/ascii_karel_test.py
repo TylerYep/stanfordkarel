@@ -1,7 +1,7 @@
 # flake8: noqa
 # pylint: disable=line-too-long
 from conftest import PROBLEMS
-from stanfordkarel.karel import KarelProgram
+from stanfordkarel.karel_program import KarelProgram
 
 
 def test_karel_ascii() -> None:
