@@ -57,18 +57,20 @@ COLOR_MAP = {
 class Wall:
     """ Note that the World Editor only uses West & South to denote wall directions. """
 
-    def __init__(self, avenue, street, direction):
+    def __init__(self, avenue: int, street: int, direction: Direction) -> None:
         self.avenue = avenue
         self.street = street
         self.direction = direction
 
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Wall):
+            return self.__dict__ == other.__dict__
+        raise TypeError
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.avenue, self.street, self.direction))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Wall({self.avenue}, {self.street}, {self.direction})"
 
 
@@ -76,14 +78,16 @@ class Wall:
 class KarelException(Exception):
     """ The following classes define Karel-specific exceptions. """
 
-    def __init__(self, avenue, street, direction, message):
+    def __init__(
+        self, avenue: int, street: int, direction: Direction, message: str
+    ) -> None:
         super().__init__()
         self.avenue = avenue
         self.street = street
         self.direction = direction.value.capitalize()
         self.message = message
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Karel crashed while on avenue {self.avenue} and street {self.street}, "
             f"facing {self.direction}\nInvalid action: {self.message}"

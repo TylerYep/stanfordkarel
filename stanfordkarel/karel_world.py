@@ -39,11 +39,14 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
+from __future__ import annotations
+
 import collections
 import copy
 import os
 import re
 import sys
+from typing import Any
 
 from .karel_definitions import COLOR_MAP, INFINITY, Direction, Wall
 
@@ -63,7 +66,7 @@ DEFAULT_WORLD_FILE = "default_world.w"
 
 
 class KarelWorld:
-    def __init__(self, world_file):
+    def __init__(self, world_file: str) -> None:
         """
         Karel World constructor
         Parameters:
@@ -73,22 +76,24 @@ class KarelWorld:
         self.world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
-        self.beepers = collections.defaultdict(int)
+        self.beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
 
         # Map of corner colors, defaults to None
-        self.corner_colors = collections.defaultdict(lambda: "")
+        self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(
+            lambda: ""
+        )
 
         # Set of Wall objects placed in the world
-        self.walls = set()
+        self.walls: set[Wall] = set()
 
         # Dimensions of the world
         self.num_streets = 1
         self.num_avenues = 1
 
         # Initial Karel state saved to enable world reset
-        self.karel_starting_location = (1, 1)
-        self.karel_starting_direction = Direction.EAST
-        self.karel_starting_beeper_count = 0
+        self.karel_start_location = (1, 1)
+        self.karel_start_direction = Direction.EAST
+        self.karel_start_beeper_count = 0
 
         # Initial speed slider setting
         self.init_speed = INIT_SPEED
@@ -100,17 +105,19 @@ class KarelWorld:
         # Save initial beeper state to enable world reset
         self.init_beepers = copy.deepcopy(self.beepers)
 
-    def __eq__(self, other):
-        return (
-            self.beepers == other.beepers
-            and self.walls == other.walls
-            and self.num_streets == other.num_streets
-            and self.num_avenues == other.num_avenues
-            and self.corner_colors == other.corner_colors
-        )
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, KarelWorld):
+            return (
+                self.beepers == other.beepers
+                and self.walls == other.walls
+                and self.num_streets == other.num_streets
+                and self.num_avenues == other.num_avenues
+                and self.corner_colors == other.corner_colors
+            )
+        raise TypeError
 
     @staticmethod
-    def process_world(world_file):
+    def process_world(world_file: str) -> Any:
         """
         If no world_file is provided, use default world.
         Find world file that matches program name in the current worlds/ directory.
@@ -155,7 +162,7 @@ class KarelWorld:
         )
 
     @staticmethod
-    def get_alt_wall(wall):
+    def get_alt_wall(wall: Wall) -> Wall:
         if wall.direction == Direction.NORTH:
             return Wall(wall.avenue, wall.street + 1, Direction.SOUTH)
         if wall.direction == Direction.SOUTH:
@@ -167,8 +174,8 @@ class KarelWorld:
         raise ValueError
 
     @staticmethod
-    def parse_parameters(keyword, param_str):
-        params = {}
+    def parse_parameters(keyword: str, param_str: str) -> dict[Any, Any]:
+        params: dict[Any, Any] = {}
         for param in param_str.split(PARAM_DELIM):
             param = param.strip()
 
@@ -212,7 +219,7 @@ class KarelWorld:
                 raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
         return params
 
-    def load_from_file(self):
+    def load_from_file(self) -> None:
         for i, line in enumerate(self.world_file):
             # Ignore blank lines and lines with no comma delineator
             line = line.strip()
@@ -245,12 +252,12 @@ class KarelWorld:
 
             elif keyword == "karel":
                 # Give Karel initial state values
-                self.karel_starting_location = params["location"]
-                self.karel_starting_direction = params["direction"]
+                self.karel_start_location = params["location"]
+                self.karel_start_direction = params["direction"]
 
             elif keyword == "beeperbag":
                 # Set Karel's initial beeper bag count
-                self.karel_starting_beeper_count = params["val"]
+                self.karel_start_beeper_count = params["val"]
 
             elif keyword == "speed":
                 # Set delay speed of program execution
@@ -263,53 +270,53 @@ class KarelWorld:
             else:
                 print(f"Invalid keyword - ignoring line {i} of world file: {line}")
 
-    def add_beeper(self, avenue, street):
+    def add_beeper(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] += 1
 
-    def remove_beeper(self, avenue, street):
-        if self.beepers[(avenue, street)] == 0:
-            return
-        self.beepers[(avenue, street)] -= 1
+    def remove_beeper(self, avenue: int, street: int) -> None:
+        if self.beepers[(avenue, street)] > 0:
+            self.beepers[(avenue, street)] -= 1
 
-    def add_wall(self, wall):
+    def add_wall(self, wall: Wall) -> None:
         alt_wall = self.get_alt_wall(wall)
         if wall not in self.walls and alt_wall not in self.walls:
             self.walls.add(wall)
 
-    def remove_wall(self, wall):
+    def remove_wall(self, wall: Wall) -> None:
         alt_wall = self.get_alt_wall(wall)
         if wall in self.walls:
             self.walls.remove(wall)
         if alt_wall in self.walls:
             self.walls.remove(alt_wall)
 
-    def paint_corner(self, avenue, street, color):
+    def paint_corner(self, avenue: int, street: int, color: str) -> None:
         self.corner_colors[(avenue, street)] = color
 
-    def corner_color(self, avenue, street):
+    def corner_color(self, avenue: int, street: int) -> str:
         return self.corner_colors[(avenue, street)]
 
-    def reset_corner(self, avenue, street):
+    def reset_corner(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] = 0
         self.corner_colors[(avenue, street)] = ""
 
-    def wall_exists(self, avenue, street, direction):
+    def wall_exists(self, avenue: int, street: int, direction: Direction) -> bool:
         wall = Wall(avenue, street, direction)
         return wall in self.walls
 
-    def in_bounds(self, avenue, street):
+    def in_bounds(self, avenue: int, street: int) -> bool:
         return 0 < avenue <= self.num_avenues and 0 < street <= self.num_streets
 
-    def reset_world(self):
+    def reset_world(self) -> None:
         """ Reset initial state of beepers in the world """
         self.beepers = copy.deepcopy(self.init_beepers)
         self.corner_colors = collections.defaultdict(lambda: "")
 
-    def reload_world(self, filename=None):
+    def reload_world(self, filename: str | None = None) -> None:
         """ Reloads world using constructor. """
-        self.__init__(filename)
+        # TODO fix this
+        self.__init__(filename)  # type: ignore
 
-    def save_to_file(self, filename, karel):
+    def save_to_file(self, filename: str) -> None:
         with open(filename, "w") as f:
             # First, output dimensions of world
             f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
@@ -331,9 +338,14 @@ class KarelWorld:
 
             # Next, output Karel information
             f.write(
-                f"Karel: ({karel.avenue}, {karel.street}); {karel.direction.value}\n"
+                f"Karel: {self.karel_start_location}; "
+                f"{self.karel_start_direction.value}\n"
             )
 
             # Finally, output beeperbag info
-            beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
+            beeper_output = (
+                self.karel_start_beeper_count
+                if self.karel_start_beeper_count >= 0
+                else "INFINITY"
+            )
             f.write(f"BeeperBag: {beeper_output}\n")

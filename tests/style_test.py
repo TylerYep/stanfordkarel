@@ -9,7 +9,7 @@ from stanfordkarel.style_checker import StyleChecker
 
 @pytest.mark.timeout(TIMEOUT)
 @pytest.mark.parametrize("problem_name", PROBLEMS)
-def test_student_style(problem_name):
+def test_student_style(problem_name: str) -> None:
     code_file = os.path.join(STUDENT_CODE_DIR, problem_name + ".py")
 
     if os.path.exists(code_file):

@@ -6,7 +6,10 @@ License: MIT
 Version: 1.0.0
 Email: tyep@cs.stanford.edu
 """
+from __future__ import annotations
+
 from enum import Enum, unique
+from typing import Any, Iterator
 
 from .karel_definitions import Direction
 
@@ -16,13 +19,13 @@ SPACING = 10
 
 
 class Tile:  # pylint: disable=too-few-public-methods
-    def __init__(self, value="·"):
+    def __init__(self, value: str = "·") -> None:
         self.value = value
-        self.walls = []
+        self.walls: list[Direction] = []
         self.beepers = 0
         self.color = ""
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         result = ""
         if self.value == "K" and self.beepers > 0:
             result = "<K>"
@@ -36,7 +39,7 @@ class Tile:  # pylint: disable=too-few-public-methods
 
 
 class AsciiKarelWorld:
-    def __init__(self, world, karel_street, karel_avenue):
+    def __init__(self, world: Any, karel_street: int, karel_avenue: int) -> None:
         num_sts, num_aves = world.num_streets, world.num_avenues
         # Initialize Tiles
         self.world_arr = [[Tile() for _ in range(num_aves)] for _ in range(num_sts)]
@@ -60,7 +63,7 @@ class AsciiKarelWorld:
         self.num_streets = num_sts
         self.num_avenues = num_aves
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         avenue_widths = HORIZONTAL * (CHAR_WIDTH * self.num_avenues + 1)
         result = f"┌{avenue_widths}┐\n"
         for r in range(self.num_streets):
@@ -82,13 +85,13 @@ class AsciiKarelWorld:
                 result += f"{next_line} {VERTICAL}\n"
         return result
 
-    def tile_has_wall(self, r, c, direction):
+    def tile_has_wall(self, r: int, c: int, direction: Direction) -> bool:
         if 0 <= r < self.num_streets and 0 <= c < self.num_avenues:
             tile = self.world_arr[r][c]
             return direction in tile.walls
         return False
 
-    def tile_pair_has_wall(self, r, c, direction):
+    def tile_pair_has_wall(self, r: int, c: int, direction: Direction) -> bool:
         """
         Checks whether the tile at r, c should have a wall by
         checking itself and its neighbors.
@@ -111,7 +114,7 @@ class AsciiKarelWorld:
             )
         raise ValueError("Direction is invalid.")
 
-    def get_next_line(self, r, c, next_block_start):
+    def get_next_line(self, r: int, c: int, next_block_start: str) -> tuple[str, str]:
         """ Given a tile, figures out the lower line of the ASCII art. """
 
         if self.tile_pair_has_wall(r, c, Direction.SOUTH):
@@ -172,14 +175,19 @@ class Color(Enum):
     END = "\033[0m"
 
 
-def compare_output(first, second):
+BEEPER_COORDS = dict[tuple[int, int], int]
+
+
+def compare_output(first: Any, second: Any) -> str:
     """ Compares Karel Output and gets the results. """
 
-    def create_two_column_string(col1, col2):
+    def create_two_column_string(col1: list[str], col2: list[str]) -> Iterator[str]:
         """ col1 and col2 are Lists. """
         return map(lambda x: f"{x[0]}{' ' * SPACING}{x[1]}", zip(col1, col2))
 
-    def symmetric_difference(a, b):
+    def symmetric_difference(
+        a: BEEPER_COORDS, b: BEEPER_COORDS
+    ) -> tuple[BEEPER_COORDS, BEEPER_COORDS]:
         extra_a, extra_b = {}, {}
         for k in a:
             if k not in b:
@@ -227,6 +235,6 @@ def compare_output(first, second):
     return result
 
 
-def karel_ascii(world, karel_street, karel_avenue):
+def karel_ascii(world: Any, karel_street: int, karel_avenue: int) -> str:
     """ Creates a Karel World in ASCII Art! """
     return str(AsciiKarelWorld(world, karel_street, karel_avenue))

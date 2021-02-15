@@ -9,11 +9,13 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
+from __future__ import annotations
 
 import os
 import tkinter as tk
 from tkinter import messagebox, simpledialog  # type: ignore
 from tkinter.filedialog import askopenfilename, asksaveasfilename
+from typing import Any, Callable
 
 from .karel import KarelProgram
 from .karel_canvas import KarelCanvas
@@ -33,7 +35,7 @@ DEFAULT_COLOR = "Red"
 DEFAULT_SIZE = 8
 
 
-def run_world_editor():
+def run_world_editor() -> None:
     root = tk.Tk()
     world_builder = WorldBuilderApplication(master=root)
     world_builder.mainloop()
@@ -42,18 +44,19 @@ def run_world_editor():
 class WorldBuilderApplication(tk.Frame):
     def __init__(
         self,
-        master=None,
-        window_width=800,
-        window_height=400,
-        canvas_width=600,
-        canvas_height=400,
-    ):
+        master: tk.Tk,
+        window_width: int = 800,
+        window_height: int = 400,
+        canvas_width: int = 600,
+        canvas_height: int = 400,
+    ) -> None:
         # set window background to contrast white Karel canvas
         master.configure(background=LIGHT_GREY)
 
         # configure location of canvas to expand to fit window resizing
         master.rowconfigure(0, weight=1)
         master.columnconfigure(1, weight=1)
+        master.title("Karel World Builder")
 
         super().__init__(
             master, width=window_width, height=window_height, background=LIGHT_GREY
@@ -63,9 +66,8 @@ class WorldBuilderApplication(tk.Frame):
         self.window_height = window_height
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
-        self.last_action_event_loc = (None, None)
+        self.last_action_event_loc = (0.0, 0.0)
         self.master = master
-        self.master.title("Karel World Builder")
         self.set_dock_icon()
         self.grid(row=0, column=0)
         self.master.update()
@@ -73,16 +75,16 @@ class WorldBuilderApplication(tk.Frame):
         self.create_canvas()
         self.create_buttons()
 
-    def set_dock_icon(self):
+    def set_dock_icon(self) -> None:
         # make Karel dock icon image
         path = os.path.join(os.path.dirname(__file__), "icon.png")
         try:
             img = tk.Image("photo", file=path)
-            self.master.tk.call("wm", "iconphoto", self.master._w, img)
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
         except Exception:
             print(f"Warning: invalid icon.png: {path}")
 
-    def setup_world(self):
+    def setup_world(self) -> None:
         load_existing = messagebox.askyesno(
             "World Selection",
             "Would you like to load an existing world? \n\n"
@@ -94,7 +96,7 @@ class WorldBuilderApplication(tk.Frame):
         else:
             self.create_new_world(init=True, default=True)
 
-    def create_new_world(self, init=False, default=False):
+    def create_new_world(self, init: bool = False, default: bool = False) -> None:
         num_avenues = simpledialog.askinteger(
             "New World Size",
             "How many avenues should the new world have?",
@@ -135,7 +137,7 @@ class WorldBuilderApplication(tk.Frame):
         if not init:
             self.canvas.redraw_all()
 
-    def load_world(self, init=False):
+    def load_world(self, init: bool = False) -> None:
         default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = askopenfilename(
             initialdir=default_worlds_path,
@@ -159,7 +161,7 @@ class WorldBuilderApplication(tk.Frame):
             self.reset_direction_radio_buttons()
             self.reset_beeper_bag_radio_buttons()
 
-    def create_canvas(self):
+    def create_canvas(self) -> None:
         """
         This method creates the canvas on which Karel and Karel's
         world are drawn.
@@ -176,7 +178,7 @@ class WorldBuilderApplication(tk.Frame):
         self.canvas.bind("<Button-1>", self.handle_mouse_event)
         self.canvas.bind("<B1-Motion>", self.handle_mouse_event)
 
-    def create_buttons(self):
+    def create_buttons(self) -> None:
         """
         This method creates the three buttons that appear on the left
         side of the screen. These buttons control the start of Karel
@@ -203,7 +205,7 @@ class WorldBuilderApplication(tk.Frame):
         self.create_beeper_bag_radio_buttons()
         self.create_action_radio_buttons()
 
-    def create_direction_radio_buttons(self):
+    def create_direction_radio_buttons(self) -> None:
         self.dir_radio_frame = tk.Frame(self, bg=LIGHT_GREY)
         self.dir_radio_frame.grid(row=3, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
@@ -244,7 +246,7 @@ class WorldBuilderApplication(tk.Frame):
             bg=LIGHT_GREY,
         ).pack(side="left")
 
-    def create_beeper_bag_radio_buttons(self):
+    def create_beeper_bag_radio_buttons(self) -> None:
         self.beeper_bag_radio_frame = tk.Frame(self, bg=LIGHT_GREY)
         self.beeper_bag_radio_frame.grid(
             row=4, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew"
@@ -273,7 +275,7 @@ class WorldBuilderApplication(tk.Frame):
             bg=LIGHT_GREY,
         ).pack(side="left")
 
-    def create_action_radio_buttons(self):
+    def create_action_radio_buttons(self) -> None:
         self.action_radio_frame = tk.Frame(self, bg=LIGHT_GREY)
         self.action_radio_frame.grid(
             row=5, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew"
@@ -347,25 +349,25 @@ class WorldBuilderApplication(tk.Frame):
             bg=LIGHT_GREY,
         ).pack(anchor="w")
 
-    def reset_direction_radio_buttons(self):
+    def reset_direction_radio_buttons(self) -> None:
         self.karel_direction_var.set(self.karel.direction.value)
 
-    def reset_beeper_bag_radio_buttons(self):
+    def reset_beeper_bag_radio_buttons(self) -> None:
         self.beeper_bag_var.set(self.karel.num_beepers)
 
-    def update_karel_direction(self, *args):
+    def update_karel_direction(self, *args: Any) -> None:
         del args
         new_dir = self.karel_direction_var.get()
         self.karel.direction = Direction(new_dir)
         self.canvas.redraw_karel()
 
-    def update_karel_num_beepers(self, *args):
+    def update_karel_num_beepers(self, *args: Any) -> None:
         del args
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
 
-    def handle_mouse_event(self, event):
-        def apply_function(fn, *args):
+    def handle_mouse_event(self, event: Any) -> None:
+        def apply_function(fn: Callable[..., Any], *args: Any) -> None:
             if event_type == tk.EventType.ButtonPress:
                 self.last_action_event_loc = (avenue, street)
                 fn(avenue, street, *args)
@@ -389,6 +391,7 @@ class WorldBuilderApplication(tk.Frame):
             return
 
         avenue, street = self.canvas.calculate_location(event.x, event.y)
+        avenue, street = int(avenue), int(street)
         action = self.action_var.get()
         if action == "move_karel":
             if avenue != self.karel.avenue or street != self.karel.street:
@@ -414,7 +417,7 @@ class WorldBuilderApplication(tk.Frame):
                 self.world.remove_wall(wall)
                 self.canvas.redraw_walls()
 
-    def save_world(self):
+    def save_world(self) -> None:
         default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = asksaveasfilename(
             initialdir=default_worlds_path,
@@ -426,7 +429,7 @@ class WorldBuilderApplication(tk.Frame):
             return
         if not filename.endswith(".w"):
             filename += ".w"
-        self.world.save_to_file(filename, self.karel)
+        self.world.save_to_file(filename)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ from stanfordkarel.karel_ascii import karel_ascii
 
 def test_karel_ascii() -> None:
     karel = KarelProgram(PROBLEMS[4])
-    result = karel_ascii(karel.world, *karel.world.karel_starting_location)
+    result = karel_ascii(karel.world, *karel.world.karel_start_location)
 
     assert result == (  # noqa
         "┌───────────────────────────────────────────────────────────────────────────────┐\n"

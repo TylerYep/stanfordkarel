@@ -9,6 +9,8 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
+from __future__ import annotations
+
 import importlib.util
 import inspect
 import os
@@ -16,9 +18,13 @@ import sys
 import tkinter as tk
 import traceback as tb
 from time import sleep
+from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
+from types import FrameType
+from typing import Any, Callable
 
+from .karel import KarelProgram
 from .karel_canvas import KarelCanvas
 from .karel_definitions import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelException
 
@@ -29,7 +35,7 @@ class StudentCode:
     https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
     """
 
-    def __init__(self, code_file, karel=None):
+    def __init__(self, code_file: str, karel: KarelProgram | None = None) -> None:
         if not os.path.isfile(code_file):
             raise FileNotFoundError(f"{code_file} could not be found.")
 
@@ -42,7 +48,7 @@ class StudentCode:
         )
         try:
             self.mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(self.mod)
+            spec.loader.exec_module(self.mod)  # type: ignore
         except Exception as e:
             # Handle syntax errors and only print location of error
             print(f"Syntax Error: {e}")
@@ -57,10 +63,10 @@ class StudentCode:
         if karel is not None:
             self.inject_namespace(karel)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return inspect.getsource(self.mod)
 
-    def inject_namespace(self, karel):
+    def inject_namespace(self, karel: KarelProgram) -> None:
         """
         This function is responsible for doing some Python hackery
         that associates the generic commands the student wrote in their
@@ -100,14 +106,14 @@ class StudentCode:
 class KarelApplication(tk.Frame):
     def __init__(
         self,
-        karel,
-        code_file,
-        master=None,
-        window_width=800,
-        window_height=600,
-        canvas_width=600,
-        canvas_height=400,
-    ):
+        karel: KarelProgram,
+        code_file: str,
+        master: Tk,
+        window_width: int = 800,
+        window_height: int = 600,
+        canvas_width: int = 600,
+        canvas_height: int = 400,
+    ) -> None:
         # set window background to contrast white Karel canvas
         master.configure(background=LIGHT_GREY)
 
@@ -123,6 +129,7 @@ class KarelApplication(tk.Frame):
         self.karel = karel
         self.world = karel.world
         self.student_code = StudentCode(code_file, self.karel)
+        master.title(self.student_code.module_name)
         if not self.student_code.mod:
             master.destroy()
             return
@@ -132,7 +139,6 @@ class KarelApplication(tk.Frame):
         self.canvas_width = canvas_width
         self.canvas_height = canvas_height
         self.master = master
-        self.master.title(self.student_code.module_name)
         self.set_dock_icon()
         self.inject_decorator_namespace()
         self.grid(row=0, column=0)
@@ -142,16 +148,16 @@ class KarelApplication(tk.Frame):
         self.create_slider()
         self.create_status_label()
 
-    def set_dock_icon(self):
+    def set_dock_icon(self) -> None:
         # make Karel dock icon image
         path = os.path.join(os.path.dirname(__file__), "icon.png")
         try:
             img = tk.Image("photo", file=path)
-            self.master.tk.call("wm", "iconphoto", self.master._w, img)
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
         except Exception:
             print(f"Warning: invalid icon.png: {path}")
 
-    def create_menubar(self):
+    def create_menubar(self) -> None:
         menubar = tk.Menu(self.master)
         file_menu = tk.Menu(menubar, tearoff=False)
         menubar.add_cascade(label="File", menu=file_menu)
@@ -164,17 +170,17 @@ class KarelApplication(tk.Frame):
         iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
 
         self.bind_all("<Command-w>", self.quit)
-        self.master.config(menu=menubar)
+        self.master.config(menu=menubar)  # type: ignore
 
-    def quit(self, event):
+    def quit(self, event: Any) -> None:  # type: ignore
         del event
         sys.exit(0)
 
-    def set_icon(self, icon):
-        self.canvas.set_icon(icon)
+    def set_icon(self, icon: str) -> None:
+        self.canvas.icon = icon
         self.canvas.redraw_karel()
 
-    def create_slider(self):
+    def create_slider(self) -> None:
         """
         This method creates a frame containing three widgets:
         two labels on either side of a scale slider to control
@@ -189,15 +195,18 @@ class KarelApplication(tk.Frame):
         self.slow_label = tk.Label(self.slider_frame, text="Slow", bg=LIGHT_GREY)
         self.slow_label.pack(side="left")
 
-        self.speed = tk.IntVar()
+        self.speed = tk.DoubleVar()
 
         self.scale = tk.Scale(
-            self.slider_frame, orient=tk.HORIZONTAL, variable=self.speed, showvalue=0
+            self.slider_frame,
+            orient=tk.HORIZONTAL,
+            variable=self.speed,
+            showvalue=False,
         )
         self.scale.set(self.world.init_speed)
         self.scale.pack()
 
-    def create_canvas(self):
+    def create_canvas(self) -> None:
         """ This method creates the canvas on which Karel and the world are drawn. """
         self.canvas = KarelCanvas(
             self.canvas_width,
@@ -209,7 +218,7 @@ class KarelApplication(tk.Frame):
         self.canvas.grid(column=1, row=0, sticky="NESW")
         self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
 
-    def create_buttons(self):
+    def create_buttons(self) -> None:
         """
         This method creates the three buttons that appear on the left
         side of the screen. These buttons control the start of Karel
@@ -231,15 +240,17 @@ class KarelApplication(tk.Frame):
             column=0, row=2, padx=PAD_X, pady=PAD_Y, sticky="ew"
         )
 
-    def create_status_label(self):
+    def create_status_label(self) -> None:
         """ This function creates the status label at the bottom of the window. """
         self.status_label = tk.Label(
             self.master, text="Welcome to Karel!", bg=LIGHT_GREY
         )
         self.status_label.grid(row=1, column=0, columnspan=2)
 
-    def karel_action_decorator(self, karel_fn):
-        def wrapper():
+    def karel_action_decorator(
+        self, karel_fn: Callable[..., None]
+    ) -> Callable[..., None]:
+        def wrapper() -> None:
             # execute Karel function
             karel_fn()
             # redraw canvas with updated state of the world
@@ -249,8 +260,10 @@ class KarelApplication(tk.Frame):
 
         return wrapper
 
-    def beeper_action_decorator(self, karel_fn):
-        def wrapper():
+    def beeper_action_decorator(
+        self, karel_fn: Callable[..., None]
+    ) -> Callable[..., None]:
+        def wrapper() -> None:
             # execute Karel function
             karel_fn()
             # redraw canvas with updated state of the world
@@ -261,8 +274,10 @@ class KarelApplication(tk.Frame):
 
         return wrapper
 
-    def corner_action_decorator(self, karel_fn):
-        def wrapper(color):
+    def corner_action_decorator(
+        self, karel_fn: Callable[..., None]
+    ) -> Callable[..., None]:
+        def wrapper(color: str) -> None:
             # execute Karel function
             karel_fn(color)
             # redraw canvas with updated state of the world
@@ -274,38 +289,40 @@ class KarelApplication(tk.Frame):
 
         return wrapper
 
-    def inject_decorator_namespace(self):
+    def inject_decorator_namespace(self) -> None:
         """
         This function is responsible for doing some Python hackery
         that associates the generic commands the student wrote in their
         file with specific commands relating to the Karel object that exists
         in the world.
         """
-        self.student_code.mod.turn_left = self.karel_action_decorator(
+        self.student_code.mod.turn_left = self.karel_action_decorator(  # type: ignore
             self.karel.turn_left
         )
-        self.student_code.mod.move = self.karel_action_decorator(self.karel.move)
-        self.student_code.mod.pick_beeper = self.beeper_action_decorator(
-            self.karel.pick_beeper
+        self.student_code.mod.move = self.karel_action_decorator(  # type: ignore
+            self.karel.move
         )
-        self.student_code.mod.put_beeper = self.beeper_action_decorator(
+        self.student_code.mod.pick_beeper = (  # type: ignore
+            self.beeper_action_decorator(self.karel.pick_beeper)
+        )
+        self.student_code.mod.put_beeper = self.beeper_action_decorator(  # type: ignore
             self.karel.put_beeper
         )
-        self.student_code.mod.paint_corner = self.corner_action_decorator(
-            self.karel.paint_corner
+        self.student_code.mod.paint_corner = (  # type: ignore
+            self.corner_action_decorator(self.karel.paint_corner)
         )
 
-    def disable_buttons(self):
+    def disable_buttons(self) -> None:
         self.program_control_button.configure(state="disabled")
         self.load_world_button.configure(state="disabled")
 
-    def enable_buttons(self):
+    def enable_buttons(self) -> None:
         self.program_control_button.configure(state="normal")
         self.load_world_button.configure(state="normal")
 
-    def display_error_traceback(self, e):
+    def display_error_traceback(self, e: Any) -> None:
         print("Traceback (most recent call last):")
-        display_frames = []
+        display_frames: list[tuple[FrameType, int]] = []
         # walk through all the frames in stack trace at time of failure
         for frame, lineno in tb.walk_tb(e.__traceback__):
             frame_info = inspect.getframeinfo(frame)
@@ -315,17 +332,16 @@ class KarelApplication(tk.Frame):
             if self.student_code.module_name + ".py" in filename:
                 display_frames.append((frame, lineno))
 
-        print(
-            ("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip()
-        )
+        trace = tb.format_list(tb.StackSummary.extract(display_frames))  # type: ignore
+        print("".join(trace).strip())
         print(f"{type(e).__name__}: {e}")
 
-    def run_program(self):
+    def run_program(self) -> None:
         # Error checking for existence of main function completed in prior file
         try:
             self.status_label.configure(text="Running...", fg="brown")
             self.disable_buttons()
-            self.student_code.mod.main()
+            self.student_code.mod.main()  # type: ignore
             self.status_label.configure(text="Finished running.", fg="green")
 
         except (KarelException, NameError) as e:
@@ -346,7 +362,7 @@ class KarelApplication(tk.Frame):
             self.program_control_button["command"] = self.reset_world
             self.enable_buttons()
 
-    def reset_world(self):
+    def reset_world(self) -> None:
         self.karel.reset_state()
         self.world.reset_world()
         self.canvas.redraw_all()
@@ -356,7 +372,7 @@ class KarelApplication(tk.Frame):
         self.program_control_button["command"] = self.run_program
         self.update()
 
-    def load_world(self):
+    def load_world(self) -> None:
         default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
         filename = askopenfilename(
             initialdir=default_worlds_path,

@@ -1,3 +1,4 @@
+# type: ignore
 """
 This file defines the logic to add suggestions to exceptions.
 
@@ -7,14 +8,16 @@ License: MIT
 Version: 1.0.0
 Email: tyep@cs.stanford.edu
 """
+from __future__ import annotations
+
 import difflib
 import itertools
 import re
 import sys
-from typing import Any, Dict, List, NamedTuple
+from typing import Any, NamedTuple
 
 # To be used in `get_suggestions_for_exception`.
-SUGGESTION_FUNCTIONS = {}  # type: Dict[Any, List[Any]]
+SUGGESTION_FUNCTIONS: dict[Any, list[Any]] = {}
 VAR_NAME = r"[^\d\W]\w*"
 NAMENOTDEFINED_RE = r"^(?:global )?name '(?P<name>{})' is not defined$".format(VAR_NAME)
 
@@ -24,7 +27,7 @@ class ScopedObj(NamedTuple):
     scope: str
 
 
-def merge_dict(*dicts):
+def merge_dict(*dicts):  # -> tuple[dict[Any, list[Any]]]:
     """
     Merge dicts and return a dictionary mapping key to list of values.
     Order of the values corresponds to the order of the original dicts.

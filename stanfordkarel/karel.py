@@ -17,6 +17,8 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
+from __future__ import annotations
+
 from .karel_ascii import compare_output, karel_ascii
 from .karel_definitions import COLOR_MAP, INFINITY, Direction, KarelException
 from .karel_world import KarelWorld
@@ -41,7 +43,7 @@ DIRECTION_DELTA_MAP = {
 
 
 class KarelProgram:
-    def __init__(self, world_file=None):
+    def __init__(self, world_file: str = "") -> None:
         """
         This functions instantiates a new Karel instance and sets its
         location and current number of beepers to be the default starting
@@ -59,17 +61,19 @@ class KarelProgram:
         Returns: None
         """
         self.world = KarelWorld(world_file)
-        self.avenue, self.street = self.world.karel_starting_location
-        self.direction = self.world.karel_starting_direction
-        self.num_beepers = self.world.karel_starting_beeper_count
+        self.avenue, self.street = self.world.karel_start_location
+        self.direction = self.world.karel_start_direction
+        self.num_beepers = self.world.karel_start_beeper_count
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return karel_ascii(self.world, self.street, self.avenue)
 
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, KarelProgram):
+            return self.__dict__ == other.__dict__
+        raise TypeError
 
-    def compare_with(self, other, two_columns=True):
+    def compare_with(self, other: KarelProgram, two_columns: bool = True) -> bool:
         """
         Options:
             two_columns: bool (default=True)
@@ -84,7 +88,7 @@ class KarelProgram:
         print(compare_output(self, other))
         return False
 
-    def reset_state(self):
+    def reset_state(self) -> None:
         """
         This function is used to reset Karel's location and direction to the original
         starting parameters as indicated by the world that Karel lives in.
@@ -92,11 +96,11 @@ class KarelProgram:
         Parameters: None
         Returns: None
         """
-        self.avenue, self.street = self.world.karel_starting_location
-        self.direction = self.world.karel_starting_direction
-        self.num_beepers = self.world.karel_starting_beeper_count
+        self.avenue, self.street = self.world.karel_start_location
+        self.direction = self.world.karel_start_direction
+        self.num_beepers = self.world.karel_start_beeper_count
 
-    def move(self):
+    def move(self) -> None:
         """
         This function moves Karel forward one space in the direction that it is
         currently facing. If Karel's front is not clear (blocked by wall or boundary
@@ -117,7 +121,7 @@ class KarelProgram:
         self.avenue += delta_avenue
         self.street += delta_street
 
-    def turn_left(self):
+    def turn_left(self) -> None:
         """
         This function turns Karel 90 degrees counterclockwise.
 
@@ -126,7 +130,7 @@ class KarelProgram:
         """
         self.direction = NEXT_DIRECTION_MAP[self.direction]
 
-    def put_beeper(self):
+    def put_beeper(self) -> None:
         """
         This function places a beeper on the corner that Karel is currently standing
         on and decreases Karel's beeper count by 1. If Karel has no more beepers in its
@@ -148,7 +152,7 @@ class KarelProgram:
 
         self.world.add_beeper(self.avenue, self.street)
 
-    def pick_beeper(self):
+    def pick_beeper(self) -> None:
         """
         This function removes a beeper from the corner that Karel is currently
         standing on and increases Karel's beeper count by 1. If there are no beepers
@@ -171,7 +175,7 @@ class KarelProgram:
 
         self.world.remove_beeper(self.avenue, self.street)
 
-    def front_is_clear(self):
+    def front_is_clear(self) -> bool:
         """
         This function returns a boolean indicating whether or not there is a wall
         in front of Karel.
@@ -183,7 +187,7 @@ class KarelProgram:
         """
         return self.direction_is_clear(self.direction)
 
-    def direction_is_clear(self, direction):
+    def direction_is_clear(self, direction: Direction) -> bool:
         """
         This is a helper function that returns a boolean indicating whether
         or not there is a barrier in the specified direction of Karel.
@@ -215,7 +219,7 @@ class KarelProgram:
         # If all previous conditions checked out, then the front is clear
         return True
 
-    def front_is_blocked(self):
+    def front_is_blocked(self) -> bool:
         """
         This function returns a boolean indicating whether there is a wall
         in front of Karel.
@@ -227,7 +231,7 @@ class KarelProgram:
         """
         return not self.front_is_clear()
 
-    def left_is_clear(self):
+    def left_is_clear(self) -> bool:
         """
         This function returns a boolean indicating whether or not there is a wall
         to the left of Karel.
@@ -239,7 +243,7 @@ class KarelProgram:
         """
         return self.direction_is_clear(NEXT_DIRECTION_MAP[self.direction])
 
-    def left_is_blocked(self):
+    def left_is_blocked(self) -> bool:
         """
         This function returns a boolean indicating whether there is a wall
         to the left of Karel.
@@ -251,7 +255,7 @@ class KarelProgram:
         """
         return not self.left_is_clear()
 
-    def right_is_clear(self):
+    def right_is_clear(self) -> bool:
         """
         This function returns a boolean indicating whether or not there is a wall
         to the right of Karel.
@@ -263,7 +267,7 @@ class KarelProgram:
         """
         return self.direction_is_clear(NEXT_DIRECTION_MAP_RIGHT[self.direction])
 
-    def right_is_blocked(self):
+    def right_is_blocked(self) -> bool:
         """
         This function returns a boolean indicating whether there is a wall
         to the right of Karel.
@@ -275,7 +279,7 @@ class KarelProgram:
         """
         return not self.right_is_clear()
 
-    def beepers_present(self):
+    def beepers_present(self) -> bool:
         """
         This function returns a boolean indicating whether or not there is
         a beeper on Karel's current corner.
@@ -287,10 +291,10 @@ class KarelProgram:
         """
         return self.world.beepers[(self.avenue, self.street)] != 0
 
-    def no_beepers_present(self):
+    def no_beepers_present(self) -> bool:
         return not self.beepers_present()
 
-    def beepers_in_bag(self):
+    def beepers_in_bag(self) -> bool:
         """
         This function returns a boolean indicating whether or not there is
         at least one beeper in Karel's beeper bag.
@@ -303,11 +307,11 @@ class KarelProgram:
         # Can't check > 0 because INFINITY beepers is -1
         return self.num_beepers != 0
 
-    def no_beepers_in_bag(self):
+    def no_beepers_in_bag(self) -> bool:
         # Only 0 beepers in bag indicates empty bag – negative represents INFINITY
         return self.num_beepers == 0
 
-    def facing_north(self):
+    def facing_north(self) -> bool:
         """
         This function returns a boolean indicating whether or not Karel is currently
         facing North.
@@ -319,10 +323,10 @@ class KarelProgram:
         """
         return self.direction == Direction.NORTH
 
-    def not_facing_north(self):
+    def not_facing_north(self) -> bool:
         return not self.facing_north()
 
-    def facing_east(self):
+    def facing_east(self) -> bool:
         """
         This function returns a boolean indicating whether or not Karel is currently
         facing East.
@@ -334,10 +338,10 @@ class KarelProgram:
         """
         return self.direction == Direction.EAST
 
-    def not_facing_east(self):
+    def not_facing_east(self) -> bool:
         return not self.facing_east()
 
-    def facing_west(self):
+    def facing_west(self) -> bool:
         """
         This function returns a boolean indicating whether or not Karel is currently
         facing West.
@@ -349,10 +353,10 @@ class KarelProgram:
         """
         return self.direction == Direction.WEST
 
-    def not_facing_west(self):
+    def not_facing_west(self) -> bool:
         return not self.facing_west()
 
-    def facing_south(self):
+    def facing_south(self) -> bool:
         """
         This function returns a boolean indicating whether or not Karel is currently
         facing South.
@@ -364,10 +368,10 @@ class KarelProgram:
         """
         return self.direction == Direction.SOUTH
 
-    def not_facing_south(self):
+    def not_facing_south(self) -> bool:
         return not self.facing_south()
 
-    def paint_corner(self, color):
+    def paint_corner(self, color: str) -> None:
         """
         This function makes Karel paint its current corner the indicated color.
         This function will raise a KarelException if the indicated color is not one
@@ -388,7 +392,7 @@ class KarelProgram:
             )
         self.world.paint_corner(self.avenue, self.street, color)
 
-    def corner_color_is(self, color):
+    def corner_color_is(self, color: str) -> bool:
         """
         This function returns a boolean indicating whether or not Karel's current
         corner is the specified color.

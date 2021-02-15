@@ -9,16 +9,17 @@ Email: tyep@cs.stanford.edu
 """
 import ast
 import inspect
+from typing import Any, Callable
 
 import stanfordkarel
 
 from .karel_application import StudentCode
 
 
-def style_test(func):
+def style_test(func: Callable[..., bool]) -> Callable[..., bool]:
     """ Decorator for printing out the results of a style test. """
 
-    def success_func(*args, **kwargs):
+    def success_func(*args: Any, **kwargs: Any) -> bool:
         result = func(*args, **kwargs)
         if result:
             print("All good!")
@@ -32,7 +33,7 @@ def style_test(func):
 class StyleChecker:
     """ Style Checker for Karel. """
 
-    def __init__(self, code_file):
+    def __init__(self, code_file: str) -> None:
         self.student_code = StudentCode(code_file)
         self.module = self.student_code.mod
         self.module_lines = str(self.student_code).split("\n")
@@ -44,7 +45,7 @@ class StyleChecker:
     def print_status_message(message: str) -> None:
         print(message.ljust(64), end="")
 
-    def check_style(self):
+    def check_style(self) -> None:
         print(f"\n\nStyle Tests for {self.student_code.module_name}:")
         assert self.check_line_lengths()
         assert self.check_function_defs()
@@ -58,7 +59,7 @@ class StyleChecker:
         return True
 
     @style_test
-    def check_line_lengths(self, max_line_length=88) -> bool:
+    def check_line_lengths(self, max_line_length: int = 88) -> bool:
         self.print_status_message("Checking line lengths...")
         long_idxs = [
             i for i, line in enumerate(self.module_lines) if len(line) > max_line_length
@@ -68,7 +69,7 @@ class StyleChecker:
         return len(long_idxs) == 0
 
     @style_test
-    def check_function_defs(self, min_name_length=5) -> bool:
+    def check_function_defs(self, min_name_length: int = 5) -> bool:
         self.print_status_message("Checking function definitions...")
         ok = True
         seen_already = set()
@@ -83,7 +84,7 @@ class StyleChecker:
         return ok
 
     @style_test
-    def check_naming(self, min_name_length=5) -> bool:
+    def check_naming(self, min_name_length: int = 5) -> bool:
         """. """
         self.print_status_message("Checking function and variable names...")
         stanfordkarel_names = dir(stanfordkarel)
@@ -103,7 +104,7 @@ class StyleChecker:
         return len(short_names) == 0
 
     @style_test
-    def assert_num_functions(self, min_required=10) -> bool:
+    def assert_num_functions(self, min_required: int = 10) -> bool:
         """
         Check that *at least* `num` functions
         are present in the module.

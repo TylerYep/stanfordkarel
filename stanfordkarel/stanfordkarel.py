@@ -17,7 +17,7 @@ import os
 import sys
 import tkinter as tk
 
-from .didyoumean import didyoumean_hook
+from .didyoumean import didyoumean_hook  # type: ignore
 from .karel import KarelProgram
 from .karel_application import KarelApplication
 
@@ -30,100 +30,101 @@ in a given world.
 """
 
 
-def move():
+def move() -> None:
     pass
 
 
-def turn_left():
+def turn_left() -> None:
     pass
 
 
-def put_beeper():
+def put_beeper() -> None:
     pass
 
 
-def pick_beeper():
+def pick_beeper() -> None:
     pass
 
 
-def front_is_clear():
+def front_is_clear() -> bool:
     pass
 
 
-def front_is_blocked():
+def front_is_blocked() -> bool:
     pass
 
 
-def left_is_clear():
+def left_is_clear() -> bool:
     pass
 
 
-def left_is_blocked():
+def left_is_blocked() -> bool:
     pass
 
 
-def right_is_clear():
+def right_is_clear() -> bool:
     pass
 
 
-def right_is_blocked():
+def right_is_blocked() -> bool:
     pass
 
 
-def beepers_present():
+def beepers_present() -> bool:
     pass
 
 
-def no_beepers_present():
+def no_beepers_present() -> bool:
     pass
 
 
-def beepers_in_bag():
+def beepers_in_bag() -> bool:
     pass
 
 
-def no_beepers_in_bag():
+def no_beepers_in_bag() -> bool:
     pass
 
 
-def facing_north():
+def facing_north() -> bool:
     pass
 
 
-def not_facing_north():
+def not_facing_north() -> bool:
     pass
 
 
-def facing_east():
+def facing_east() -> bool:
     pass
 
 
-def not_facing_east():
+def not_facing_east() -> bool:
     pass
 
 
-def facing_west():
+def facing_west() -> bool:
     pass
 
 
-def not_facing_west():
+def not_facing_west() -> bool:
     pass
 
 
-def facing_south():
+def facing_south() -> bool:
     pass
 
 
-def not_facing_south():
+def not_facing_south() -> bool:
     pass
 
 
-def paint_corner():
-    pass
+def paint_corner(color: str) -> None:
+    del color
 
 
-def corner_color_is():
-    pass
+def corner_color_is(color: str) -> bool:
+    del color
+    return True
 
 
 # Defined constants for ease of use by students when coloring corners
@@ -143,7 +144,7 @@ YELLOW = "yellow"
 BLANK = ""
 
 
-def run_karel_program(world_file=""):
+def run_karel_program(world_file: str = "") -> None:
     # Extract the name of the file the student is executing
     student_code_file = sys.argv[0]
 

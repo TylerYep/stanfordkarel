@@ -6,4 +6,4 @@ python:
   - "3.9"
   - "3.10-dev"
 script:
-  - pytest --durations=0
+  - pytest --cov=stanfordkarel --cov-report= --durations=0
