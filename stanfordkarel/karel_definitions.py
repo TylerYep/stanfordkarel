@@ -12,16 +12,18 @@ Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
-import math
 from enum import Enum, unique
 
 
 @unique
 class Direction(Enum):
-    EAST = 0
-    SOUTH = math.pi / 2
-    WEST = math.pi
-    NORTH = 3 * math.pi / 2
+    EAST = "east"
+    SOUTH = "south"
+    WEST = "west"
+    NORTH = "north"
+
+    def __repr__(self) -> str:
+        return str(self.value)
 
 
 # Karel Application + World Editor
@@ -49,15 +51,6 @@ COLOR_MAP = {
     "Blue": "blue",
     "Yellow": "yellow",
 }
-
-# Karel World, World Editor
-DIRECTIONS_MAP = {
-    "north": Direction.NORTH,
-    "east": Direction.EAST,
-    "south": Direction.SOUTH,
-    "west": Direction.WEST,
-}
-DIRECTIONS_MAP_INVERSE = {v: k for k, v in DIRECTIONS_MAP.items()}
 
 
 # Karel World, Karel Canvas
@@ -87,7 +80,7 @@ class KarelException(Exception):
         super().__init__()
         self.avenue = avenue
         self.street = street
-        self.direction = DIRECTIONS_MAP_INVERSE[direction].capitalize()
+        self.direction = direction.value.capitalize()
         self.message = message
 
     def __str__(self):

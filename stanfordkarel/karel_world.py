@@ -45,14 +45,7 @@ import os
 import re
 import sys
 
-from .karel_definitions import (
-    COLOR_MAP,
-    DIRECTIONS_MAP,
-    DIRECTIONS_MAP_INVERSE,
-    INFINITY,
-    Direction,
-    Wall,
-)
+from .karel_definitions import COLOR_MAP, INFINITY, Direction, Wall
 
 INIT_SPEED = 50
 VALID_WORLD_KEYWORDS = [
@@ -187,8 +180,8 @@ class KarelWorld:
                 continue
 
             # check to see if the parameter is a direction value
-            if param in DIRECTIONS_MAP:
-                params["direction"] = DIRECTIONS_MAP[param]
+            if param in (d.value for d in Direction):
+                params["direction"] = Direction(param)
 
             # check to see if parameter encodes a numerical value or color string
             elif keyword == "color":
@@ -208,7 +201,7 @@ class KarelWorld:
                     params["val"] = int(100 * float(param))
                 except ValueError as e:
                     raise ValueError(
-                        f"Error: {param} is invalid parameter for {keyword}."
+                        f"Error: {param} is an invalid parameter for {keyword}."
                     ) from e
 
             # must be a digit then
@@ -226,11 +219,8 @@ class KarelWorld:
             if not line:
                 continue
 
-            if ":" not in line:
-                print(
-                    "Incorrectly formatted line - "
-                    f"ignoring line {i} of world file: {line}"
-                )
+            if KEYWORD_DELIM not in line:
+                print(f"Incorrectly formatted line. Ignoring line {i} of file: {line}")
                 continue
 
             keyword, param_str = line.lower().split(KEYWORD_DELIM)
@@ -327,8 +317,7 @@ class KarelWorld:
             # Next, output all walls
             for wall in self.walls:
                 f.write(
-                    f"Wall: ({wall.avenue}, {wall.street}); "
-                    f"{DIRECTIONS_MAP_INVERSE[wall.direction]}\n"
+                    f"Wall: ({wall.avenue}, {wall.street}); {wall.direction.value}\n"
                 )
 
             # Next, output all beepers
@@ -342,8 +331,7 @@ class KarelWorld:
 
             # Next, output Karel information
             f.write(
-                f"Karel: ({karel.avenue}, {karel.street}); "
-                f"{DIRECTIONS_MAP_INVERSE[karel.direction]}\n"
+                f"Karel: ({karel.avenue}, {karel.street}); {karel.direction.value}\n"
             )
 
             # Finally, output beeperbag info

@@ -20,12 +20,11 @@ from .karel_canvas import KarelCanvas
 from .karel_definitions import (
     COLOR_MAP,
     DEFAULT_ICON,
-    DIRECTIONS_MAP,
-    DIRECTIONS_MAP_INVERSE,
     INFINITY,
     LIGHT_GREY,
     PAD_X,
     PAD_Y,
+    Direction,
 )
 
 MIN_DIMENSIONS = 1
@@ -209,7 +208,7 @@ class WorldBuilderApplication(tk.Frame):
         self.dir_radio_frame.grid(row=3, column=0, padx=PAD_X, pady=PAD_Y, sticky="ew")
 
         self.karel_direction_var = tk.StringVar()
-        self.karel_direction_var.set(DIRECTIONS_MAP_INVERSE[self.karel.direction])
+        self.karel_direction_var.set(self.karel.direction.value)
         self.karel_direction_var.trace("w", self.update_karel_direction)
 
         dir_label = tk.Label(
@@ -349,7 +348,7 @@ class WorldBuilderApplication(tk.Frame):
         ).pack(anchor="w")
 
     def reset_direction_radio_buttons(self):
-        self.karel_direction_var.set(DIRECTIONS_MAP_INVERSE[self.karel.direction])
+        self.karel_direction_var.set(self.karel.direction.value)
 
     def reset_beeper_bag_radio_buttons(self):
         self.beeper_bag_var.set(self.karel.num_beepers)
@@ -357,7 +356,7 @@ class WorldBuilderApplication(tk.Frame):
     def update_karel_direction(self, *args):
         del args
         new_dir = self.karel_direction_var.get()
-        self.karel.direction = DIRECTIONS_MAP[new_dir]
+        self.karel.direction = Direction(new_dir)
         self.canvas.redraw_karel()
 
     def update_karel_num_beepers(self, *args):

@@ -20,6 +20,12 @@ import tkinter as tk
 
 from .karel_definitions import DEFAULT_ICON, Direction, Wall
 
+DIRECTION_TO_RADIANS = {
+    Direction.EAST: 0,
+    Direction.SOUTH: math.pi / 2,
+    Direction.WEST: math.pi,
+    Direction.NORTH: 3 * math.pi / 2,
+}
 WALL_DETECTION_THRESHOLD = 0.1
 BORDER_OFFSET = 17
 LABEL_OFFSET = 7
@@ -294,13 +300,21 @@ class KarelCanvas(tk.Canvas):
             )
 
             self.draw_karel_body(
-                karel_origin_x, karel_origin_y, center, self.karel.direction.value
+                karel_origin_x,
+                karel_origin_y,
+                center,
+                DIRECTION_TO_RADIANS[self.karel.direction],
             )
             self.draw_karel_legs(
-                karel_origin_x, karel_origin_y, center, self.karel.direction.value
+                karel_origin_x,
+                karel_origin_y,
+                center,
+                DIRECTION_TO_RADIANS[self.karel.direction],
             )
         elif self.icon == "simple":
-            self.draw_simple_karel_icon(center, self.karel.direction.value)
+            self.draw_simple_karel_icon(
+                center, DIRECTION_TO_RADIANS[self.karel.direction]
+            )
 
     def generate_external_karel_points(self, x, y, center, direction):
         outer_points = []
