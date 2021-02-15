@@ -31,7 +31,7 @@ class StudentCode:
 
     def __init__(self, code_file, karel=None):
         if not os.path.isfile(code_file):
-            raise FileNotFoundError("{} could not be found.".format(code_file))
+            raise FileNotFoundError(f"{code_file} could not be found.")
 
         self.module_name = os.path.basename(code_file)
         if self.module_name.endswith(".py"):
@@ -45,7 +45,7 @@ class StudentCode:
             spec.loader.exec_module(self.mod)
         except Exception as e:
             # Handle syntax errors and only print location of error
-            print("Syntax Error: {}".format(e))
+            print(f"Syntax Error: {e}")
             print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
             sys.exit()
 
@@ -116,7 +116,7 @@ class KarelApplication(tk.Frame):
         master.columnconfigure(1, weight=1)
 
         # set master geometry
-        master.geometry(str(window_width) + "x" + str(window_height))
+        master.geometry(f"{window_width}x{window_height}")
 
         super().__init__(master, background=LIGHT_GREY)
 
@@ -145,8 +145,11 @@ class KarelApplication(tk.Frame):
     def set_dock_icon(self):
         # make Karel dock icon image
         path = os.path.join(os.path.dirname(__file__), "icon.png")
-        img = tk.Image("photo", file=path)
-        self.master.tk.call("wm", "iconphoto", self.master._w, img)
+        try:
+            img = tk.Image("photo", file=path)
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)
+        except Exception:
+            print(f"Warning: invalid icon.png: {path}")
 
     def create_menubar(self):
         menubar = tk.Menu(self.master)
@@ -315,7 +318,7 @@ class KarelApplication(tk.Frame):
         print(
             ("".join(tb.format_list(tb.StackSummary.extract(display_frames)))).strip()
         )
-        print("{}: {}".format(type(e).__name__, str(e)))
+        print(f"{type(e).__name__}: {e}")
 
     def run_program(self):
         # Error checking for existence of main function completed in prior file
@@ -370,7 +373,7 @@ class KarelApplication(tk.Frame):
         # Reset speed slider
         self.scale.set(self.world.init_speed)
         self.status_label.configure(
-            text="Loaded world from {}.".format(os.path.basename(filename)), fg="black"
+            text=f"Loaded world from {os.path.basename(filename)}.", fg="black"
         )
 
         # Make sure program control button is set to 'run' mode

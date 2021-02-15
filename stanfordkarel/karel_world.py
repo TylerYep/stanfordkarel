@@ -174,10 +174,8 @@ class KarelWorld:
                 print("Using default world...")
                 return open(default_world)
             raise FileNotFoundError(
-                "Default world cannot be found in: {}\n"
-                "Please raise an issue on the stanfordkarel GitHub.".format(
-                    default_worlds_path
-                )
+                f"Default world cannot be found in: {default_worlds_path}\n"
+                "Please raise an issue on the stanfordkarel GitHub."
             )
 
         if os.path.isfile(world_file):
@@ -193,19 +191,18 @@ class KarelWorld:
             print("Could not find worlds/ folder in current directory.\n")
 
         sys.tracebacklimit = 0
+        available_worlds = "\n".join(
+            [
+                (" " * 4) + os.path.splitext(world)[0]
+                for world in sorted(os.listdir(default_worlds_path))
+            ]
+        )
         raise FileNotFoundError(
             "The specified file was not one of the provided worlds.\n"
             "Please store custom worlds in a folder named worlds/, "
-            "or use a world listed below:\n{}"
+            f"or use a world listed below:\n{available_worlds}"
             "\nPass the default world as a parameter in run_karel_program().\n"
-            "    e.g. run_karel_program('checkerboard_karel')".format(
-                "\n".join(
-                    [
-                        (" " * 4) + os.path.splitext(world)[0]
-                        for world in sorted(os.listdir(default_worlds_path))
-                    ]
-                )
-            )
+            "    e.g. run_karel_program('checkerboard_karel')"
         )
 
     @staticmethod
@@ -241,7 +238,7 @@ class KarelWorld:
             elif keyword == "color":
                 if param.title() not in COLOR_MAP:
                     raise ValueError(
-                        "Error: {} is invalid parameter for {}.".format(param, keyword)
+                        f"Error: {param} is invalid parameter for {keyword}."
                     )
                 params["color"] = param.title()
 
@@ -255,7 +252,7 @@ class KarelWorld:
                     params["val"] = int(100 * float(param))
                 except ValueError as e:
                     raise ValueError(
-                        "Error: {} is invalid parameter for {}.".format(param, keyword)
+                        f"Error: {param} is invalid parameter for {keyword}."
                     ) from e
 
             # must be a digit then
@@ -263,9 +260,7 @@ class KarelWorld:
                 params["val"] = int(param)
 
             else:
-                raise ValueError(
-                    "Error: {} is invalid parameter for {}.".format(param, keyword)
-                )
+                raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
         return params
 
     def load_from_file(self):
@@ -278,7 +273,7 @@ class KarelWorld:
             if ":" not in line:
                 print(
                     "Incorrectly formatted line - "
-                    "ignoring line {} of world file: {}".format(i, line)
+                    f"ignoring line {i} of world file: {line}"
                 )
                 continue
 
@@ -320,11 +315,7 @@ class KarelWorld:
                 self._corner_colors[params["location"]] = params["color"]
 
             else:
-                print(
-                    "Invalid keyword - ignoring line {} of world file: {}".format(
-                        i, line
-                    )
-                )
+                print(f"Invalid keyword - ignoring line {i} of world file: {line}")
 
     def add_beeper(self, avenue, street):
         self._beepers[(avenue, street)] += 1
@@ -375,32 +366,30 @@ class KarelWorld:
     def save_to_file(self, filename, karel):
         with open(filename, "w") as f:
             # First, output dimensions of world
-            f.write("Dimension: ({}, {})\n".format(self.num_avenues, self.num_streets))
+            f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
 
             # Next, output all walls
             for wall in self._walls:
                 f.write(
-                    "Wall: ({}, {}); {}\n".format(
-                        wall.avenue, wall.street, DIRECTIONS_MAP_INVERSE[wall.direction]
-                    )
+                    f"Wall: ({wall.avenue}, {wall.street}); "
+                    f"{DIRECTIONS_MAP_INVERSE[wall.direction]}\n"
                 )
 
             # Next, output all beepers
             for loc, count in self._beepers.items():
-                f.write("Beeper: ({}, {}); {}\n".format(loc[0], loc[1], count))
+                f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
 
             # Next, output all color information
             for loc, color in self._corner_colors.items():
                 if color:
-                    f.write("Color: ({}, {}); {}\n".format(loc[0], loc[1], color))
+                    f.write(f"Color: ({loc[0]}, {loc[1]}); {color}\n")
 
             # Next, output Karel information
             f.write(
-                "Karel: ({}, {}); {}\n".format(
-                    karel.avenue, karel.street, DIRECTIONS_MAP_INVERSE[karel.direction]
-                )
+                f"Karel: ({karel.avenue}, {karel.street}); "
+                f"{DIRECTIONS_MAP_INVERSE[karel.direction]}\n"
             )
 
             # Finally, output beeperbag info
             beeper_output = karel.num_beepers if karel.num_beepers >= 0 else "INFINITY"
-            f.write("BeeperBag: {}\n".format(beeper_output))
+            f.write(f"BeeperBag: {beeper_output}\n")

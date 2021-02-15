@@ -26,7 +26,7 @@ def execute_karel_code(code_file):
     student_code = StudentCode(code_file, karel)
     student_code.mod.main()
     assert karel.compare_with(
-        Karel("{}_end".format(module_name))
+        Karel(f"{module_name}_end")
     ), "Resulting world did not match expected result."
 
 

@@ -76,7 +76,7 @@ class Wall:
         return hash((self._avenue, self._street, self._direction))
 
     def __repr__(self):
-        return "({}, {}) {}".format(self._avenue, self._street, self._direction)
+        return f"({self._avenue}, {self._street}) {self._direction}"
 
     @property
     def avenue(self):
@@ -104,6 +104,6 @@ class KarelException(Exception):
 
     def __str__(self):
         return (
-            "Karel crashed while on avenue {} and street {}, facing {}\n"
-            "Invalid action: {}"
-        ).format(self.avenue, self.street, self.direction, self.message)
+            f"Karel crashed while on avenue {self.avenue} and street {self.street}, "
+            f"facing {self.direction}\nInvalid action: {self.message}"
+        )

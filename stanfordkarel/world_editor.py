@@ -77,8 +77,11 @@ class WorldBuilderApplication(tk.Frame):
     def set_dock_icon(self):
         # make Karel dock icon image
         path = os.path.join(os.path.dirname(__file__), "icon.png")
-        img = tk.Image("photo", file=path)
-        self.master.tk.call("wm", "iconphoto", self.master._w, img)
+        try:
+            img = tk.Image("photo", file=path)
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)
+        except Exception:
+            print(f"Warning: invalid icon.png: {path}")
 
     def setup_world(self):
         load_existing = messagebox.askyesno(

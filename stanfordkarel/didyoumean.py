@@ -11,16 +11,17 @@ import difflib
 import itertools
 import re
 import sys
-from collections import namedtuple
-from typing import Any, Dict, List
+from typing import Any, Dict, List, NamedTuple
 
 # To be used in `get_suggestions_for_exception`.
 SUGGESTION_FUNCTIONS = {}  # type: Dict[Any, List[Any]]
 VAR_NAME = r"[^\d\W]\w*"
-NAMENOTDEFINED_RE = r"^(?:global )?name '(?P<name>{})' " r"is not defined$".format(
-    VAR_NAME
-)
-ScopedObj = namedtuple("ScopedObj", "obj scope")
+NAMENOTDEFINED_RE = r"^(?:global )?name '(?P<name>{})' is not defined$".format(VAR_NAME)
+
+
+class ScopedObj(NamedTuple):
+    obj: Any
+    scope: str
 
 
 def merge_dict(*dicts):
@@ -113,7 +114,7 @@ def get_suggestions_for_exception(value, traceback):
         for func in functions
     )
     if suggestions:
-        return ". Did you mean {}?".format(", ".join(list(suggestions)))
+        return f". Did you mean {', '.join(list(suggestions))}?"
     return ""
 
 
@@ -135,7 +136,7 @@ def suggest_name_as_name_typo(name, objdict):
     Example: 'foobaf' -> 'foobar'.
     """
     for word in get_close_matches(name, objdict.keys()):
-        yield "'{}'".format(word)  # + " (" + objdict[name][0].scope + ")"
+        yield f"'{word}'"  # + " (" + objdict[name][0].scope + ")"
 
 
 def add_string_to_exception(value, string):

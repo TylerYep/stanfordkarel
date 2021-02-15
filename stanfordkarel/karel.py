@@ -159,8 +159,8 @@ class Karel:
         if self == other:
             return True
         if not two_columns:
-            print("\n\nStudent output:\n{}".format(self))
-            print("\nExpected output:\n{}".format(other))
+            print(f"\n\nStudent output:\n{self}")
+            print(f"\nExpected output:\n{other}")
             return False
 
         print(compare_output(self, other))
@@ -466,8 +466,8 @@ class Karel:
                 self._avenue,
                 self._street,
                 self._direction,
-                "Karel attempted to paint the corner with color {}, "
-                "which is not valid.".format(color),
+                f"Karel attempted to paint the corner with color {color}, "
+                "which is not valid.",
             )
         self.world.paint_corner(self.avenue, self.street, color)
 

@@ -27,11 +27,11 @@ class Tile:  # pylint: disable=too-few-public-methods
         if self.value == "K" and self.beepers > 0:
             result += " <K> "
         elif self.beepers > 0:
-            result += " <{}> ".format(self.beepers)
+            result += f" <{self.beepers}> "
         elif self.color:
-            result += " {} ".format(self.color[:3])
+            result += f" {self.color[:3]} "
         else:
-            result += "  {}  ".format(self.value)
+            result += f"  {self.value}  "
         return result
 
 
@@ -54,9 +54,7 @@ def compare_output(first, second):
 
     def create_two_column_string(col1, col2):
         """ col1 and col2 are Lists. """
-        return map(
-            lambda x: "{}{}{}".format(x[0], " " * SPACING, x[1]), zip(col1, col2)
-        )
+        return map(lambda x: f"{x[0]}{' ' * SPACING}{x[1]}", zip(col1, col2))
 
     def symmetric_difference(a, b):
         extra_a, extra_b = {}, {}
@@ -79,28 +77,19 @@ def compare_output(first, second):
     text_spacing = " " * (world_width - len(header1) + SPACING + 1)
     two_columns = create_two_column_string(this, that)
     output = "\n".join(two_columns)
-    fancy_arrows = "{}❯{}❯{}❯ ".format(
-        Color.RED.value, Color.YELLOW.value, Color.GREEN.value
-    )
+    fancy_arrows = f"{Color.RED.value}❯{Color.YELLOW.value}❯{Color.GREEN.value}❯ "
 
-    result = "\n\n{} {}{}{}" "\n{}{}{}\n{}\n".format(
-        fancy_arrows,
-        Color.YELLOW.value,
-        first.world.world_name,
-        Color.END.value,
-        header1,
-        text_spacing,
-        header2,
-        output,
+    result = (
+        f"\n\n{fancy_arrows} "
+        f"{Color.YELLOW.value}{first.world.world_name}{Color.END.value}"
+        f"\n{header1}{text_spacing}{header2}\n{output}\n"
     )
 
     if first.avenue != second.avenue or first.street != second.street:
         result += (
             "Karel did not end up in the same location in both worlds:\n"
-            "Student: {}\n"
-            "Expected: {}\n\n".format(
-                (first.avenue, first.street), (second.avenue, second.street)
-            )
+            f"Student: {(first.avenue, first.street)}\n"
+            f"Expected: {(second.avenue, second.street)}\n\n"
         )
     if first.world.beepers != second.world.beepers:
         extra_a, extra_b = symmetric_difference(
@@ -109,8 +98,8 @@ def compare_output(first, second):
         result += (
             "Beepers do not match: "
             "(Only beepers that appear in one world but not the other are listed)\n"
-            "Student: {}\n"
-            "Expected: {}\n\n".format(extra_a, extra_b)
+            f"Student: {extra_a}\n"
+            f"Expected: {extra_b}\n\n"
         )
     return result
 
@@ -210,7 +199,8 @@ def karel_ascii(world, karel_street, karel_avenue):
             if world.corner_color(c, r):
                 world_arr[world.num_streets - r][c - 1].color = world.corner_color(c, r)
 
-    result = "┌{}┐\n".format(HORIZONTAL * (CHAR_WIDTH * world.num_avenues + 1))
+    avenue_widths = HORIZONTAL * (CHAR_WIDTH * world.num_avenues + 1)
+    result = f"┌{avenue_widths}┐\n"
     for r in range(world.num_streets):
         next_line = VERTICAL
         result += VERTICAL
@@ -219,12 +209,13 @@ def karel_ascii(world, karel_street, karel_avenue):
             tile = world_arr[r][c]
             line, next_block_start = get_next_line(r, c, next_block_start)
             next_line += line
-            result += VERTICAL if tile_pair_has_wall(r, c, Direction.WEST) else " "
-            result += str(tile)
+            result += (
+                VERTICAL if tile_pair_has_wall(r, c, Direction.WEST) else " "
+            ) + str(tile)
 
-        result += " {}\n".format(VERTICAL)
+        result += f" {VERTICAL}\n"
         if r == world.num_streets - 1:
-            result += "└{}┘\n".format(HORIZONTAL * (CHAR_WIDTH * world.num_avenues + 1))
+            result += f"└{avenue_widths}┘\n"
         else:
-            result += "{} {}\n".format(next_line, VERTICAL)
+            result += f"{next_line} {VERTICAL}\n"
     return result

@@ -45,7 +45,7 @@ class StyleChecker:
         print(message.ljust(64), end="")
 
     def check_style(self):
-        print("\n\nStyle Tests for {}:".format(self.student_code.module_name))
+        print(f"\n\nStyle Tests for {self.student_code.module_name}:")
         assert self.check_line_lengths()
         assert self.check_function_defs()
         assert self.assert_num_functions()
@@ -64,11 +64,7 @@ class StyleChecker:
             i for i, line in enumerate(self.module_lines) if len(line) > max_line_length
         ]
         if long_idxs:
-            print(
-                "Lines {} are longer than {} characters.\n".format(
-                    long_idxs, max_line_length
-                )
-            )
+            print(f"Lines {long_idxs} are longer than {max_line_length} characters.\n")
         return len(long_idxs) == 0
 
     @style_test
@@ -78,13 +74,11 @@ class StyleChecker:
         seen_already = set()
         for f in self.function_list:
             if f in seen_already:
-                print(
-                    "There are multiple functions defined that are called {}".format(f)
-                )
+                print(f"There are multiple functions defined that are called {f}")
                 ok = False
             seen_already.add(f)
             if len(f) < min_name_length and f not in ("main", "move"):
-                print("Function {} has a pretty short name.".format(f))
+                print(f"Function {f} has a pretty short name.")
                 ok = False
         return ok
 
@@ -105,7 +99,7 @@ class StyleChecker:
             if len(f) < min_name_length and f not in ("main", "_")
         ]
         if short_names:
-            print("Functions {} have pretty short names.".format(short_names))
+            print(f"Functions {short_names} have pretty short names.")
         return len(short_names) == 0
 
     @style_test
@@ -115,11 +109,7 @@ class StyleChecker:
         are present in the module.
         """
         self.print_status_message("Checking number of functions...")
-        num_functions = len(self.function_list)
-        if num_functions < min_required:
-            print(
-                "Expected at least {} functions, only found {}.".format(
-                    min_required, num_functions
-                )
-            )
-        return num_functions >= min_required
+        num_fns = len(self.function_list)
+        if num_fns < min_required:
+            print(f"Expected at least {min_required} functions, only found {num_fns}.")
+        return num_fns >= min_required
