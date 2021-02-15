@@ -14,20 +14,15 @@ import difflib
 import itertools
 import re
 import sys
-from typing import Any, NamedTuple
+from typing import Any
 
 # To be used in `get_suggestions_for_exception`.
 SUGGESTION_FUNCTIONS: dict[Any, list[Any]] = {}
 VAR_NAME = r"[^\d\W]\w*"
-NAMENOTDEFINED_RE = r"^(?:global )?name '(?P<name>{})' is not defined$".format(VAR_NAME)
+NAMENOTDEFINED_RE = rf"^(?:global )?name '(?P<name>{VAR_NAME})' is not defined$"
 
 
-class ScopedObj(NamedTuple):
-    obj: Any
-    scope: str
-
-
-def merge_dict(*dicts):  # -> tuple[dict[Any, list[Any]]]:
+def merge_dict(*dicts):
     """
     Merge dicts and return a dictionary mapping key to list of values.
     Order of the values corresponds to the order of the original dicts.
@@ -40,8 +35,8 @@ def merge_dict(*dicts):  # -> tuple[dict[Any, list[Any]]]:
 
 
 def add_scope_to_dict(dict_, scope):
-    """Convert name:obj dict to name:ScopedObj(obj,scope) dict."""
-    return {k: ScopedObj(v, scope) for k, v in dict_.items()}
+    """Convert name:obj dict to name: (obj, scope) dict."""
+    return {k: (v, scope) for k, v in dict_.items()}
 
 
 def get_objects_in_frame(frame):
@@ -143,16 +138,17 @@ def suggest_name_as_name_typo(name, objdict):
 
 
 def add_string_to_exception(value, string):
-    """Add string to the exception parameter."""
-    # The point is to have the string visible when the exception is printed
-    # or converted to string - may it be via `str()`, `repr()` or when the
-    # exception is uncaught and displayed (which seems to use `str()`).
-    # In an ideal world, one just needs to update `args` but apparently it
-    # is not enough for SyntaxError, IOError, etc where other
-    # attributes (`msg`, `strerror`, `reason`, etc) are to be updated too
-    # (for `str()`, not for `repr()`).
-    # Also, elements in args might not be strings or args might me empty
-    # so we add to the first string and add the element otherwise.
+    """
+    Add string to the exception parameter.
+
+    The point is to have the string visible when the exception is printed or converted
+    to string - may it be via `str()`, `repr()` or when the exception is uncaught and
+    displayed (which seems to use `str()`). In an ideal world, one just needs to update
+    `args` but apparently it is not enough for SyntaxError, IOError, etc where other
+    attributes (`msg`, `strerror`, `reason`, etc) are to be updated too (for `str()`,
+    not for `repr()`). Also, elements in args might not be strings or args might me
+    empty so we add to the first string and add the element otherwise.
+    """
     if not isinstance(value.args, tuple):
         raise RuntimeError
     if string:

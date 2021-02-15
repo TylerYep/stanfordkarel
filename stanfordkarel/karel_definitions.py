@@ -13,6 +13,7 @@ Date of Creation: 10/1/2019
 Last Modified: 3/31/2020
 """
 from enum import Enum, unique
+from typing import NamedTuple
 
 
 @unique
@@ -54,24 +55,12 @@ COLOR_MAP = {
 
 
 # Karel World, Karel Canvas
-class Wall:
+class Wall(NamedTuple):
     """ Note that the World Editor only uses West & South to denote wall directions. """
 
-    def __init__(self, avenue: int, street: int, direction: Direction) -> None:
-        self.avenue = avenue
-        self.street = street
-        self.direction = direction
-
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, Wall):
-            return self.__dict__ == other.__dict__
-        raise TypeError
-
-    def __hash__(self) -> int:
-        return hash((self.avenue, self.street, self.direction))
-
-    def __repr__(self) -> str:
-        return f"Wall({self.avenue}, {self.street}, {self.direction})"
+    avenue: int
+    street: int
+    direction: Direction
 
 
 # Karel Application + Karel
