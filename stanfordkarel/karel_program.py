@@ -15,7 +15,6 @@ License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
-Last Modified: 3/31/2020
 """
 from __future__ import annotations
 
@@ -42,7 +41,7 @@ DIRECTION_DELTA_MAP = {
 
 
 class KarelProgram:
-    def __init__(self, world_file: str = "") -> None:
+    def __init__(self, world_file: str) -> None:
         """
         This functions instantiates a new Karel instance and sets its
         location and current number of beepers to be the default starting

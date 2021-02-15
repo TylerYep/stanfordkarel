@@ -37,7 +37,6 @@ License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
-Last Modified: 3/31/2020
 """
 from __future__ import annotations
 
@@ -87,7 +86,6 @@ class KarelWorld:
         Parameters:
             world_file: filename containing the initial state of Karel's world
         """
-        self.world_name = world_file
         self.world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
@@ -341,17 +339,17 @@ class KarelWorld:
             f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
 
             # Next, output all walls
-            for wall in self.walls:
+            for wall in sorted(self.walls):
                 f.write(
                     f"Wall: ({wall.avenue}, {wall.street}); {wall.direction.value}\n"
                 )
 
             # Next, output all beepers
-            for loc, count in self.beepers.items():
+            for loc, count in sorted(self.beepers.items()):
                 f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
 
             # Next, output all color information
-            for loc, color in self.corner_colors.items():
+            for loc, color in sorted(self.corner_colors.items()):
                 if color:
                     f.write(f"Color: ({loc[0]}, {loc[1]}); {color}\n")
 
@@ -376,6 +374,13 @@ class Direction(Enum):
     SOUTH = "south"
     WEST = "west"
     NORTH = "north"
+
+    def __lt__(self, other: object) -> bool:
+        """ Required to sort Directions. """
+        if isinstance(other, Direction):
+            # pylint: disable=comparison-with-callable
+            return self.value < other.value
+        raise TypeError
 
     def __repr__(self) -> str:
         return str(self.value)

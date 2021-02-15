@@ -7,7 +7,6 @@ License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
-Last Modified: 3/31/2020
 """
 from __future__ import annotations
 
@@ -118,7 +117,7 @@ class WorldBuilderApplication(tk.Frame):
                 # Cancel execution and return to existing world
                 return
         if init:
-            self.karel = KarelProgram()
+            self.karel = KarelProgram("")  # Use default world
             self.world = self.karel.world
         else:
             self.world.reload_world()

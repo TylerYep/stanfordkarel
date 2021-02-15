@@ -7,7 +7,6 @@ License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
-Last Modified: 3/31/2020
 """
 from __future__ import annotations
 
@@ -33,7 +32,7 @@ class StudentCode:
     https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
     """
 
-    def __init__(self, code_file: str, karel: KarelProgram | None = None) -> None:
+    def __init__(self, code_file: str) -> None:
         if not os.path.isfile(code_file):
             raise FileNotFoundError(f"{code_file} could not be found.")
 
@@ -57,9 +56,6 @@ class StudentCode:
         if not hasattr(self.mod, "main"):
             print("Couldn't find the main() function. Are you sure you have one?")
             sys.exit()
-
-        if karel is not None:
-            self.inject_namespace(karel)
 
     def __repr__(self) -> str:
         return inspect.getsource(self.mod)
@@ -126,7 +122,8 @@ class KarelApplication(tk.Frame):
 
         self.karel = karel
         self.world = karel.world
-        self.student_code = StudentCode(code_file, self.karel)
+        self.student_code = StudentCode(code_file)
+        self.student_code.inject_namespace(karel)
         master.title(self.student_code.module_name)
         if not self.student_code.mod:
             master.destroy()

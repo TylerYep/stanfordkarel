@@ -11,7 +11,6 @@ License: MIT
 Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
-Last Modified: 3/31/2020
 """
 from __future__ import annotations
 

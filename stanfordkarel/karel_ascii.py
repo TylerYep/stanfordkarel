@@ -13,7 +13,7 @@ from typing import Any, Iterator
 
 from .karel_world import Direction, KarelWorld
 
-CHAR_WIDTH = 6
+CHAR_WIDTH = 5
 HORIZONTAL, VERTICAL = "─", "│"
 SPACING = 10
 
@@ -35,7 +35,7 @@ class Tile:  # pylint: disable=too-few-public-methods
             result = self.color[:3]
         else:
             result = self.value
-        return result.center(5)
+        return result.center(CHAR_WIDTH)
 
 
 class AsciiKarelWorld:
@@ -64,7 +64,7 @@ class AsciiKarelWorld:
         self.num_avenues = num_aves
 
     def __repr__(self) -> str:
-        avenue_widths = HORIZONTAL * (CHAR_WIDTH * self.num_avenues + 1)
+        avenue_widths = HORIZONTAL * ((CHAR_WIDTH + 1) * self.num_avenues + 1)
         result = f"┌{avenue_widths}┐\n"
         for r in range(self.num_streets):
             next_line = VERTICAL
@@ -134,7 +134,7 @@ class AsciiKarelWorld:
                 next_block_start = "┌"
             elif self.tile_pair_has_wall(r, c, Direction.WEST):
                 next_block_start = "└"
-            next_line = next_block_start + HORIZONTAL * (CHAR_WIDTH - 1)
+            next_line = next_block_start + HORIZONTAL * CHAR_WIDTH
             next_block_start = HORIZONTAL
         else:
             if (
@@ -156,7 +156,7 @@ class AsciiKarelWorld:
             ) and self.tile_pair_has_wall(r + 1, c, Direction.WEST):
                 next_block_start = VERTICAL
 
-            next_line = next_block_start + " " * (CHAR_WIDTH - 1)
+            next_line = next_block_start + " " * CHAR_WIDTH
             next_block_start = " "
         return next_line, next_block_start
 
@@ -212,7 +212,7 @@ def compare_output(first: Any, second: Any) -> str:
 
     result = (
         f"\n\n{fancy_arrows} "
-        f"{Color.YELLOW.value}{first.world.world_name}{Color.END.value}"
+        f"{Color.YELLOW.value}{first.world.world_file}{Color.END.value}"
         f"\n{header1}{text_spacing}{header2}\n{output}\n"
     )
 

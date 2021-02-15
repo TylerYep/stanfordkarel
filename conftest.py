@@ -23,7 +23,8 @@ def execute_karel_code(code_file: str) -> None:
     if module_name.endswith(".py"):
         module_name = os.path.splitext(module_name)[0]
     karel = KarelProgram(module_name)
-    student_code = StudentCode(code_file, karel)
+    student_code = StudentCode(code_file)
+    student_code.inject_namespace(karel)
     student_code.mod.main()  # type: ignore
     assert karel.compare_with(
         KarelProgram(f"{module_name}_end")
@@ -33,6 +34,7 @@ def execute_karel_code(code_file: str) -> None:
 def create_solution_worlds() -> None:
     for problem_name in PROBLEMS:
         karel = KarelProgram(problem_name)
-        student_code = StudentCode(problem_name, karel)
+        student_code = StudentCode(problem_name)
+        student_code.inject_namespace(karel)
         student_code.mod.main()  # type: ignore
         karel.world.save_to_file(os.path.join("worlds", problem_name + "_end.w"))
