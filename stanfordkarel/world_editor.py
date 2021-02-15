@@ -366,9 +366,9 @@ class WorldBuilderApplication(tk.Frame):
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
 
-    def handle_mouse_event(self, event: Any) -> None:
+    def handle_mouse_event(self, event: tk.Event[Any]) -> None:
         def apply_function(fn: Callable[..., Any], *args: Any) -> None:
-            if event_type == tk.EventType.ButtonPress:
+            if event_type is tk.EventType.ButtonPress:
                 self.last_action_event_loc = (avenue, street)
                 fn(avenue, street, *args)
                 self.canvas.redraw_corners(update=False)
@@ -376,7 +376,7 @@ class WorldBuilderApplication(tk.Frame):
                 self.canvas.redraw_walls(update=False)
                 self.canvas.redraw_karel()
 
-            elif event_type == tk.EventType.Motion:
+            elif event_type is tk.EventType.Motion:
                 if (avenue, street) != self.last_action_event_loc:
                     self.last_action_event_loc = (avenue, street)
                     fn(avenue, street, *args)

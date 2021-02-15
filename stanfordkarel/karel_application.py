@@ -18,7 +18,6 @@ import sys
 import tkinter as tk
 import traceback as tb
 from time import sleep
-from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 from types import FrameType
@@ -108,7 +107,7 @@ class KarelApplication(tk.Frame):
         self,
         karel: KarelProgram,
         code_file: str,
-        master: Tk,
+        master: tk.Tk,
         window_width: int = 800,
         window_height: int = 600,
         canvas_width: int = 600,
@@ -172,7 +171,7 @@ class KarelApplication(tk.Frame):
         self.bind_all("<Command-w>", self.quit)
         self.master.config(menu=menubar)  # type: ignore
 
-    def quit(self, event: Any) -> None:  # type: ignore
+    def quit(self, event: tk.Event[Any]) -> None:  # type: ignore
         del event
         sys.exit(0)
 
@@ -320,7 +319,7 @@ class KarelApplication(tk.Frame):
         self.program_control_button.configure(state="normal")
         self.load_world_button.configure(state="normal")
 
-    def display_error_traceback(self, e: Any) -> None:
+    def display_error_traceback(self, e: KarelException | NameError) -> None:
         print("Traceback (most recent call last):")
         display_frames: list[tuple[FrameType, int]] = []
         # walk through all the frames in stack trace at time of failure

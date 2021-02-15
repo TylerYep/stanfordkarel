@@ -78,7 +78,7 @@ class KarelWorld:
         # Map of beeper locations to the count of beepers at that location
         self.beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
 
-        # Map of corner colors, defaults to None
+        # Map of corner colors, defaults to ""
         self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(
             lambda: ""
         )
@@ -117,7 +117,7 @@ class KarelWorld:
         raise TypeError
 
     @staticmethod
-    def process_world(world_file: str) -> Any:
+    def process_world(world_file: str) -> str:
         """
         If no world_file is provided, use default world.
         Find world file that matches program name in the current worlds/ directory.
@@ -128,20 +128,20 @@ class KarelWorld:
             default_world = os.path.join(default_worlds_path, DEFAULT_WORLD_FILE)
             if os.path.isfile(default_world):
                 print("Using default world...")
-                return open(default_world)
+                return default_world
             raise FileNotFoundError(
                 f"Default world cannot be found in: {default_worlds_path}\n"
                 "Please raise an issue on the stanfordkarel GitHub."
             )
 
         if os.path.isfile(world_file):
-            return open(world_file)
+            return world_file
 
         for worlds_path in ("worlds", default_worlds_path):
             if os.path.isdir(worlds_path):
                 full_world_path = os.path.join(worlds_path, world_file + ".w")
                 if os.path.isfile(full_world_path):
-                    return open(full_world_path)
+                    return full_world_path
 
         if not os.path.isdir("worlds"):
             print("Could not find worlds/ folder in current directory.\n")
@@ -174,8 +174,8 @@ class KarelWorld:
         raise ValueError
 
     @staticmethod
-    def parse_parameters(keyword: str, param_str: str) -> dict[Any, Any]:
-        params: dict[Any, Any] = {}
+    def parse_parameters(keyword: str, param_str: str) -> dict[str, Any]:
+        params: dict[str, Any] = {}
         for param in param_str.split(PARAM_DELIM):
             param = param.strip()
 
@@ -220,55 +220,59 @@ class KarelWorld:
         return params
 
     def load_from_file(self) -> None:
-        for i, line in enumerate(self.world_file):
-            # Ignore blank lines and lines with no comma delineator
-            line = line.strip()
-            if not line:
-                continue
+        with open(self.world_file) as f:
+            for i, line in enumerate(f):
+                # Ignore blank lines and lines with no comma delineator
+                line = line.strip()
+                if not line:
+                    continue
 
-            if KEYWORD_DELIM not in line:
-                print(f"Incorrectly formatted line. Ignoring line {i} of file: {line}")
-                continue
+                if KEYWORD_DELIM not in line:
+                    print(f"Incorrectly formatted - ignoring line {i} of file: {line}")
+                    continue
 
-            keyword, param_str = line.lower().split(KEYWORD_DELIM)
+                keyword, param_str = line.lower().split(KEYWORD_DELIM)
 
-            # only accept valid keywords as defined in world file spec
-            # TODO: add error detection for keywords with insufficient parameters
-            params = self.parse_parameters(keyword, param_str)
+                # only accept valid keywords as defined in world file spec
+                # TODO: add error detection for keywords with insufficient parameters
+                params = self.parse_parameters(keyword, param_str)
 
-            # handle all different possible keyword cases
-            if keyword == "dimension":
-                # set world dimensions based on location values
-                self.num_avenues, self.num_streets = params["location"]
+                # handle all different possible keyword cases
+                if keyword == "dimension":
+                    # set world dimensions based on location values
+                    self.num_avenues, self.num_streets = params["location"]
 
-            elif keyword == "wall":
-                # build a wall at the specified location
-                (avenue, street), direction = params["location"], params["direction"]
-                self.walls.add(Wall(avenue, street, direction))
+                elif keyword == "wall":
+                    # build a wall at the specified location
+                    (avenue, street), direction = (
+                        params["location"],
+                        params["direction"],
+                    )
+                    self.walls.add(Wall(avenue, street, direction))
 
-            elif keyword == "beeper":
-                # add the specified number of beepers to the world
-                self.beepers[params["location"]] += params["val"]
+                elif keyword == "beeper":
+                    # add the specified number of beepers to the world
+                    self.beepers[params["location"]] += params["val"]
 
-            elif keyword == "karel":
-                # Give Karel initial state values
-                self.karel_start_location = params["location"]
-                self.karel_start_direction = params["direction"]
+                elif keyword == "karel":
+                    # Give Karel initial state values
+                    self.karel_start_location = params["location"]
+                    self.karel_start_direction = params["direction"]
 
-            elif keyword == "beeperbag":
-                # Set Karel's initial beeper bag count
-                self.karel_start_beeper_count = params["val"]
+                elif keyword == "beeperbag":
+                    # Set Karel's initial beeper bag count
+                    self.karel_start_beeper_count = params["val"]
 
-            elif keyword == "speed":
-                # Set delay speed of program execution
-                self.init_speed = params["val"]
+                elif keyword == "speed":
+                    # Set delay speed of program execution
+                    self.init_speed = params["val"]
 
-            elif keyword == "color":
-                # Set corner color to be specified color
-                self.corner_colors[params["location"]] = params["color"]
+                elif keyword == "color":
+                    # Set corner color to be specified color
+                    self.corner_colors[params["location"]] = params["color"]
 
-            else:
-                print(f"Invalid keyword - ignoring line {i} of world file: {line}")
+                else:
+                    print(f"Invalid keyword - ignoring line {i} of world file: {line}")
 
     def add_beeper(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] += 1

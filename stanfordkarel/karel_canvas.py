@@ -18,7 +18,6 @@ from __future__ import annotations
 import cmath
 import math
 import tkinter as tk
-from typing import Any
 
 from .karel import KarelProgram
 from .karel_definitions import DEFAULT_ICON, Direction, Wall
@@ -65,7 +64,7 @@ class KarelCanvas(tk.Canvas):
         self,
         width: int,
         height: int,
-        master: Any,
+        master: tk.Misc,
         world: KarelWorld,
         karel: KarelProgram,
         bg: str = "white",

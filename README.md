@@ -16,7 +16,7 @@ Huge props to @nick-bowman for rewriting this project from scratch!
 - Solution code no longer needed to grade assignments - instead, the output worlds are compared.
 - Karel in ASCII! Plus autograder support.
 - Improved autograding, testing, linting, and auto-formatting.
-- Errors automatically suggest `turn_left()`if you misspell the command (e.g. turnLeft).
+- Errors automatically suggest `turn_left()` if you misspell the command (e.g. turnLeft).
 
 # Usage
 
