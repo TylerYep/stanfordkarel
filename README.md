@@ -16,13 +16,16 @@ Huge props to @nick-bowman for rewriting this project from scratch!
 - Solution code no longer needed to grade assignments - instead, the output worlds are compared.
 - Karel in ASCII! Plus autograder support.
 - Improved autograding, testing, linting, and auto-formatting.
-- Errors automatically suggest `turn_left()` if you misspell the command (e.g. turnLeft).
+- Exception trace makes suggestions if you misspell a command (e.g. `turnLeft()` -> `turn_left()`).
 
 # Usage
 
 `pip install stanfordkarel`
 
 # Documentation
+
+Follow the Karel tutorial on the
+[Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
 
 ## Running Karel
 
@@ -53,9 +56,6 @@ python collect_newspaper_karel.py
 ```
 
 ![Karel Program](images/karel_program.png)
-
-Follow the Karel tutorial on the
-[Karel Reader!](https://compedu.stanford.edu/karel-reader/docs/python/en/intro.html)
 
 ## Available Commands
 

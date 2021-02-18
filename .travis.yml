@@ -4,5 +4,10 @@ python:
   - "3.8"
   - "3.9"
   - "3.10-dev"
+install:
+  - pip install --upgrade pytest
+  - pip install pytest-cov codecov
 script:
   - pytest --cov=stanfordkarel --cov-report= --durations=0
+after_success:
+  - codecov
