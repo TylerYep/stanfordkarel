@@ -9,13 +9,14 @@ Email: tyep@cs.stanford.edu
 from __future__ import annotations
 
 from enum import Enum, unique
-from typing import Any, Iterator
+from typing import Any, Dict, Iterator, Tuple
 
 from .karel_world import Direction, KarelWorld
 
 CHAR_WIDTH = 5
 HORIZONTAL, VERTICAL = "─", "│"
 SPACING = 10
+BEEPER_COORDS = Dict[Tuple[int, int], int]
 
 
 class Tile:  # pylint: disable=too-few-public-methods
@@ -173,9 +174,6 @@ class Color(Enum):
     BOLD = "\033[1m"
     UNDERLINE = "\033[4m"
     END = "\033[0m"
-
-
-BEEPER_COORDS = dict[tuple[int, int], int]
 
 
 def compare_output(first: Any, second: Any) -> str:
