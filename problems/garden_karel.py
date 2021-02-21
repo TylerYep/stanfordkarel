@@ -1,5 +1,3 @@
-from stanfordkarel import *
-
 """
 File: garden_karel.py
 ----------------------------
@@ -9,16 +7,15 @@ specification, refer to the assignment handout. GardenKarel should be
 able to make a fence in any world that has at least 2 avenues and 2
 streets.
 """
+from stanfordkarel import *
 
 
 def main():
     """
     You should write your code to make Karel do its task in
-    this function. Make sure to delete the 'pass' line before
-    starting to write your own code. You should also delete this
-    comment and replace it with a better, more descriptive one.
+    this function. You should also delete this comment and
+    replace it with a better, more descriptive one.
     """
-    pass
 
 
 # There is no need to edit code beyond this point

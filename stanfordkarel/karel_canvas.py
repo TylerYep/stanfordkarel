@@ -102,6 +102,7 @@ class KarelCanvas(tk.Canvas):
         outline: str = "black",
         tag: str = "karel",
     ) -> None:
+        # pylint: disable=arguments-differ
         super().create_polygon(
             points, fill=fill, outline=outline, width=KAREL_LINE_WIDTH, tag=tag
         )

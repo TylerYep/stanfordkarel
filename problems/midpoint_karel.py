@@ -1,5 +1,3 @@
-from stanfordkarel import *
-
 """
 File: midpoint_karel.py
 ----------------------
@@ -11,16 +9,15 @@ looks for the midpoint, but must pick them up again before it
 stops.  The world may be of any size, but you are allowed to
 assume that it is at least as tall as it is wide.
 """
+from stanfordkarel import *
 
 
 def main():
     """
     You should write your code to make Karel do its task in
-    this function. Make sure to delete the 'pass' line before
-    starting to write your own code. You should also delete this
-    comment and replace it with a better, more descriptive one.
+    this function. You should also delete this comment and
+    replace it with a better, more descriptive one.
     """
-    pass
 
 
 # There is no need to edit code beyond this point

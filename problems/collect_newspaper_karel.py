@@ -1,5 +1,3 @@
-from stanfordkarel import *
-
 """
 File: collect_newspaper.py
 ------------------------------
@@ -9,16 +7,15 @@ instruct Karel to walk to the door of its house, pick up the
 newspaper (represented by a beeper, of course), and then return
 to its initial position in the upper left corner of the house.
 """
+from stanfordkarel import *
 
 
 def main():
     """
     You should write your code to make Karel do its task in
-    this function. Make sure to delete the 'pass' line before
-    starting to write your own code. You should also delete this
-    comment and replace it with a better, more descriptive one.
+    this function. You should also delete this comment and
+    replace it with a better, more descriptive one.
     """
-    pass
 
 
 # There is no need to edit code beyond this point

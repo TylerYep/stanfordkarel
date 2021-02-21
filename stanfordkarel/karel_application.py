@@ -20,7 +20,7 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 from types import FrameType
-from typing import Any, Callable
+from typing import Callable
 
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelException, KarelProgram
@@ -46,7 +46,7 @@ class StudentCode:
         try:
             self.mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(self.mod)  # type: ignore
-        except Exception as e:
+        except SyntaxError as e:
             # Handle syntax errors and only print location of error
             print(f"Syntax Error: {e}")
             print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
@@ -149,7 +149,7 @@ class KarelApplication(tk.Frame):
         try:
             img = tk.Image("photo", file=path)
             self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
-        except Exception:
+        except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
 
     def create_menubar(self) -> None:
@@ -164,12 +164,8 @@ class KarelApplication(tk.Frame):
         iconmenu.add_command(label="Karel", command=lambda: self.set_icon("karel"))
         iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
 
-        self.bind_all("<Command-w>", self.quit)
+        self.bind_all("<Command-w>", lambda _: self.quit())  # type: ignore
         self.master.config(menu=menubar)  # type: ignore
-
-    def quit(self, event: tk.Event[Any]) -> None:  # type: ignore
-        del event
-        sys.exit(0)
 
     def set_icon(self, icon: str) -> None:
         self.canvas.icon = icon

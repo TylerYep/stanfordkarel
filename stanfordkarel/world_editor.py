@@ -72,7 +72,7 @@ class WorldBuilderApplication(tk.Frame):
         try:
             img = tk.Image("photo", file=path)
             self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
-        except Exception:
+        except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
 
     def setup_world(self) -> None:
@@ -357,6 +357,7 @@ class WorldBuilderApplication(tk.Frame):
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
 
+    # pylint: disable=unsubscriptable-object
     def handle_mouse_event(self, event: tk.Event[Any]) -> None:
         def apply_function(fn: Callable[..., Any], *args: Any) -> None:
             if event_type is tk.EventType.ButtonPress:
