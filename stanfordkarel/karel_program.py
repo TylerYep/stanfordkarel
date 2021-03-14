@@ -70,7 +70,7 @@ class KarelProgram:
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelProgram):
             return self.__dict__ == other.__dict__
-        raise NotImplementedError
+        return NotImplemented
 
     def compare_with(self, other: KarelProgram, two_columns: bool = True) -> bool:
         """

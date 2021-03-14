@@ -127,7 +127,7 @@ class KarelWorld:
                 and self.num_avenues == other.num_avenues
                 and self.corner_colors == other.corner_colors
             )
-        raise NotImplementedError
+        return NotImplemented
 
     @staticmethod
     def process_world(world_file: str) -> str:
@@ -380,7 +380,7 @@ class Direction(Enum):
         if isinstance(other, Direction):
             # pylint: disable=comparison-with-callable
             return self.value < other.value
-        raise NotImplementedError
+        return NotImplemented
 
     def __repr__(self) -> str:
         return str(self.value)
