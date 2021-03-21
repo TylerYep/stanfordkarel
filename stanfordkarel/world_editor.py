@@ -10,8 +10,8 @@ Date of Creation: 10/1/2019
 """
 from __future__ import annotations
 
-import os
 import tkinter as tk
+from pathlib import Path
 from tkinter import messagebox, simpledialog  # type: ignore
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from typing import Any, Callable
@@ -68,7 +68,7 @@ class WorldBuilderApplication(tk.Frame):
 
     def set_dock_icon(self) -> None:
         # make Karel dock icon image
-        path = os.path.join(os.path.dirname(__file__), "icon.png")
+        path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
             self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
@@ -129,7 +129,7 @@ class WorldBuilderApplication(tk.Frame):
             self.canvas.redraw_all()
 
     def load_world(self, init: bool = False) -> None:
-        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
+        default_worlds_path = Path(__file__).absolute().parent / "worlds"
         filename = askopenfilename(
             initialdir=default_worlds_path,
             title="Select Karel World",
@@ -146,7 +146,7 @@ class WorldBuilderApplication(tk.Frame):
             self.karel = KarelProgram(filename)
             self.world = self.karel.world
         else:
-            self.world.reload_world(filename=filename)
+            self.world.reload_world(filename)
             self.karel.reset_state()
             self.canvas.redraw_all()
             self.reset_direction_radio_buttons()
@@ -410,7 +410,7 @@ class WorldBuilderApplication(tk.Frame):
                 self.canvas.redraw_walls()
 
     def save_world(self) -> None:
-        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
+        default_worlds_path = Path(__file__).absolute().parent / "worlds"
         filename = asksaveasfilename(
             initialdir=default_worlds_path,
             title="Save Karel World",

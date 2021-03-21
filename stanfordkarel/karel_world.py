@@ -42,10 +42,10 @@ from __future__ import annotations
 
 import collections
 import copy
-import os
 import re
 import sys
 from enum import Enum, unique
+from pathlib import Path
 from typing import Any, NamedTuple
 
 INFINITY = -1
@@ -130,16 +130,16 @@ class KarelWorld:
         return NotImplemented
 
     @staticmethod
-    def process_world(world_file: str) -> str:
+    def process_world(world_file: str) -> Path:
         """
         If no world_file is provided, use default world.
         Find world file that matches program name in the current worlds/ directory.
         If not found, search the provided default worlds directory.
         """
-        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
+        default_worlds_path = Path(__file__).absolute().parent / "worlds"
         if not world_file:
-            default_world = os.path.join(default_worlds_path, DEFAULT_WORLD_FILE)
-            if os.path.isfile(default_world):
+            default_world = default_worlds_path / DEFAULT_WORLD_FILE
+            if default_world.is_file():
                 print("Using default world...")
                 return default_world
             raise FileNotFoundError(
@@ -147,24 +147,23 @@ class KarelWorld:
                 "Please raise an issue on the stanfordkarel GitHub."
             )
 
-        if os.path.isfile(world_file):
-            return world_file
+        world_filepath = Path(world_file)
+        if world_filepath.is_file():
+            return world_filepath
 
-        for worlds_path in ("worlds", default_worlds_path):
-            if os.path.isdir(worlds_path):
-                full_world_path = os.path.join(worlds_path, world_file + ".w")
-                if os.path.isfile(full_world_path):
+        worlds_folder = Path("worlds")
+        for worlds_path in (worlds_folder, default_worlds_path):
+            if worlds_path.is_dir():
+                full_world_path = worlds_path / f"{world_file}.w"
+                if full_world_path.is_file():
                     return full_world_path
 
-        if not os.path.isdir("worlds"):
+        if not worlds_folder.is_dir():
             print("Could not find worlds/ folder in current directory.\n")
 
         sys.tracebacklimit = 0
         available_worlds = "\n".join(
-            [
-                f"  {os.path.splitext(world)[0]}"
-                for world in sorted(os.listdir(default_worlds_path))
-            ]
+            [f"  {world.stem}" for world in default_worlds_path.glob("*.w")]
         )
         raise FileNotFoundError(
             "The specified file was not one of the provided worlds.\n"
@@ -333,7 +332,7 @@ class KarelWorld:
         # TODO fix this
         self.__init__(filename)  # type: ignore
 
-    def save_to_file(self, filename: str) -> None:
+    def save_to_file(self, filename: Path) -> None:
         with open(filename, "w") as f:
             # First, output dimensions of world
             f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")

@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from stanfordkarel.karel_program import KarelProgram
 
@@ -42,9 +42,9 @@ class TestKarelWorld:
         assert result == "\n".join(STONE_MASON_ASCII_OUTPUT) + "\n"
 
     @staticmethod
-    def test_save_to_file(tmp_path: str) -> None:
+    def test_save_to_file(tmp_path: Path) -> None:
         karel = KarelProgram("stone_mason_karel")
-        output_file = os.path.join(tmp_path, "test_world.w")
+        output_file = tmp_path / "test_world.w"
         karel.world.save_to_file(output_file)
         expected = (
             "Dimension: (13, 13)",
@@ -87,5 +87,4 @@ class TestKarelWorld:
             "BeeperBag: INFINITY",
         )
 
-        with open(output_file) as f:
-            assert f.read() == "\n".join(expected) + "\n"
+        assert output_file.read_text() == "\n".join(expected) + "\n"

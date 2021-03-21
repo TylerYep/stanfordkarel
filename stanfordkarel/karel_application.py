@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
-import os
 import sys
 import tkinter as tk
 import traceback as tb
+from pathlib import Path
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
@@ -32,16 +32,13 @@ class StudentCode:
     https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
     """
 
-    def __init__(self, code_file: str) -> None:
-        if not os.path.isfile(code_file):
+    def __init__(self, code_file: Path) -> None:
+        if not code_file.is_file():
             raise FileNotFoundError(f"{code_file} could not be found.")
 
-        self.module_name = os.path.basename(code_file)
-        if self.module_name.endswith(".py"):
-            self.module_name = os.path.splitext(self.module_name)[0]
-
+        self.module_name = code_file.stem
         spec = importlib.util.spec_from_file_location(
-            self.module_name, os.path.abspath(code_file)
+            self.module_name, code_file.resolve()
         )
         try:
             self.mod = importlib.util.module_from_spec(spec)
@@ -101,7 +98,7 @@ class KarelApplication(tk.Frame):
     def __init__(
         self,
         karel: KarelProgram,
-        code_file: str,
+        code_file: Path,
         master: tk.Tk,
         window_width: int = 800,
         window_height: int = 600,
@@ -145,7 +142,7 @@ class KarelApplication(tk.Frame):
 
     def set_dock_icon(self) -> None:
         # make Karel dock icon image
-        path = os.path.join(os.path.dirname(__file__), "icon.png")
+        path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
             self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
@@ -364,7 +361,7 @@ class KarelApplication(tk.Frame):
         self.update()
 
     def load_world(self) -> None:
-        default_worlds_path = os.path.join(os.path.dirname(__file__), "worlds")
+        default_worlds_path = Path(__file__).absolute().parent / "worlds"
         filename = askopenfilename(
             initialdir=default_worlds_path,
             title="Select Karel World",
@@ -380,7 +377,7 @@ class KarelApplication(tk.Frame):
         # Reset speed slider
         self.scale.set(self.world.init_speed)
         self.status_label.configure(
-            text=f"Loaded world from {os.path.basename(filename)}.", fg="black"
+            text=f"Loaded world from {Path(filename).name}.", fg="black"
         )
 
         # Make sure program control button is set to 'run' mode

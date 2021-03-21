@@ -1,4 +1,3 @@
-import os
 import warnings
 
 import pytest
@@ -10,9 +9,9 @@ from stanfordkarel.style_checker import StyleChecker
 @pytest.mark.timeout(TIMEOUT)
 @pytest.mark.parametrize("problem_name", PROBLEMS)
 def test_student_style(problem_name: str) -> None:
-    code_file = os.path.join(STUDENT_CODE_DIR, problem_name + ".py")
+    code_file = STUDENT_CODE_DIR / f"{problem_name}.py"
 
-    if os.path.exists(code_file):
+    if code_file.is_file():
         StyleChecker(code_file).check_style()
     else:
         warnings.warn(

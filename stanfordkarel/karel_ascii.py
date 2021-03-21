@@ -19,7 +19,7 @@ SPACING = 10
 BEEPER_COORDS = Dict[Tuple[int, int], int]
 
 
-class Tile:  # pylint: disable=too-few-public-methods
+class Tile:
     def __init__(self, value: str = "·") -> None:
         self.value = value
         self.walls: list[Direction] = []

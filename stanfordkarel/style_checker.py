@@ -9,6 +9,7 @@ Email: tyep@cs.stanford.edu
 """
 import ast
 import inspect
+from pathlib import Path
 from typing import Any, Callable
 
 import stanfordkarel
@@ -33,7 +34,7 @@ def style_test(func: Callable[..., bool]) -> Callable[..., bool]:
 class StyleChecker:
     """ Style Checker for Karel. """
 
-    def __init__(self, code_file: str) -> None:
+    def __init__(self, code_file: Path) -> None:
         self.student_code = StudentCode(code_file)
         self.module = self.student_code.mod
         self.module_lines = str(self.student_code).split("\n")
