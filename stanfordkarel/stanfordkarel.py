@@ -127,19 +127,19 @@ def corner_color_is(color: str) -> bool:
 
 
 # Defined constants for ease of use by students when coloring corners
-RED = "red"
-BLACK = "black"
-CYAN = "cyan"
-DARK_GRAY = "gray30"
-GRAY = "gray55"
-GREEN = "green"
-LIGHT_GRAY = "gray80"
-MAGENTA = "magenta3"
-ORANGE = "orange"
-PINK = "pink"
-WHITE = "snow"
-BLUE = "blue"
-YELLOW = "yellow"
+RED = "Red"
+BLACK = "Black"
+CYAN = "Cyan"
+DARK_GRAY = "Dark Gray"
+GRAY = "Gray"
+GREEN = "Green"
+LIGHT_GRAY = "Light Gray"
+MAGENTA = "Magenta"
+ORANGE = "Orange"
+PINK = "Pink"
+WHITE = "White"
+BLUE = "Blue"
+YELLOW = "Yellow"
 BLANK = ""
 
 
