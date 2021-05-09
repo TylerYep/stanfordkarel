@@ -195,7 +195,7 @@ class KarelApplication(tk.Frame):
         self.scale.pack()
 
     def create_canvas(self) -> None:
-        """ This method creates the canvas on which Karel and the world are drawn. """
+        """This method creates the canvas on which Karel and the world are drawn."""
         self.canvas = KarelCanvas(
             self.canvas_width,
             self.canvas_height,
@@ -229,7 +229,7 @@ class KarelApplication(tk.Frame):
         )
 
     def create_status_label(self) -> None:
-        """ This function creates the status label at the bottom of the window. """
+        """This function creates the status label at the bottom of the window."""
         self.status_label = tk.Label(
             self.master, text="Welcome to Karel!", bg=LIGHT_GREY
         )

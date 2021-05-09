@@ -18,7 +18,7 @@ from .karel_application import StudentCode
 
 
 def style_test(func: Callable[..., bool]) -> Callable[..., bool]:
-    """ Decorator for printing out the results of a style test. """
+    """Decorator for printing out the results of a style test."""
 
     def success_func(*args: Any, **kwargs: Any) -> bool:
         result = func(*args, **kwargs)
@@ -32,7 +32,7 @@ def style_test(func: Callable[..., bool]) -> Callable[..., bool]:
 
 
 class StyleChecker:
-    """ Style Checker for Karel. """
+    """Style Checker for Karel."""
 
     def __init__(self, code_file: Path) -> None:
         self.student_code = StudentCode(code_file)
@@ -86,7 +86,7 @@ class StyleChecker:
 
     @style_test
     def check_naming(self, min_name_length: int = 5) -> bool:
-        """. """
+        """."""
         self.print_status_message("Checking function and variable names...")
         stanfordkarel_names = dir(stanfordkarel)
         root = ast.parse(str(self.student_code))

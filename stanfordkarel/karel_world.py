@@ -323,12 +323,12 @@ class KarelWorld:
         return 0 < avenue <= self.num_avenues and 0 < street <= self.num_streets
 
     def reset_world(self) -> None:
-        """ Reset initial state of beepers in the world """
+        """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
         self.corner_colors = collections.defaultdict(lambda: "")
 
     def reload_world(self, filename: str | None = None) -> None:
-        """ Reloads world using constructor. """
+        """Reloads world using constructor."""
         # TODO fix this
         self.__init__(filename)  # type: ignore
 
@@ -375,7 +375,7 @@ class Direction(Enum):
     NORTH = "north"
 
     def __lt__(self, other: object) -> bool:
-        """ Required to sort Directions. """
+        """Required to sort Directions."""
         if isinstance(other, Direction):
             # pylint: disable=comparison-with-callable
             return self.value < other.value
@@ -386,7 +386,7 @@ class Direction(Enum):
 
 
 class Wall(NamedTuple):
-    """ Note that the World Editor only uses West & South to denote wall directions. """
+    """Note that the World Editor only uses West & South to denote wall directions."""
 
     avenue: int
     street: int

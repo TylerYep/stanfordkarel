@@ -116,7 +116,7 @@ class AsciiKarelWorld:
         raise ValueError("Direction is invalid.")
 
     def get_next_line(self, r: int, c: int, next_block_start: str) -> tuple[str, str]:
-        """ Given a tile, figures out the lower line of the ASCII art. """
+        """Given a tile, figures out the lower line of the ASCII art."""
 
         if self.tile_pair_has_wall(r, c, Direction.SOUTH):
             if (
@@ -177,10 +177,10 @@ class Color(Enum):
 
 
 def compare_output(first: Any, second: Any) -> str:
-    """ Compares Karel Output and gets the results. """
+    """Compares Karel Output and gets the results."""
 
     def create_two_column_string(col1: list[str], col2: list[str]) -> Iterator[str]:
-        """ col1 and col2 are Lists. """
+        """col1 and col2 are Lists."""
         return map(lambda x: f"{x[0]}{' ' * SPACING}{x[1]}", zip(col1, col2))
 
     def symmetric_difference(

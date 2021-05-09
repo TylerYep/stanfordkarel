@@ -15,7 +15,7 @@ repos:
 
       - id: black
         name: black
-        entry: black
+        entry: black -C
         language: python
         types: [python]
 

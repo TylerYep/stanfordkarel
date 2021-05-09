@@ -64,7 +64,7 @@ class KarelProgram:
         self.num_beepers = self.world.karel_start_beeper_count
 
     def __repr__(self) -> str:
-        """ Creates a Karel World in ASCII Art! """
+        """Creates a Karel World in ASCII Art!"""
         return str(AsciiKarelWorld(self.world, self.street, self.avenue))
 
     def __eq__(self, other: object) -> bool:
@@ -407,7 +407,7 @@ class KarelProgram:
 
 
 class KarelException(Exception):
-    """ The following classes define Karel-specific exceptions. """
+    """The following classes define Karel-specific exceptions."""
 
     def __init__(
         self, avenue: int, street: int, direction: Direction, message: str
