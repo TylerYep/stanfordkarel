@@ -1,9 +1,9 @@
 # stanford-karel
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
-[![Build Status](https://travis-ci.com/TylerYep/stanfordkarel.svg?branch=master)](https://travis-ci.com/TylerYep/stanfordkarel)
+[![Build Status](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml/badge.svg)](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml)
 [![PyPI version](https://badge.fury.io/py/stanfordkarel.svg)](https://badge.fury.io/py/stanfordkarel)
-[![GitHub license](https://img.shields.io/github/license/TylerYep/stanfordkarel)](https://github.com/TylerYep/stanfordkarel/blob/master/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/TylerYep/stanfordkarel)](https://github.com/TylerYep/stanfordkarel/blob/main/LICENSE)
 [![Downloads](https://pepy.tech/badge/stanfordkarel)](https://pepy.tech/project/stanfordkarel)
 
 This is a Python implementation of Karel for Stanford's CS 106A. This package is available on PyPI and allows you to run Karel programs without any additional setup!
@@ -138,4 +138,4 @@ In the future, I hope to add:
 - Ways of determining the student's strategy or approach from observing Karel movements
 - Autograde more worlds, broken down by assignment
 - Allow students to autograde their own work
-- Accessibility for visually-impaired students (using ascii karel)
+- Accessibility for visually-impaired students
