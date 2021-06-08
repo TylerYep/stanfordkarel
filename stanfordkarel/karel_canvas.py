@@ -95,16 +95,15 @@ class KarelCanvas(tk.Canvas):
             v = cangle * (complex(x, y) - ccenter) + ccenter
             points[i], points[i + 1] = v.real, v.imag
 
-    def create_polygon(  # type: ignore
+    def create_default_polygon(
         self,
         points: list[float],
         fill: str = "black",
         outline: str = "black",
-        tag: str = "karel",
+        tags: str = "karel",
     ) -> None:
-        # pylint: disable=arguments-differ
         super().create_polygon(
-            points, fill=fill, outline=outline, width=KAREL_LINE_WIDTH, tag=tag
+            *points, fill=fill, outline=outline, width=KAREL_LINE_WIDTH, tags=tags
         )
 
     def redraw_all(self) -> None:
@@ -210,14 +209,14 @@ class KarelCanvas(tk.Canvas):
                         corner_y - CORNER_SIZE,
                         corner_x,
                         corner_y + CORNER_SIZE,
-                        tag="corner",
+                        tags="corner",
                     )
                     self.create_line(
                         corner_x - CORNER_SIZE,
                         corner_y,
                         corner_x + CORNER_SIZE,
                         corner_y,
-                        tag="corner",
+                        tags="corner",
                     )
                 else:
                     self.create_rectangle(
@@ -226,7 +225,7 @@ class KarelCanvas(tk.Canvas):
                         corner_x + self.cell_size / 2,
                         corner_y + self.cell_size / 2,
                         fill=color,
-                        tag="corner",
+                        tags="corner",
                         outline="",
                     )
 
@@ -253,11 +252,11 @@ class KarelCanvas(tk.Canvas):
             corner_x - beeper_radius,
             corner_y,
         ]
-        self.create_polygon(points, fill="light grey", tag="beeper")
+        self.create_default_polygon(points, fill="light grey", tags="beeper")
 
         if count > 1:
             self.create_text(
-                corner_x, corner_y, text=str(count), font="Arial 12", tag="beeper"
+                corner_x, corner_y, text=str(count), font="Arial 12", tags="beeper"
             )
 
     def draw_all_walls(self) -> None:
@@ -276,7 +275,7 @@ class KarelCanvas(tk.Canvas):
                 corner_x + self.cell_size / 2,
                 corner_y - self.cell_size / 2,
                 width=LINE_WIDTH,
-                tag="wall",
+                tags="wall",
             )
         if direction == Direction.SOUTH:
             self.create_line(
@@ -285,7 +284,7 @@ class KarelCanvas(tk.Canvas):
                 corner_x + self.cell_size / 2,
                 corner_y + self.cell_size / 2,
                 width=LINE_WIDTH,
-                tag="wall",
+                tags="wall",
             )
         if direction == Direction.EAST:
             self.create_line(
@@ -294,7 +293,7 @@ class KarelCanvas(tk.Canvas):
                 corner_x + self.cell_size / 2,
                 corner_y + self.cell_size / 2,
                 width=LINE_WIDTH,
-                tag="wall",
+                tags="wall",
             )
         if direction == Direction.WEST:
             self.create_line(
@@ -303,7 +302,7 @@ class KarelCanvas(tk.Canvas):
                 corner_x - self.cell_size / 2,
                 corner_y + self.cell_size / 2,
                 width=LINE_WIDTH,
-                tag="wall",
+                tags="wall",
             )
 
     def draw_karel(self) -> None:
@@ -409,11 +408,11 @@ class KarelCanvas(tk.Canvas):
         entire_body_points = outer_points + inner_points
 
         # First draw the filled non-convex polygon
-        self.create_polygon(entire_body_points, fill="white", outline="")
+        self.create_default_polygon(entire_body_points, fill="white", outline="")
 
         # Then draw the transparent exterior edges of Karel's body
-        self.create_polygon(outer_points, fill="")
-        self.create_polygon(inner_points, fill="")
+        self.create_default_polygon(outer_points, fill="")
+        self.create_default_polygon(inner_points, fill="")
 
         # Define dimensions and location of Karel's mouth
         # karel_height = self.cell_size * KAREL_HEIGHT
@@ -433,7 +432,7 @@ class KarelCanvas(tk.Canvas):
             mouth_y,
         ]
         self.rotate_points(center, mouth_points, direction)
-        self.create_polygon(mouth_points, fill="white")
+        self.create_default_polygon(mouth_points, fill="white")
 
     def draw_karel_legs(
         self, x: float, y: float, center: tuple[float, float], direction: float
@@ -459,7 +458,7 @@ class KarelCanvas(tk.Canvas):
         points += [x, y + vertical_offset]
 
         self.rotate_points(center, points, direction)
-        self.create_polygon(points)
+        self.create_default_polygon(points)
 
         # Reset point of reference to be bottom left rather than top_left
         y += self.cell_size * KAREL_HEIGHT
@@ -478,7 +477,7 @@ class KarelCanvas(tk.Canvas):
         points += [x + horizontal_offset, y]
 
         self.rotate_points(center, points, direction)
-        self.create_polygon(points)
+        self.create_default_polygon(points)
 
     def draw_simple_karel_icon(
         self, center: tuple[float, float], direction: float
@@ -503,7 +502,7 @@ class KarelCanvas(tk.Canvas):
             center_y - simple_karel_height / 2,
         ]
         self.rotate_points(center, points, direction)
-        self.create_polygon(points, fill="white")
+        self.create_default_polygon(points, fill="white")
 
     def calculate_corner_x(self, avenue: float) -> float:
         return self.left_x + self.cell_size / 2 + (avenue - 1) * self.cell_size

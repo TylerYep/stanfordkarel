@@ -40,6 +40,8 @@ class StudentCode:
         spec = importlib.util.spec_from_file_location(
             self.module_name, code_file.resolve()
         )
+        if spec is None:
+            raise RuntimeError("spec is None")
         try:
             self.mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(self.mod)  # type: ignore
@@ -161,7 +163,7 @@ class KarelApplication(tk.Frame):
         iconmenu.add_command(label="Karel", command=lambda: self.set_icon("karel"))
         iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
 
-        self.bind_all("<Command-w>", lambda _: self.quit())  # type: ignore
+        self.bind_all("<Command-w>", lambda _: self.quit())
         self.master.config(menu=menubar)  # type: ignore
 
     def set_icon(self, icon: str) -> None:
