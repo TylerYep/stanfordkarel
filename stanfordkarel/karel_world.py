@@ -333,38 +333,37 @@ class KarelWorld:
         self.__init__(filename)  # type: ignore
 
     def save_to_file(self, filename: Path) -> None:
+        # First, output dimensions of world
+        output = f"Dimension: ({self.num_avenues}, {self.num_streets})\n"
+
+        # Next, output all walls
+        for wall in sorted(self.walls):
+            output += f"Wall: ({wall.avenue}, {wall.street}); {wall.direction.value}\n"
+
+        # Next, output all beepers
+        for (x, y), count in sorted(self.beepers.items()):
+            output += f"Beeper: ({x}, {y}); {count}\n"
+
+        # Next, output all color information
+        for (x, y), color in sorted(self.corner_colors.items()):
+            if color:
+                output += f"Color: ({x}, {y}); {color}\n"
+
+        # Next, output Karel information
+        output += (
+            f"Karel: {self.karel_start_location}; {self.karel_start_direction.value}\n"
+        )
+
+        # Finally, output beeperbag info
+        beeper_output = (
+            self.karel_start_beeper_count
+            if self.karel_start_beeper_count >= 0
+            else "INFINITY"
+        )
+        output += f"BeeperBag: {beeper_output}\n"
+
         with open(filename, "w") as f:
-            # First, output dimensions of world
-            f.write(f"Dimension: ({self.num_avenues}, {self.num_streets})\n")
-
-            # Next, output all walls
-            for wall in sorted(self.walls):
-                f.write(
-                    f"Wall: ({wall.avenue}, {wall.street}); {wall.direction.value}\n"
-                )
-
-            # Next, output all beepers
-            for loc, count in sorted(self.beepers.items()):
-                f.write(f"Beeper: ({loc[0]}, {loc[1]}); {count}\n")
-
-            # Next, output all color information
-            for loc, color in sorted(self.corner_colors.items()):
-                if color:
-                    f.write(f"Color: ({loc[0]}, {loc[1]}); {color}\n")
-
-            # Next, output Karel information
-            f.write(
-                f"Karel: {self.karel_start_location}; "
-                f"{self.karel_start_direction.value}\n"
-            )
-
-            # Finally, output beeperbag info
-            beeper_output = (
-                self.karel_start_beeper_count
-                if self.karel_start_beeper_count >= 0
-                else "INFINITY"
-            )
-            f.write(f"BeeperBag: {beeper_output}\n")
+            f.write(output)
 
 
 @unique

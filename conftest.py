@@ -7,13 +7,13 @@ from pathlib import Path
 from stanfordkarel.karel_application import StudentCode
 from stanfordkarel.karel_program import KarelProgram
 
-PROBLEMS = [
+PROBLEMS = (
     "checkerboard_karel",
     "collect_newspaper_karel",
     "midpoint_karel",
     "triple_karel",
     "stone_mason_karel",
-]
+)
 STUDENT_CODE_DIR = Path("solutions")
 TIMEOUT = 10
 
@@ -23,7 +23,7 @@ def execute_karel_code(code_file: Path) -> None:
     karel = KarelProgram(module_name)
     student_code = StudentCode(code_file)
     student_code.inject_namespace(karel)
-    student_code.mod.main()  # type: ignore
+    student_code.mod.main()  # type: ignore[attr-defined]
     assert karel.compare_with(
         KarelProgram(f"{module_name}_end")
     ), "Resulting world did not match expected result."
@@ -32,7 +32,7 @@ def execute_karel_code(code_file: Path) -> None:
 def create_solution_worlds() -> None:
     for problem_name in PROBLEMS:
         karel = KarelProgram(problem_name)
-        student_code = StudentCode(Path(problem_name))  # TODO(tyler)
+        student_code = StudentCode(Path(f"problems/{problem_name}.py"))
         student_code.inject_namespace(karel)
-        student_code.mod.main()  # type: ignore
+        student_code.mod.main()  # type: ignore[attr-defined]
         karel.world.save_to_file(Path(f"worlds/{problem_name}_end.w"))

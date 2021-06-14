@@ -37,9 +37,8 @@ class TestKarelWorld:
     @staticmethod
     def test_karel_ascii() -> None:
         karel = KarelProgram("stone_mason_karel")
-        result = str(karel)
 
-        assert result == "\n".join(STONE_MASON_ASCII_OUTPUT) + "\n"
+        assert str(karel) == "\n".join(STONE_MASON_ASCII_OUTPUT) + "\n"
 
     @staticmethod
     def test_save_to_file(tmp_path: Path) -> None:
