@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
+import os
 import sys
 import tkinter as tk
 import traceback as tb
@@ -19,7 +20,7 @@ from pathlib import Path
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
-from types import FrameType
+from types import FrameType, ModuleType
 from typing import Callable
 
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
@@ -43,8 +44,22 @@ class StudentCode:
         if spec is None:
             raise RuntimeError("spec is None")
         try:
-            self.mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(self.mod)  # type: ignore
+            mod = importlib.util.module_from_spec(spec)
+            self.mods = [mod]
+            spec.loader.exec_module(mod)    # type: ignore
+            # Go through attributes to find imported modules
+            for name in dir(mod):
+                val = getattr(mod, name)
+                if isinstance(val, ModuleType):
+                    # Only execute modules outside of this directory
+                    path = os.path.dirname(val.__file__)
+                    dir_path = os.path.dirname(os.path.realpath(__file__))
+                    if path != dir_path:
+                        self.mods.append(val)
+                        code_file_path = Path(val.__file__)
+                        spec = importlib.util.spec_from_file_location(
+                                name, code_file_path.resolve())
+                        spec.loader.exec_module(val)    # type: ignore
         except SyntaxError as e:
             # Handle syntax errors and only print location of error
             print(f"Syntax Error: {e}")
@@ -52,12 +67,12 @@ class StudentCode:
             sys.exit()
 
         # Do not proceed if the student has not defined a main function.
-        if not hasattr(self.mod, "main"):
+        if not hasattr(self.mods[0], "main"):
             print("Couldn't find the main() function. Are you sure you have one?")
             sys.exit()
 
     def __repr__(self) -> str:
-        return inspect.getsource(self.mod)
+        return inspect.getsource(self.mods[0])
 
     def inject_namespace(self, karel: KarelProgram) -> None:
         """
@@ -92,8 +107,9 @@ class StudentCode:
             "paint_corner",
             "corner_color_is",
         ]
-        for func in functions_to_override:
-            setattr(self.mod, func, getattr(karel, func))
+        for mod in self.mods:
+            for func in functions_to_override:
+                setattr(mod, func, getattr(karel, func))
 
 
 class KarelApplication(tk.Frame):
@@ -121,10 +137,10 @@ class KarelApplication(tk.Frame):
 
         self.karel = karel
         self.world = karel.world
-        self.student_code = StudentCode(code_file)
-        self.student_code.inject_namespace(karel)
+        self.code_file = code_file
+        self.load_student_code()
         master.title(self.student_code.module_name)
-        if not self.student_code.mod:
+        if not self.student_code.mods:
             master.destroy()
             return
         self.icon = DEFAULT_ICON
@@ -134,13 +150,18 @@ class KarelApplication(tk.Frame):
         self.canvas_height = canvas_height
         self.master = master
         self.set_dock_icon()
-        self.inject_decorator_namespace()
         self.grid(row=0, column=0)
         self.create_menubar()
         self.create_canvas()
         self.create_buttons()
         self.create_slider()
         self.create_status_label()
+
+    def load_student_code(self):
+        self.student_code = StudentCode(self.code_file)
+        self.student_code.inject_namespace(self.karel)
+        self.inject_decorator_namespace()
+
 
     def set_dock_icon(self) -> None:
         # make Karel dock icon image
@@ -286,21 +307,17 @@ class KarelApplication(tk.Frame):
         file with specific commands relating to the Karel object that exists
         in the world.
         """
-        self.student_code.mod.turn_left = self.karel_action_decorator(  # type: ignore
-            self.karel.turn_left
-        )
-        self.student_code.mod.move = self.karel_action_decorator(  # type: ignore
-            self.karel.move
-        )
-        self.student_code.mod.pick_beeper = (  # type: ignore
-            self.beeper_action_decorator(self.karel.pick_beeper)
-        )
-        self.student_code.mod.put_beeper = self.beeper_action_decorator(  # type: ignore
-            self.karel.put_beeper
-        )
-        self.student_code.mod.paint_corner = (  # type: ignore
-            self.corner_action_decorator(self.karel.paint_corner)
-        )
+        for mod in self.student_code.mods:
+            mod.turn_left = self.karel_action_decorator(    # type: ignore
+                    self.karel.turn_left)
+            mod.move = self.karel_action_decorator(    # type: ignore
+                    self.karel.move)
+            mod.pick_beeper = (    # type: ignore
+                    self.beeper_action_decorator(self.karel.pick_beeper))
+            mod.put_beeper = self.beeper_action_decorator(    # type: ignore
+                    self.karel.put_beeper)
+            mod.paint_corner = (    # type: ignore
+                    self.corner_action_decorator(self.karel.paint_corner))
 
     def disable_buttons(self) -> None:
         self.program_control_button.configure(state="disabled")
@@ -328,10 +345,13 @@ class KarelApplication(tk.Frame):
 
     def run_program(self) -> None:
         # Error checking for existence of main function completed in prior file
+
+        # reimport code in case it changed
+        self.load_student_code()
         try:
             self.status_label.configure(text="Running...", fg="brown")
             self.disable_buttons()
-            self.student_code.mod.main()  # type: ignore
+            self.student_code.mods[0].main()    # type: ignore
             self.status_label.configure(text="Finished running.", fg="green")
 
         except (KarelException, NameError) as e:
