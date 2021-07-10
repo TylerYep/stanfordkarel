@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
-import os
 import sys
 import tkinter as tk
 import traceback as tb
@@ -46,20 +45,19 @@ class StudentCode:
         try:
             mod = importlib.util.module_from_spec(spec)
             self.mods = [mod]
-            spec.loader.exec_module(mod)    # type: ignore
+            spec.loader.exec_module(mod)  # type: ignore[union-attr]
             # Go through attributes to find imported modules
             for name in dir(mod):
                 val = getattr(mod, name)
                 if isinstance(val, ModuleType):
+                    code_file_path = Path(val.__file__)
                     # Only execute modules outside of this directory
-                    path = os.path.dirname(val.__file__)
-                    dir_path = os.path.dirname(os.path.realpath(__file__))
-                    if path != dir_path:
+                    if code_file_path.parent != Path(__file__).resolve().parent:
                         self.mods.append(val)
-                        code_file_path = Path(val.__file__)
                         spec = importlib.util.spec_from_file_location(
-                                name, code_file_path.resolve())
-                        spec.loader.exec_module(val)    # type: ignore
+                            name, code_file_path.resolve()
+                        )
+                        spec.loader.exec_module(val)  # type: ignore[union-attr]
         except SyntaxError as e:
             # Handle syntax errors and only print location of error
             print(f"Syntax Error: {e}")
@@ -72,7 +70,7 @@ class StudentCode:
             sys.exit()
 
     def __repr__(self) -> str:
-        return '\n'.join([inspect.getsource(mod) for mod in self.mods])
+        return "\n".join([inspect.getsource(mod) for mod in self.mods])
 
     def inject_namespace(self, karel: KarelProgram) -> None:
         """
@@ -161,7 +159,6 @@ class KarelApplication(tk.Frame):
         self.student_code = StudentCode(self.code_file)
         self.student_code.inject_namespace(self.karel)
         self.inject_decorator_namespace()
-
 
     def set_dock_icon(self) -> None:
         # make Karel dock icon image
@@ -308,16 +305,19 @@ class KarelApplication(tk.Frame):
         in the world.
         """
         for mod in self.student_code.mods:
-            mod.turn_left = self.karel_action_decorator(    # type: ignore
-                    self.karel.turn_left)
-            mod.move = self.karel_action_decorator(    # type: ignore
-                    self.karel.move)
-            mod.pick_beeper = (    # type: ignore
-                    self.beeper_action_decorator(self.karel.pick_beeper))
-            mod.put_beeper = self.beeper_action_decorator(    # type: ignore
-                    self.karel.put_beeper)
-            mod.paint_corner = (    # type: ignore
-                    self.corner_action_decorator(self.karel.paint_corner))
+            mod.turn_left = self.karel_action_decorator(  # type: ignore[attr-defined]
+                self.karel.turn_left
+            )
+            mod.move = self.karel_action_decorator(self.karel.move)  # type: ignore
+            mod.pick_beeper = self.beeper_action_decorator(  # type: ignore
+                self.karel.pick_beeper
+            )
+            mod.put_beeper = self.beeper_action_decorator(  # type: ignore
+                self.karel.put_beeper
+            )
+            mod.paint_corner = self.corner_action_decorator(  # type: ignore
+                self.karel.paint_corner
+            )
 
     def disable_buttons(self) -> None:
         self.program_control_button.configure(state="disabled")
@@ -351,7 +351,7 @@ class KarelApplication(tk.Frame):
         try:
             self.status_label.configure(text="Running...", fg="brown")
             self.disable_buttons()
-            self.student_code.mods[0].main()    # type: ignore
+            self.student_code.mods[0].main()  # type: ignore[attr-defined]
             self.status_label.configure(text="Finished running.", fg="green")
 
         except (KarelException, NameError) as e:

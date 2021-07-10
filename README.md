@@ -1,8 +1,9 @@
 # stanford-karel
 
 [![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
-[![Build Status](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml/badge.svg)](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml)
 [![PyPI version](https://badge.fury.io/py/stanfordkarel.svg)](https://badge.fury.io/py/stanfordkarel)
+[![Build Status](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml/badge.svg)](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/TylerYep/stanfordkarel/main.svg)](https://results.pre-commit.ci/latest/github/TylerYep/stanfordkarel/main)
 [![GitHub license](https://img.shields.io/github/license/TylerYep/stanfordkarel)](https://github.com/TylerYep/stanfordkarel/blob/main/LICENSE)
 [![Downloads](https://pepy.tech/badge/stanfordkarel)](https://pepy.tech/project/stanfordkarel)
 
@@ -116,7 +117,7 @@ The autograde command also runs the builtin Karel Style Checker that performs li
 
 Everything important is located in `stanfordkarel/`.
 
-- Python 3.5+ is required because of `importlib.util.module_from_spec`
+- Python 3.5+ is required because of `importlib.util.module_from_spec`.
 - Python 3.6+ is required for f-strings.
 - Python 3.7+ is required for type annotations.
 - `stanfordkarel/` is the exported package, which contains all of the available functions and commands for students to use.
@@ -126,7 +127,7 @@ Everything important is located in `stanfordkarel/`.
 
 All issues and pull requests are much appreciated!
 
-- First, run `pre-commit install`.
+- First, run `pip install pre-commit` and `pre-commit install`.
 - To see test coverage scripts and other auto-formatting tools, use `pre-commit run`.
 - To run all tests, run `pytest`.
 

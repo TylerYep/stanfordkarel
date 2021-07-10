@@ -40,11 +40,11 @@ class StyleChecker:
         self.module_lines = str(self.student_code).split("\n")
         module_member_list = [inspect.getmembers(mod) for mod in self.modules]
         self.function_list = [
-            o[0]
-            for o in
+            var_name
+            for var_name, value in
             # flatten module_member_list
             [m for module_members in module_member_list for m in module_members]
-            if inspect.isfunction(o[1])
+            if inspect.isfunction(value)
         ]
 
     @staticmethod

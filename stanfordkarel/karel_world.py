@@ -330,7 +330,7 @@ class KarelWorld:
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
         # TODO fix this
-        self.__init__(filename)  # type: ignore
+        self.__init__(filename)  # type: ignore[misc]
 
     def save_to_file(self, filename: Path) -> None:
         # First, output dimensions of world
@@ -376,7 +376,6 @@ class Direction(Enum):
     def __lt__(self, other: object) -> bool:
         """Required to sort Directions."""
         if isinstance(other, Direction):
-            # pylint: disable=comparison-with-callable
             return self.value < other.value
         return NotImplemented
 

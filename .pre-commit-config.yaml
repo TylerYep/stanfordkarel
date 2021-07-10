@@ -1,30 +1,30 @@
+ci:
+  skip: [mypy, pylint, pytest]
 repos:
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.20.0
+    hooks:
+    - id: pyupgrade
+      args: [--py38-plus]
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.1
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/psf/black
+    rev: 21.6b0
+    hooks:
+      - id: black
+        args: [-C]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+
   - repo: local
     hooks:
-      - id: pyupgrade
-        name: pyupgrade
-        entry: pyupgrade --py38-plus
-        language: python
-        types: [python]
-
-      - id: isort
-        name: isort
-        entry: isort
-        language: python
-        types: [python]
-
-      - id: black
-        name: black
-        entry: black -C
-        language: python
-        types: [python]
-
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: python
-        types: [python]
-
       - id: mypy
         name: mypy
         entry: mypy
