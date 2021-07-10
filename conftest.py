@@ -23,7 +23,7 @@ def execute_karel_code(code_file: Path) -> None:
     karel = KarelProgram(module_name)
     student_code = StudentCode(code_file)
     student_code.inject_namespace(karel)
-    student_code.mod.main()  # type: ignore[attr-defined]
+    student_code.mods[0].main()  # type: ignore[attr-defined]
     assert karel.compare_with(
         KarelProgram(f"{module_name}_end")
     ), "Resulting world did not match expected result."
@@ -34,5 +34,5 @@ def create_solution_worlds() -> None:
         karel = KarelProgram(problem_name)
         student_code = StudentCode(Path(f"problems/{problem_name}.py"))
         student_code.inject_namespace(karel)
-        student_code.mod.main()  # type: ignore[attr-defined]
+        student_code.mods[0].main()  # type: ignore[attr-defined]
         karel.world.save_to_file(Path(f"worlds/{problem_name}_end.w"))

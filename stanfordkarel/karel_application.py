@@ -72,7 +72,7 @@ class StudentCode:
             sys.exit()
 
     def __repr__(self) -> str:
-        return inspect.getsource(self.mods[0])
+        return '\n'.join([inspect.getsource(mod) for mod in self.mods])
 
     def inject_namespace(self, karel: KarelProgram) -> None:
         """

@@ -36,10 +36,15 @@ class StyleChecker:
 
     def __init__(self, code_file: Path) -> None:
         self.student_code = StudentCode(code_file)
-        self.module = self.student_code.mod
+        self.modules = self.student_code.mods
         self.module_lines = str(self.student_code).split("\n")
+        module_member_list = [inspect.getmembers(mod) for mod in self.modules]
         self.function_list = [
-            o[0] for o in inspect.getmembers(self.module) if inspect.isfunction(o[1])
+            o[0]
+            for o in
+            # flatten module_member_list
+            [m for module_members in module_member_list for m in module_members]
+            if inspect.isfunction(o[1])
         ]
 
     @staticmethod
