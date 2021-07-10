@@ -187,10 +187,6 @@ class KarelApplication(tk.Frame):
         self.bind_all("<Command-w>", lambda _: self.quit())
         self.master.config(menu=menubar)  # type: ignore
 
-    def set_icon(self, icon: str) -> None:
-        self.canvas.icon = icon
-        self.canvas.redraw_karel()
-
     def create_slider(self) -> None:
         """
         This method creates a frame containing three widgets:
@@ -228,6 +224,10 @@ class KarelApplication(tk.Frame):
         )
         self.canvas.grid(column=1, row=0, sticky="NESW")
         self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
+
+    def set_icon(self, icon: str) -> None:
+        self.canvas.icon = icon
+        self.canvas.redraw_karel()
 
     def create_buttons(self) -> None:
         """
