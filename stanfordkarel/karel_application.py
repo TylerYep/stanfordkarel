@@ -157,7 +157,7 @@ class KarelApplication(tk.Frame):
         self.create_slider()
         self.create_status_label()
 
-    def load_student_code(self):
+    def load_student_code(self) -> None:
         self.student_code = StudentCode(self.code_file)
         self.student_code.inject_namespace(self.karel)
         self.inject_decorator_namespace()
