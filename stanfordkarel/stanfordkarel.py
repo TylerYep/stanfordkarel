@@ -16,17 +16,13 @@ import sys
 import tkinter as tk
 from pathlib import Path
 
-from .didyoumean import didyoumean_hook  # type: ignore
 from .karel_application import KarelApplication
 from .karel_program import KarelProgram
 
-sys.excepthook = didyoumean_hook
-"""
-The following function definitions are defined as stubs so that IDEs can recognize
-the function definitions in student code. These names are re-bound upon program
-execution to asscoiate their behavior to the one particular Karel object located
-in a given world.
-"""
+# The following function definitions are defined as stubs so that IDEs can recognize
+# the function definitions in student code. These names are re-bound upon program
+# execution to asscoiate their behavior to the one particular Karel object located
+# in a given world.
 
 
 def move() -> None:

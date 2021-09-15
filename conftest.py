@@ -5,7 +5,7 @@ This also contains helper methods for running tests or autograders.
 from pathlib import Path
 
 from stanfordkarel.karel_application import StudentCode
-from stanfordkarel.karel_program import KarelProgram
+from stanfordkarel.karel_program import KarelException, KarelProgram
 
 PROBLEMS = (
     "checkerboard_karel",
@@ -18,15 +18,20 @@ STUDENT_CODE_DIR = Path("solutions")
 TIMEOUT = 10
 
 
-def execute_karel_code(code_file: Path) -> None:
-    module_name = code_file.stem
-    karel = KarelProgram(module_name)
+def execute_karel_code(
+    code_file: Path, world_name: str = "", expected_error: str = ""
+) -> None:
+    world_name = world_name or code_file.stem
+    karel = KarelProgram(world_name)
     student_code = StudentCode(code_file)
     student_code.inject_namespace(karel)
-    student_code.mods[0].main()  # type: ignore[attr-defined]
-    assert karel.compare_with(
-        KarelProgram(f"{module_name}_end")
-    ), "Resulting world did not match expected result."
+    try:
+        student_code.main()
+        assert karel.compare_with(
+            KarelProgram(f"{world_name}_end")
+        ), "Resulting world did not match expected result."
+    except (KarelException, NameError) as e:
+        assert str(e) == expected_error
 
 
 def create_solution_worlds() -> None:
@@ -34,5 +39,5 @@ def create_solution_worlds() -> None:
         karel = KarelProgram(problem_name)
         student_code = StudentCode(Path(f"problems/{problem_name}.py"))
         student_code.inject_namespace(karel)
-        student_code.mods[0].main()  # type: ignore[attr-defined]
+        student_code.main()
         karel.world.save_to_file(Path(f"worlds/{problem_name}_end.w"))

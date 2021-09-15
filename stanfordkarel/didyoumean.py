@@ -13,7 +13,6 @@ from __future__ import annotations
 import difflib
 import itertools
 import re
-import sys
 from typing import Any
 
 # To be used in `get_suggestions_for_exception`.
@@ -102,7 +101,7 @@ def suggest_name_not_defined(value, frame, groups):
     return itertools.chain(suggest_name_as_name_typo(name, objs))
 
 
-def get_suggestions_for_exception(value, traceback):
+def get_suggestions_for_exception(value, traceback) -> str:
     """Get suggestions for an exception."""
     frame = get_last_frame(traceback)
     suggestions = itertools.chain.from_iterable(
@@ -177,8 +176,9 @@ def get_last_frame(traceback):
     return traceback.tb_frame
 
 
-def didyoumean_hook(type_, value, traceback, prev_hook=sys.excepthook):
+def add_did_you_mean(e: Exception):
     """Hook to be substituted to sys.excepthook to enhance exceptions."""
-    if type_ in (NameError,):
-        add_string_to_exception(value, get_suggestions_for_exception(value, traceback))
-    return prev_hook(type_, value, traceback)
+    if isinstance(e, NameError):
+        suggestions = get_suggestions_for_exception(e, e.__traceback__)
+        add_string_to_exception(e, suggestions)
+    return e

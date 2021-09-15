@@ -22,6 +22,7 @@ from tkinter.messagebox import showwarning
 from types import FrameType, ModuleType
 from typing import Callable
 
+from .didyoumean import add_did_you_mean  # type: ignore
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelException, KarelProgram
 
@@ -44,24 +45,24 @@ class StudentCode:
             raise RuntimeError("spec is None")
         try:
             mod = importlib.util.module_from_spec(spec)
-            self.mods = [mod]
+            self.mods: list[ModuleType] = [mod]
             spec.loader.exec_module(mod)  # type: ignore[union-attr]
             # Go through attributes to find imported modules
             for name in dir(mod):
-                val = getattr(mod, name)
-                if isinstance(val, ModuleType):
-                    code_file_path = Path(val.__file__)
+                module = getattr(mod, name)
+                if isinstance(module, ModuleType):
+                    code_file_path = Path(module.__file__)
                     # Only execute modules outside of this directory
                     if code_file_path.parent != Path(__file__).resolve().parent:
-                        self.mods.append(val)
+                        self.mods.append(module)
                         spec = importlib.util.spec_from_file_location(
                             name, code_file_path.resolve()
                         )
-                        spec.loader.exec_module(val)  # type: ignore[union-attr]
+                        spec.loader.exec_module(module)  # type: ignore[union-attr]
         except SyntaxError as e:
             # Handle syntax errors and only print location of error
-            print(f"Syntax Error: {e}")
-            print("\n".join(tb.format_exc(limit=0).split("\n")[1:]))
+            traceback = "\n".join(tb.format_exc(limit=0).split("\n")[1:])
+            print(f"Syntax Error: {e}\n{traceback}")
             sys.exit()
 
         # Do not proceed if the student has not defined a main function.
@@ -108,6 +109,34 @@ class StudentCode:
         for mod in self.mods:
             for func in functions_to_override:
                 setattr(mod, func, getattr(karel, func))
+
+    def main(self) -> None:
+        try:
+            self.mods[0].main()  # type: ignore
+        except Exception as e:
+            if isinstance(e, (KarelException, NameError)):
+                self.print_error_traceback(e)
+            raise e
+
+    def print_error_traceback(self, e: KarelException | NameError) -> None:
+        """Handle runtime errors while executing student code."""
+        display_frames: list[tuple[FrameType, int]] = []
+        # Walk through all the frames in stack trace at time of failure
+        for frame, lineno in tb.walk_tb(e.__traceback__):
+            frame_info = inspect.getframeinfo(frame)
+            # Get the name of the file corresponding to the current frame
+            # Only display frames generated within the student's code
+            if Path(frame_info.filename).name == f"{self.module_name}.py":
+                display_frames.append((frame, lineno))
+
+        display_frames_generator = (frame for frame in display_frames)
+        trace = tb.format_list(tb.StackSummary.extract(display_frames_generator))
+        clean_traceback = "".join(trace).strip()
+        add_did_you_mean(e)
+        print(
+            f"Traceback (most recent call last):\n{clean_traceback}\n"
+            f"{type(e).__name__}: {e}"
+        )
 
 
 class KarelApplication(tk.Frame):
@@ -327,22 +356,6 @@ class KarelApplication(tk.Frame):
         self.program_control_button.configure(state="normal")
         self.load_world_button.configure(state="normal")
 
-    def display_error_traceback(self, e: KarelException | NameError) -> None:
-        print("Traceback (most recent call last):")
-        display_frames: list[tuple[FrameType, int]] = []
-        # walk through all the frames in stack trace at time of failure
-        for frame, lineno in tb.walk_tb(e.__traceback__):
-            frame_info = inspect.getframeinfo(frame)
-            # get the name of the file corresponding to the current frame
-            filename = frame_info.filename
-            # Only display frames generated within the student's code
-            if self.student_code.module_name + ".py" in filename:
-                display_frames.append((frame, lineno))
-
-        trace = tb.format_list(tb.StackSummary.extract(display_frames))  # type: ignore
-        print("".join(trace).strip())
-        print(f"{type(e).__name__}: {e}")
-
     def run_program(self) -> None:
         # Error checking for existence of main function completed in prior file
 
@@ -351,15 +364,14 @@ class KarelApplication(tk.Frame):
         try:
             self.status_label.configure(text="Running...", fg="brown")
             self.disable_buttons()
-            self.student_code.mods[0].main()  # type: ignore[attr-defined]
+            self.student_code.main()
             self.status_label.configure(text="Finished running.", fg="green")
 
-        except (KarelException, NameError) as e:
+        except (KarelException, NameError):
             # Generate popup window to let the user know their program crashed
             self.status_label.configure(
                 text="Program crashed, check console for details.", fg="red"
             )
-            self.display_error_traceback(e)
             self.update()
             showwarning(
                 "Karel Error", "Karel Crashed!\nCheck the terminal for more details."
