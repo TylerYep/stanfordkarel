@@ -22,7 +22,7 @@ from tkinter.messagebox import showwarning
 from types import FrameType, ModuleType
 from typing import Callable
 
-from .didyoumean import add_did_you_mean  # type: ignore
+from .didyoumean import add_did_you_mean
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelException, KarelProgram
 

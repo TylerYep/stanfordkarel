@@ -1,4 +1,3 @@
-# type: ignore
 """
 This file defines the logic to add suggestions to exceptions.
 
@@ -13,7 +12,8 @@ from __future__ import annotations
 import difflib
 import itertools
 import re
-from typing import Any
+from types import FrameType, TracebackType
+from typing import Any, Callable, Iterator
 
 # To be used in `get_suggestions_for_exception`.
 SUGGESTION_FUNCTIONS: dict[Any, list[Any]] = {}
@@ -21,24 +21,24 @@ VAR_NAME = r"[^\d\W]\w*"
 NAMENOTDEFINED_RE = rf"^(?:global )?name '(?P<name>{VAR_NAME})' is not defined$"
 
 
-def merge_dict(*dicts):
+def merge_dict(*dicts: dict[str, Any]) -> dict[str, list[str]]:
     """
     Merge dicts and return a dictionary mapping key to list of values.
     Order of the values corresponds to the order of the original dicts.
     """
-    ret = {}
+    ret: dict[str, list[str]] = {}
     for dict_ in dicts:
         for key, val in dict_.items():
             ret.setdefault(key, []).append(val)
     return ret
 
 
-def add_scope_to_dict(dict_, scope):
+def add_scope_to_dict(dict_: dict[str, Any], scope: str) -> dict[str, tuple[Any, str]]:
     """Convert name:obj dict to name: (obj, scope) dict."""
     return {k: (v, scope) for k, v in dict_.items()}
 
 
-def get_objects_in_frame(frame):
+def get_objects_in_frame(frame: FrameType) -> dict[str, list[str]]:
     """Get objects defined in a given frame.
 
     This includes variable, types, builtins, etc.
@@ -52,14 +52,9 @@ def get_objects_in_frame(frame):
     )
 
 
-def import_from_frame(module_name, frame):
-    """Wrapper around import to use information from frame."""
-    if frame is None:
-        return None
-    return __import__(module_name, frame.f_globals, frame.f_locals)
-
-
-def register_suggestion_for(error_type, regex):
+def register_suggestion_for(
+    error_type: type[Exception], regex: str
+) -> Callable[..., Any]:
     """Decorator to register a function to be called to get suggestions.
 
     Parameters correspond to the fact that the registration is done for a
@@ -76,8 +71,8 @@ def register_suggestion_for(error_type, regex):
      - groups: Groups from the error message matched by the error message.
     """
 
-    def internal_decorator(func):
-        def registered_function(value, frame):
+    def internal_decorator(func: Callable[..., list[str]]) -> Callable[..., Any]:
+        def registered_function(value: Exception, frame: FrameType) -> list[str]:
             if regex is None:
                 return func(value, frame, [])
             error_msg = value.args[0]
@@ -93,7 +88,9 @@ def register_suggestion_for(error_type, regex):
 
 
 @register_suggestion_for(NameError, NAMENOTDEFINED_RE)
-def suggest_name_not_defined(value, frame, groups):
+def suggest_name_not_defined(
+    value: Exception, frame: FrameType, groups: tuple[str]
+) -> itertools.chain[str]:
     """Get the suggestions for name in case of NameError."""
     del value
     (name,) = groups
@@ -101,7 +98,9 @@ def suggest_name_not_defined(value, frame, groups):
     return itertools.chain(suggest_name_as_name_typo(name, objs))
 
 
-def get_suggestions_for_exception(value, traceback) -> str:
+def get_suggestions_for_exception(
+    value: Exception, traceback: TracebackType | None
+) -> str:
     """Get suggestions for an exception."""
     frame = get_last_frame(traceback)
     suggestions = itertools.chain.from_iterable(
@@ -115,7 +114,7 @@ def get_suggestions_for_exception(value, traceback) -> str:
     return ""
 
 
-def get_close_matches(word, possibilities):
+def get_close_matches(word: str, possibilities: list[str]) -> list[str]:
     """
     Return a list of the best "good enough" matches.
 
@@ -127,16 +126,16 @@ def get_close_matches(word, possibilities):
     ]
 
 
-def suggest_name_as_name_typo(name, objdict):
+def suggest_name_as_name_typo(name: str, objdict: dict[str, Any]) -> Iterator[str]:
     """Suggest that name could be a typo (misspelled existing name).
 
     Example: 'foobaf' -> 'foobar'.
     """
-    for word in get_close_matches(name, objdict.keys()):
+    for word in get_close_matches(name, list(objdict)):
         yield f"'{word}'"  # + " (" + objdict[name][0].scope + ")"
 
 
-def add_string_to_exception(value, string):
+def add_string_to_exception(value: Exception, string: str) -> None:
     """
     Add string to the exception parameter.
 
@@ -160,13 +159,13 @@ def add_string_to_exception(value, string):
             # if no string arg, add the string anyway
             lst_args.append(string)
         value.args = tuple(lst_args)
-        for attr in ["msg", "strerror", "reason"]:
+        for attr in ("msg", "strerror", "reason"):
             attrval = getattr(value, attr, None)
             if attrval is not None:
                 setattr(value, attr, attrval + string)
 
 
-def get_last_frame(traceback):
+def get_last_frame(traceback: TracebackType | None) -> FrameType | None:
     """Extract last frame from a traceback."""
     # In some rare case, the given traceback might be None
     if traceback is None:
@@ -176,9 +175,8 @@ def get_last_frame(traceback):
     return traceback.tb_frame
 
 
-def add_did_you_mean(e: Exception):
+def add_did_you_mean(e: Exception) -> None:
     """Hook to be substituted to sys.excepthook to enhance exceptions."""
     if isinstance(e, NameError):
         suggestions = get_suggestions_for_exception(e, e.__traceback__)
         add_string_to_exception(e, suggestions)
-    return e
