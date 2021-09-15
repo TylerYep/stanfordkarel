@@ -232,7 +232,7 @@ class KarelWorld:
         return params
 
     def load_from_file(self) -> None:
-        with open(self.world_file) as f:
+        with open(self.world_file, encoding="utf-8") as f:
             for i, line in enumerate(f):
                 # Ignore blank lines and lines with no comma delineator
                 line = line.strip()
@@ -362,7 +362,7 @@ class KarelWorld:
         )
         output += f"BeeperBag: {beeper_output}\n"
 
-        with open(filename, "w") as f:
+        with open(filename, "w", encoding="utf-8") as f:
             f.write(output)
 
 
