@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import importlib.util
 import inspect
-import sys
 import tkinter as tk
 import traceback as tb
 from pathlib import Path
@@ -20,11 +19,23 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 from types import FrameType, ModuleType
-from typing import Callable
+from typing import Any, Callable, cast
 
 from .didyoumean import add_did_you_mean
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelException, KarelProgram
+
+
+class StudentModule(ModuleType):
+    move: Any
+    turn_left: Any
+    put_beeper: Any
+    pick_beeper: Any
+    paint_corner: Any
+
+    @staticmethod
+    def main() -> None:
+        raise NotImplementedError
 
 
 class StudentCode:
@@ -41,15 +52,16 @@ class StudentCode:
         spec = importlib.util.spec_from_file_location(
             self.module_name, code_file.resolve()
         )
-        if spec is None:
-            raise RuntimeError("spec is None")
+        assert spec is not None
         try:
-            mod = importlib.util.module_from_spec(spec)
-            self.mods: list[ModuleType] = [mod]
-            spec.loader.exec_module(mod)  # type: ignore[union-attr]
+            module_loader = spec.loader
+            assert module_loader is not None
+            mod = cast(StudentModule, importlib.util.module_from_spec(spec))
+            self.mods: list[StudentModule] = [mod]
+            module_loader.exec_module(mod)  # type: ignore[attr-defined]
             # Go through attributes to find imported modules
             for name in dir(mod):
-                module = getattr(mod, name)
+                module = cast(StudentModule, getattr(mod, name))
                 if isinstance(module, ModuleType):
                     code_file_path = Path(module.__file__)
                     # Only execute modules outside of this directory
@@ -58,17 +70,19 @@ class StudentCode:
                         spec = importlib.util.spec_from_file_location(
                             name, code_file_path.resolve()
                         )
-                        spec.loader.exec_module(module)  # type: ignore[union-attr]
+                        module_loader.exec_module(module)  # type: ignore[attr-defined]
         except SyntaxError as e:
-            # Handle syntax errors and only print location of error
-            traceback = "\n".join(tb.format_exc(limit=0).split("\n")[1:])
-            print(f"Syntax Error: {e}\n{traceback}")
-            sys.exit()
+            # Since we don't start the GUI until after we parse the student's code,
+            # SyntaxErrors behave normally. However, if the syntax error is somehow
+            # not caught at parse time, we should forward the error message to console.
+            print(e)
+            raise
 
         # Do not proceed if the student has not defined a main function.
         if not hasattr(self.mods[0], "main"):
-            print("Couldn't find the main() function. Are you sure you have one?")
-            sys.exit()
+            raise RuntimeError(
+                "Couldn't find the main() function. Are you sure you have one?"
+            )
 
     def __repr__(self) -> str:
         return "\n".join([inspect.getsource(mod) for mod in self.mods])
@@ -112,13 +126,15 @@ class StudentCode:
 
     def main(self) -> None:
         try:
-            self.mods[0].main()  # type: ignore
+            self.mods[0].main()
         except Exception as e:
-            if isinstance(e, (KarelException, NameError)):
+            if isinstance(e, (KarelException, NameError, RuntimeError)):
                 self.print_error_traceback(e)
             raise e
 
-    def print_error_traceback(self, e: KarelException | NameError) -> None:
+    def print_error_traceback(
+        self, e: KarelException | NameError | RuntimeError
+    ) -> None:
         """Handle runtime errors while executing student code."""
         display_frames: list[tuple[FrameType, int]] = []
         # Walk through all the frames in stack trace at time of failure
@@ -334,19 +350,11 @@ class KarelApplication(tk.Frame):
         in the world.
         """
         for mod in self.student_code.mods:
-            mod.turn_left = self.karel_action_decorator(  # type: ignore[attr-defined]
-                self.karel.turn_left
-            )
-            mod.move = self.karel_action_decorator(self.karel.move)  # type: ignore
-            mod.pick_beeper = self.beeper_action_decorator(  # type: ignore
-                self.karel.pick_beeper
-            )
-            mod.put_beeper = self.beeper_action_decorator(  # type: ignore
-                self.karel.put_beeper
-            )
-            mod.paint_corner = self.corner_action_decorator(  # type: ignore
-                self.karel.paint_corner
-            )
+            mod.turn_left = self.karel_action_decorator(self.karel.turn_left)
+            mod.move = self.karel_action_decorator(self.karel.move)
+            mod.pick_beeper = self.beeper_action_decorator(self.karel.pick_beeper)
+            mod.put_beeper = self.beeper_action_decorator(self.karel.put_beeper)
+            mod.paint_corner = self.corner_action_decorator(self.karel.paint_corner)
 
     def disable_buttons(self) -> None:
         self.program_control_button.configure(state="disabled")

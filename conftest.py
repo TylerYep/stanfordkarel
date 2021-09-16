@@ -23,7 +23,12 @@ def execute_karel_code(
 ) -> None:
     world_name = world_name or code_file.stem
     karel = KarelProgram(world_name)
-    student_code = StudentCode(code_file)
+    try:
+        student_code = StudentCode(code_file)
+    except (SyntaxError, RuntimeError) as e:
+        assert str(e) == expected_error
+        return
+
     student_code.inject_namespace(karel)
     try:
         student_code.main()

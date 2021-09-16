@@ -13,6 +13,6 @@ def test_student_functionality(problem_name: str) -> None:
         execute_karel_code(code_file)
     else:
         warnings.warn(
-            "Code directory does not exist. Pass the tests for travis-ci, "
+            "solutions/ code directory does not exist. Pass the tests for CI, "
             "but raise an error for actual student code."
         )
