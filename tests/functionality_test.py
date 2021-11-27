@@ -2,7 +2,7 @@ import warnings
 
 import pytest
 
-from conftest import PROBLEMS, STUDENT_CODE_DIR, TIMEOUT, execute_karel_code
+from tests.conftest import PROBLEMS, STUDENT_CODE_DIR, TIMEOUT, execute_karel_code
 
 
 @pytest.mark.timeout(TIMEOUT)

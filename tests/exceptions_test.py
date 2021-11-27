@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from conftest import execute_karel_code
+from tests.conftest import execute_karel_code
 
 IGNORED_FILES = {"__init__.py"}
 TEST_CASES = (

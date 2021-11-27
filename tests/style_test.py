@@ -2,8 +2,8 @@ import warnings
 
 import pytest
 
-from conftest import PROBLEMS, STUDENT_CODE_DIR, TIMEOUT
 from stanfordkarel.style_checker import StyleChecker
+from tests.conftest import PROBLEMS, STUDENT_CODE_DIR, TIMEOUT
 
 
 @pytest.mark.timeout(TIMEOUT)
