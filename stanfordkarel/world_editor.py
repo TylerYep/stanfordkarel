@@ -421,7 +421,7 @@ class WorldBuilderApplication(tk.Frame):
             return
         if not filename.endswith(".w"):
             filename += ".w"
-        self.world.save_to_file(filename)
+        self.world.save_to_file(Path(filename))
 
 
 if __name__ == "__main__":
