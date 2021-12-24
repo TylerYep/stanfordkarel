@@ -58,11 +58,12 @@ class StudentCode:
             assert module_loader is not None
             mod = cast(StudentModule, importlib.util.module_from_spec(spec))
             self.mods: list[StudentModule] = [mod]
-            module_loader.exec_module(mod)  # type: ignore[attr-defined]
+            module_loader.exec_module(mod)
             # Go through attributes to find imported modules
             for name in dir(mod):
                 module = cast(StudentModule, getattr(mod, name))
                 if isinstance(module, ModuleType):
+                    assert module.__file__ is not None
                     code_file_path = Path(module.__file__)
                     # Only execute modules outside of this directory
                     if code_file_path.parent != Path(__file__).resolve().parent:
@@ -70,7 +71,7 @@ class StudentCode:
                         spec = importlib.util.spec_from_file_location(
                             name, code_file_path.resolve()
                         )
-                        module_loader.exec_module(module)  # type: ignore[attr-defined]
+                        module_loader.exec_module(module)
         except SyntaxError as e:
             # Since we don't start the GUI until after we parse the student's code,
             # SyntaxErrors behave normally. However, if the syntax error is somehow
