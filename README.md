@@ -40,7 +40,7 @@ from stanfordkarel import *
 
 
 def main():
-    """ Karel code goes here! """
+    """Karel code goes here!"""
     turn_left()
     move()
     turn_left()
