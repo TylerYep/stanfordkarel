@@ -1,5 +1,5 @@
 ci:
-  skip: [mypy, pytest]
+  skip: [pylint, mypy, pytest]
 repos:
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.31.0
@@ -28,14 +28,14 @@ repos:
     hooks:
       - id: flake8
 
-  - repo: https://github.com/PyCQA/pylint
-    rev: v2.12.2
-    hooks:
-      - id: pylint
-        args: ["--disable=import-error"]
-
   - repo: local
     hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: python
+        types: [python]
+
       - id: mypy
         name: mypy
         entry: mypy
