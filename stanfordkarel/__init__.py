@@ -1,4 +1,4 @@
-from stanfordkarel.stanfordkarel import (
+from stanfordkarel.stanfordkarel import (  # noqa
     BLACK,
     BLANK,
     BLUE,
