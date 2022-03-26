@@ -211,7 +211,7 @@ class KarelApplication(tk.Frame):
         path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
-            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: E501
         except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
 
@@ -228,7 +228,7 @@ class KarelApplication(tk.Frame):
         iconmenu.add_command(label="Simple", command=lambda: self.set_icon("simple"))
 
         self.bind_all("<Command-w>", lambda _: self.quit())
-        self.master.config(menu=menubar)  # type: ignore
+        self.master.config(menu=menubar)  # type: ignore[attr-defined]
 
     def create_slider(self) -> None:
         """
