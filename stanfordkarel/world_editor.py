@@ -71,6 +71,7 @@ class WorldBuilderApplication(tk.Frame):
         path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
+            # pylint: disable=protected-access
             self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: E501
         except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
