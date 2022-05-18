@@ -329,7 +329,9 @@ class KarelWorld:
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
-        # TODO fix this
+        # TODO To fix this, we need to figure out why the constructor does not reset
+        # everything. Use New World to test.
+        # pylint: disable=unnecessary-dunder-call
         self.__init__(filename)  # type: ignore[misc]
 
     def save_to_file(self, filename: Path) -> None:
