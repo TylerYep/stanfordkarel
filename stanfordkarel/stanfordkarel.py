@@ -17,6 +17,8 @@ import tkinter as tk
 from pathlib import Path
 
 from .karel_application import KarelApplication
+from PyQt6.QtWidgets import QApplication
+from .karel_qt_application import MainWindow
 from .karel_program import KarelProgram
 
 # The following function definitions are defined as stubs so that IDEs can recognize
@@ -160,6 +162,12 @@ def run_karel_program(world_file: str = "") -> None:
     karel = KarelProgram(world_file)
 
     # Initialize root Tk Window and spawn Karel application
-    root = tk.Tk()
-    app = KarelApplication(karel, student_code_file, master=root)
-    app.mainloop()
+    if "-qt" in sys.argv:
+        app = QApplication(sys.argv)
+        window = MainWindow()
+        window.show()
+        app.exec()
+    else:
+        root = tk.Tk()
+        app = KarelApplication(karel, student_code_file, master=root)
+        app.mainloop()
