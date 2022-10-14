@@ -392,7 +392,7 @@ class WorldBuilderApplication(tk.Frame):
                 self.karel.avenue = avenue
                 self.karel.street = street
                 self.canvas.redraw_karel()
-                self.world.set_karel_start_location(street, avenue)
+                self.world.set_karel_start_location(avenue, street)
         elif action == "add_beeper":
             apply_function(self.world.add_beeper)
         elif action == "remove_beeper":

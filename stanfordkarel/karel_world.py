@@ -289,10 +289,10 @@ class KarelWorld:
     def set_karel_start_location(self, avenue: int, street: int) -> None:
         self.karel_start_location = (avenue, street)
 
-    def set_karel_start_direction(self, direction: Direction):
+    def set_karel_start_direction(self, direction: Direction) -> None:
         self.karel_start_direction = direction
 
-    def set_karel_start_beeper_count(self, beeper_count: int):
+    def set_karel_start_beeper_count(self, beeper_count: int) -> None:
         self.karel_start_beeper_count = beeper_count
 
     def add_beeper(self, avenue: int, street: int) -> None:
