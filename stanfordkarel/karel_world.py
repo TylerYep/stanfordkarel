@@ -286,6 +286,15 @@ class KarelWorld:
                 else:
                     print(f"Invalid keyword - ignoring line {i} of world file: {line}")
 
+    def set_karel_start_location(self, avenue: int, street: int) -> None:
+        self.karel_start_location = (avenue, street)
+
+    def set_karel_start_direction(self, direction: Direction):
+        self.karel_start_direction = direction
+
+    def set_karel_start_beeper_count(self, beeper_count: int):
+        self.karel_start_beeper_count = beeper_count
+
     def add_beeper(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] += 1
 

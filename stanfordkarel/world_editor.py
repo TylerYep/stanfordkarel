@@ -352,11 +352,13 @@ class WorldBuilderApplication(tk.Frame):
         new_dir = self.karel_direction_var.get()
         self.karel.direction = Direction(new_dir)
         self.canvas.redraw_karel()
+        self.world.set_karel_start_direction(self.karel.direction)
 
     def update_karel_num_beepers(self, *args: Any) -> None:
         del args
         new_num_beepers = self.beeper_bag_var.get()
         self.karel.num_beepers = new_num_beepers
+        self.world.set_karel_start_beeper_count(self.karel.num_beepers)
 
     def handle_mouse_event(self, event: tk.Event[Any]) -> None:
         def apply_function(fn: Callable[..., Any], *args: Any) -> None:
@@ -390,6 +392,7 @@ class WorldBuilderApplication(tk.Frame):
                 self.karel.avenue = avenue
                 self.karel.street = street
                 self.canvas.redraw_karel()
+                self.world.set_karel_start_location(street, avenue)
         elif action == "add_beeper":
             apply_function(self.world.add_beeper)
         elif action == "remove_beeper":
