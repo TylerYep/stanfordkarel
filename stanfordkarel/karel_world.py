@@ -309,10 +309,8 @@ class KarelWorld:
 
     def remove_wall(self, wall: Wall) -> None:
         alt_wall = self.get_alt_wall(wall)
-        if wall in self.walls:
-            self.walls.remove(wall)
-        if alt_wall in self.walls:
-            self.walls.remove(alt_wall)
+        self.walls.discard(wall)
+        self.walls.discard(alt_wall)
 
     def paint_corner(self, avenue: int, street: int, color: str) -> None:
         self.corner_colors[(avenue, street)] = color

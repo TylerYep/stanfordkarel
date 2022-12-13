@@ -26,91 +26,91 @@ from .karel_program import KarelProgram
 
 
 def move() -> None:
-    pass
+    raise NotImplementedError
 
 
 def turn_left() -> None:
-    pass
+    raise NotImplementedError
 
 
 def put_beeper() -> None:
-    pass
+    raise NotImplementedError
 
 
 def pick_beeper() -> None:
-    pass
+    raise NotImplementedError
 
 
 def front_is_clear() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def front_is_blocked() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def left_is_clear() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def left_is_blocked() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def right_is_clear() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def right_is_blocked() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def beepers_present() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def no_beepers_present() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def beepers_in_bag() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def no_beepers_in_bag() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def facing_north() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def not_facing_north() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def facing_east() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def not_facing_east() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def facing_west() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def not_facing_west() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def facing_south() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def not_facing_south() -> bool:
-    pass
+    raise NotImplementedError
 
 
 def paint_corner(color: str) -> None:
