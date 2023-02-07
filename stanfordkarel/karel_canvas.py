@@ -373,7 +373,6 @@ class KarelCanvas(tk.Canvas):
     def generate_internal_karel_points(
         self, x: float, y: float, center: tuple[float, float], direction: float
     ) -> list[float]:
-
         # Calculate dimensions and location of Karel's inner eye
         inner_x = x + self.cell_size * KAREL_INNER_OFFSET
         inner_y = y + self.cell_size * KAREL_INNER_OFFSET
