@@ -232,7 +232,7 @@ class KarelWorld:
         return params
 
     def load_from_file(self) -> None:
-        with open(self.world_file, encoding="utf-8") as f:
+        with self.world_file.open(encoding="utf-8") as f:
             for i, line in enumerate(f):
                 # Ignore blank lines and lines with no comma delineator
                 line = line.strip()
@@ -336,12 +336,12 @@ class KarelWorld:
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
-        # TODO To fix this, we need to figure out why the constructor does not reset
+        # TODO: To fix this, we need to figure out why the constructor does not reset
         # everything. Use New World to test.
         # pylint: disable=unnecessary-dunder-call
         self.__init__(filename)  # type: ignore[misc]
 
-    def save_to_file(self, filename: Path) -> None:
+    def save_to_file(self, filepath: Path) -> None:
         # First, output dimensions of world
         output = f"Dimension: ({self.num_avenues}, {self.num_streets})\n"
 
@@ -371,7 +371,7 @@ class KarelWorld:
         )
         output += f"BeeperBag: {beeper_output}\n"
 
-        with open(filename, "w", encoding="utf-8") as f:
+        with filepath.open("w", encoding="utf-8") as f:
             f.write(output)
 
 
