@@ -92,9 +92,7 @@ class KarelWorld:
         self.beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
 
         # Map of corner colors, defaults to ""
-        self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(
-            lambda: ""
-        )
+        self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(str)
 
         # Set of Wall objects placed in the world
         self.walls: set[Wall] = set()
@@ -332,7 +330,7 @@ class KarelWorld:
     def reset_world(self) -> None:
         """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
-        self.corner_colors = collections.defaultdict(lambda: "")
+        self.corner_colors = collections.defaultdict(str)
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
