@@ -71,6 +71,22 @@ python collect_newspaper_karel.py
 | `left_is_clear()`    | `facing_north()`       | `paint_corner(color)`    |
 | `left_is_blocked()`  | `not_facing_north()`   | `corner_color_is(color)` |
 
+## Available Colors
+
+- Red
+- Black
+- Cyan
+- Dark Gray
+- Gray
+- Green
+- Light gray
+- Magenta
+- Orange
+- Pink
+- White
+- Blue
+- Yellow
+
 ### Folder structure
 
 You can set a default world by passing a world name to run_karel_program,
