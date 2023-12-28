@@ -1,4 +1,4 @@
-from stanfordkarel.stanfordkarel import (  # noqa
+from stanfordkarel.stanfordkarel import (  # noqa: F401
     BLACK,
     BLANK,
     BLUE,

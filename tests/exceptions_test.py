@@ -24,7 +24,7 @@ TEST_CASES = (
 )
 
 
-@pytest.mark.parametrize("code_file, expected_error", TEST_CASES)
+@pytest.mark.parametrize(("code_file", "expected_error"), TEST_CASES)
 def test_exceptions(tmp_path: Path, code_file: str, expected_error: str) -> None:
     txt_file_contents = Path(f"tests/programs/{code_file}").read_text(encoding="utf-8")
     py_path = (tmp_path / code_file).with_suffix(".py")

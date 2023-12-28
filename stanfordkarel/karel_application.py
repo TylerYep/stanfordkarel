@@ -131,7 +131,7 @@ class StudentCode:
         except Exception as e:
             if isinstance(e, (KarelException, NameError, RuntimeError)):
                 self.print_error_traceback(e)
-            raise e
+            raise
 
     def print_error_traceback(
         self, e: KarelException | NameError | RuntimeError
@@ -211,8 +211,7 @@ class KarelApplication(tk.Frame):
         path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
-            # pylint: disable=protected-access
-            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: E501
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: SLF001
         except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
 
@@ -267,7 +266,7 @@ class KarelApplication(tk.Frame):
             karel=self.karel,
         )
         self.canvas.grid(column=1, row=0, sticky="NESW")
-        self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
+        self.canvas.bind("<Configure>", lambda _: self.canvas.redraw_all())
 
     def set_icon(self, icon: str) -> None:
         self.canvas.icon = icon
@@ -413,7 +412,7 @@ class KarelApplication(tk.Frame):
             parent=self.master,
         )
         # User hit cancel and did not select file, so leave world as-is
-        if filename == "":
+        if not filename:
             return
         self.world.reload_world(filename=filename)
         self.karel.reset_state()

@@ -14,5 +14,6 @@ def test_student_functionality(problem_name: str) -> None:
     else:
         warnings.warn(
             "solutions/ code directory does not exist. Pass the tests for CI, "
-            "but raise an error for actual student code."
+            "but raise an error for actual student code.",
+            stacklevel=2,
         )

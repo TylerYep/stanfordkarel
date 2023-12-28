@@ -406,7 +406,7 @@ class KarelProgram:
         return self.world.corner_color(self.avenue, self.street) == color
 
 
-class KarelException(Exception):
+class KarelException(Exception):  # noqa: N818
     """The following classes define Karel-specific exceptions."""
 
     def __init__(

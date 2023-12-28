@@ -186,8 +186,8 @@ class KarelWorld:
     @staticmethod
     def parse_parameters(keyword: str, param_str: str) -> dict[str, Any]:
         params: dict[str, Any] = {}
-        for param in param_str.split(PARAM_DELIM):
-            param = param.strip()
+        for param_with_spaces in param_str.split(PARAM_DELIM):
+            param = param_with_spaces.strip()
 
             # check to see if parameter encodes a location
             coordinate = re.match(r"\((\d+),\s*(\d+)\)", param)
@@ -231,9 +231,9 @@ class KarelWorld:
 
     def load_from_file(self) -> None:
         with self.world_file.open(encoding="utf-8") as f:
-            for i, line in enumerate(f):
+            for i, line_with_spaces in enumerate(f):
                 # Ignore blank lines and lines with no comma delineator
-                line = line.strip()
+                line = line_with_spaces.strip()
                 if not line:
                     continue
 
@@ -336,7 +336,6 @@ class KarelWorld:
         """Reloads world using constructor."""
         # TODO: To fix this, we need to figure out why the constructor does not reset
         # everything. Use New World to test.
-        # pylint: disable=unnecessary-dunder-call
         self.__init__(filename)  # type: ignore[misc]
 
     def save_to_file(self, filepath: Path) -> None:

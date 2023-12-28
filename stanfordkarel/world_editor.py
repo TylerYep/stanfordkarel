@@ -71,8 +71,7 @@ class WorldBuilderApplication(tk.Frame):
         path = Path(__file__).absolute().parent / "icon.png"
         try:
             img = tk.Image("photo", file=path)
-            # pylint: disable=protected-access
-            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: E501
+            self.master.tk.call("wm", "iconphoto", self.master._w, img)  # type: ignore[attr-defined] # noqa: SLF001
         except tk.TclError:
             print(f"Warning: invalid icon.png: {path}")
 
@@ -138,7 +137,7 @@ class WorldBuilderApplication(tk.Frame):
             parent=self.master,
         )
         # User hit cancel and did not select file, so leave world as-is
-        if filename == "":
+        if not filename:
             if init:
                 self.setup_world()
             return
@@ -166,7 +165,7 @@ class WorldBuilderApplication(tk.Frame):
             karel=self.karel,
         )
         self.canvas.grid(column=1, row=0, sticky="NESW")
-        self.canvas.bind("<Configure>", lambda t: self.canvas.redraw_all())
+        self.canvas.bind("<Configure>", lambda _: self.canvas.redraw_all())
         self.canvas.bind("<Button-1>", self.handle_mouse_event)
         self.canvas.bind("<B1-Motion>", self.handle_mouse_event)
 
@@ -203,7 +202,9 @@ class WorldBuilderApplication(tk.Frame):
 
         self.karel_direction_var = tk.StringVar()
         self.karel_direction_var.set(self.karel.direction.value)
-        self.karel_direction_var.trace("w", self.update_karel_direction)
+        self.karel_direction_var.trace(  # type: ignore[no-untyped-call]
+            "w", self.update_karel_direction
+        )
 
         dir_label = tk.Label(
             self.dir_radio_frame, text="Karel Direction: ", bg=LIGHT_GREY
@@ -246,7 +247,9 @@ class WorldBuilderApplication(tk.Frame):
 
         self.beeper_bag_var = tk.IntVar()
         self.beeper_bag_var.set(self.karel.num_beepers)
-        self.beeper_bag_var.trace("w", self.update_karel_num_beepers)
+        self.beeper_bag_var.trace(  # type: ignore[no-untyped-call]
+            "w", self.update_karel_num_beepers
+        )
 
         beeper_bag_label = tk.Label(
             self.beeper_bag_radio_frame, text="Beeper Bag: ", bg=LIGHT_GREY
@@ -362,22 +365,16 @@ class WorldBuilderApplication(tk.Frame):
 
     def handle_mouse_event(self, event: tk.Event[Any]) -> None:
         def apply_function(fn: Callable[..., Any], *args: Any) -> None:
-            if event_type is tk.EventType.ButtonPress:
+            if event_type is tk.EventType.ButtonPress or (
+                event_type is tk.EventType.Motion
+                and (avenue, street) != self.last_action_event_loc
+            ):
                 self.last_action_event_loc = (avenue, street)
                 fn(avenue, street, *args)
                 self.canvas.redraw_corners(update=False)
                 self.canvas.redraw_beepers(update=False)
                 self.canvas.redraw_walls(update=False)
                 self.canvas.redraw_karel()
-
-            elif event_type is tk.EventType.Motion:
-                if (avenue, street) != self.last_action_event_loc:
-                    self.last_action_event_loc = (avenue, street)
-                    fn(avenue, street, *args)
-                    self.canvas.redraw_corners(update=False)
-                    self.canvas.redraw_beepers(update=False)
-                    self.canvas.redraw_walls(update=False)
-                    self.canvas.redraw_karel()
 
         event_type = event.type
         # only handle click events that happen in the world
@@ -420,7 +417,7 @@ class WorldBuilderApplication(tk.Frame):
             filetypes=[("Karel Worlds", "*.w")],
             parent=self.master,
         )
-        if filename == "":
+        if not filename:
             return
         if not filename.endswith(".w"):
             filename += ".w"

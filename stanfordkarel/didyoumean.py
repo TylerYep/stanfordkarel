@@ -53,7 +53,7 @@ def get_objects_in_frame(frame: FrameType) -> dict[str, list[str]]:
 
 
 def register_suggestion_for(
-    error_type: type[Exception], regex: str
+    error_type: type[Exception], regex: str | None
 ) -> Callable[..., Any]:
     """Decorator to register a function to be called to get suggestions.
 
@@ -148,7 +148,7 @@ def add_string_to_exception(value: Exception, string: str) -> None:
     empty so we add to the first string and add the element otherwise.
     """
     if not isinstance(value.args, tuple):
-        raise RuntimeError
+        raise TypeError
     if string:
         lst_args = list(value.args)
         for i, arg in enumerate(lst_args):

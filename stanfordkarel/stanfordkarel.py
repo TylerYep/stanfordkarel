@@ -147,7 +147,7 @@ def run_karel_program(world_file: str = "") -> None:
     # Set the default world to the world with that name.
     # I personally recommend removing this functionality completely.
     if (
-        world_file == ""
+        not world_file
         and (
             Path(__file__).absolute().parent
             / "worlds"

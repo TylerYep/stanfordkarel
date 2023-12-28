@@ -181,7 +181,7 @@ def compare_output(first: Any, second: Any) -> str:
 
     def create_two_column_string(col1: list[str], col2: list[str]) -> Iterator[str]:
         """col1 and col2 are Lists."""
-        return map(lambda x: f"{x[0]}{' ' * SPACING}{x[1]}", zip(col1, col2))
+        return (f"{x[0]}{' ' * SPACING}{x[1]}" for x in zip(col1, col2))
 
     def symmetric_difference(
         a: BEEPER_COORDS, b: BEEPER_COORDS

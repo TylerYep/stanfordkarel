@@ -26,7 +26,7 @@ def execute_karel_code(
     try:
         student_code = StudentCode(code_file)
     except (SyntaxError, RuntimeError) as e:
-        assert str(e) == expected_error
+        assert str(e) == expected_error  # noqa: PT017
         return
 
     student_code.inject_namespace(karel)
@@ -36,7 +36,7 @@ def execute_karel_code(
             KarelProgram(f"{world_name}_end")
         ), "Resulting world did not match expected result."
     except (KarelException, NameError) as e:
-        assert str(e) == expected_error
+        assert str(e) == expected_error  # noqa: PT017
 
 
 def create_solution_worlds() -> None:
