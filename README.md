@@ -1,6 +1,6 @@
 # stanford-karel
 
-[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
 [![PyPI version](https://badge.fury.io/py/stanfordkarel.svg)](https://badge.fury.io/py/stanfordkarel)
 [![Build Status](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml/badge.svg)](https://github.com/TylerYep/stanfordkarel/actions/workflows/test.yml)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/TylerYep/stanfordkarel/main.svg)](https://results.pre-commit.ci/latest/github/TylerYep/stanfordkarel/main)
@@ -133,9 +133,6 @@ The autograde command also runs the builtin Karel Style Checker that performs li
 
 Everything important is located in `stanfordkarel/`.
 
-- Python 3.5+ is required because of `importlib.util.module_from_spec`.
-- Python 3.6+ is required for f-strings.
-- Python 3.7+ is required for type annotations.
 - `stanfordkarel/` is the exported package, which contains all of the available functions and commands for students to use.
 - `karel_application.py` is responsible for loading student code and displaying it to the screen.
 
