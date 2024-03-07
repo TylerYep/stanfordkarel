@@ -1,0 +1,10 @@
+from stanfordkarel import *
+
+
+def main():
+    if beepers_present():
+        turn_left()
+
+
+if __name__ == "__main__":
+    run_karel_program()

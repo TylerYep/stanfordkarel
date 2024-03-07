@@ -1,0 +1,10 @@
+from stanfordkarel import *
+
+
+def main():
+    if corner_color_is(PINK):
+        turn_left()
+
+
+if __name__ == "__main__":
+    run_karel_program()

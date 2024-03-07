@@ -116,14 +116,36 @@ class KarelWorld:
         # Save initial beeper state to enable world reset
         self.init_beepers = copy.deepcopy(self.beepers)
 
+    def get_beepers(self) -> dict[tuple[int, int], int]:
+        """
+        Return a beeper dictionary, which is free of any 0 count beepers that
+        occur as a side effect of calls such as `beepers_present`.
+        """
+        beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
+        for (x, y), count in sorted(self.beepers.items()):
+            if count != 0:
+                beepers[(x, y)] = count
+        return beepers
+
+    def get_colors(self) -> dict[tuple[int, int], str]:
+        """
+        Return a color dictionary, which is free of any blank '' colors that
+        occur as a side effect of calls such as `corner_color_is`.
+        """
+        colors: dict[tuple[int, int], str] = collections.defaultdict(str)
+        for (x, y), color in sorted(self.corner_colors.items()):
+            if color != "":
+                colors[(x, y)] = color
+        return colors
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelWorld):
             return (
-                self.beepers == other.beepers
-                and self.walls == other.walls
-                and self.num_streets == other.num_streets
+                self.num_streets == other.num_streets
                 and self.num_avenues == other.num_avenues
-                and self.corner_colors == other.corner_colors
+                and self.walls == other.walls
+                and self.get_beepers() == other.get_beepers()
+                and self.get_colors() == other.get_colors()
             )
         return NotImplemented
 
