@@ -7,6 +7,7 @@ specification, refer to the assignment handout. GardenKarel should be
 able to make a fence in any world that has at least 2 avenues and 2
 streets.
 """
+
 from stanfordkarel import *
 
 

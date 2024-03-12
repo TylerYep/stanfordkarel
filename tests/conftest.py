@@ -2,6 +2,7 @@
 conftest.py needed for pytest to detect files.
 This also contains helper methods for running tests or autograders.
 """
+
 from pathlib import Path
 
 from stanfordkarel.karel_application import StudentCode
