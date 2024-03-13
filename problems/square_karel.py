@@ -6,6 +6,7 @@ beepers that is 4 beepers wide and 4 beepers tall. For more in-depth problem
 specification, refer to the assignment handout. SquareKarel can assume that
 it starts at location (2,2) and that there are no obstacles in its path.
 """
+
 from stanfordkarel import *
 
 

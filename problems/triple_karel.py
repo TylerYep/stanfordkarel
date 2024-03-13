@@ -7,6 +7,7 @@ world, as described in the Assignment 1 handout. You
 should make sure that your program works for all of the
 Triple sample worlds supplied in the starter folder.
 """
+
 from stanfordkarel import *
 
 

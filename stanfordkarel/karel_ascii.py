@@ -6,6 +6,7 @@ License: MIT
 Version: 1.0.0
 Email: tyep@cs.stanford.edu
 """
+
 from __future__ import annotations
 
 from enum import Enum, unique

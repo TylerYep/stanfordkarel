@@ -38,6 +38,7 @@ Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 """
+
 from __future__ import annotations
 
 import collections

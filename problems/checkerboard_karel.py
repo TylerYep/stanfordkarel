@@ -6,6 +6,7 @@ a checkerboard using beepers, as described in Assignment 1.
 You should make sure that your program works for all of the
 sample worlds supplied in the starter folder.
 """
+
 from stanfordkarel import *
 
 

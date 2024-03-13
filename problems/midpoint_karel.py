@@ -9,6 +9,7 @@ looks for the midpoint, but must pick them up again before it
 stops.  The world may be of any size, but you are allowed to
 assume that it is at least as tall as it is wide.
 """
+
 from stanfordkarel import *
 
 

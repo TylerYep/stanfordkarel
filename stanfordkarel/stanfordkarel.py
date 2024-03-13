@@ -12,6 +12,7 @@ Version: 1.0.0
 Email: nbowman@stanford.edu
 Date of Creation: 10/1/2019
 """
+
 import sys
 import tkinter as tk
 from pathlib import Path
