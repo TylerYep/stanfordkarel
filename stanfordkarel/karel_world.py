@@ -40,7 +40,6 @@ Date of Creation: 10/1/2019
 """
 from __future__ import annotations
 
-import collections
 import copy
 import re
 import sys
@@ -92,7 +91,7 @@ class KarelWorld:
         self.beepers: dict[tuple[int, int], int] = {}
 
         # Map of corner colors, defaults to ""
-        self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(str)
+        self.corner_colors: dict[tuple[int, int], str] = {}
 
         # Set of Wall objects placed in the world
         self.walls: set[Wall] = set()
@@ -116,28 +115,6 @@ class KarelWorld:
         # Save initial beeper state to enable world reset
         self.init_beepers = copy.deepcopy(self.beepers)
 
-    # def get_beepers(self) -> dict[tuple[int, int], int]:
-    #     """
-    #     Return a beeper dictionary, which is free of any 0 count beepers that
-    #     occur as a side effect of calls such as `beepers_present`.
-    #     """
-    #     beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
-    #     for (x, y), count in sorted(self.beepers.items()):
-    #         if count != 0:
-    #             beepers[(x, y)] = count
-    #     return beepers
-
-    def get_colors(self) -> dict[tuple[int, int], str]:
-        """
-        Return a color dictionary, which is free of any blank '' colors that
-        occur as a side effect of calls such as `corner_color_is`.
-        """
-        colors: dict[tuple[int, int], str] = collections.defaultdict(str)
-        for (x, y), color in sorted(self.corner_colors.items()):
-            if color != "":
-                colors[(x, y)] = color
-        return colors
-
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelWorld):
             return (
@@ -145,7 +122,7 @@ class KarelWorld:
                 and self.num_avenues == other.num_avenues
                 and self.walls == other.walls
                 and self.beepers == other.beepers
-                and self.get_colors() == other.get_colors()
+                and self.corner_colors == other.corner_colors
             )
         return NotImplemented
 
@@ -339,7 +316,9 @@ class KarelWorld:
         self.corner_colors[(avenue, street)] = color
 
     def corner_color(self, avenue: int, street: int) -> str:
-        return self.corner_colors[(avenue, street)]
+        if (avenue, street) in self.corner_colors:
+            return self.corner_colors[(avenue, street)]
+        return ""
 
     def reset_corner(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] = 0
@@ -355,7 +334,7 @@ class KarelWorld:
     def reset_world(self) -> None:
         """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
-        self.corner_colors = collections.defaultdict(str)
+        self.corner_colors = {}
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""

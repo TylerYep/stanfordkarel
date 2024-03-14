@@ -125,7 +125,7 @@ class TestKarelWorld:
 
         ref_program = KarelProgram("1x1")
 
-        assert ref_program.world.get_colors() == test_program.world.get_colors()
+        assert ref_program.world.corner_colors == test_program.world.corner_colors
 
     @staticmethod
     def test_equal_worlds() -> None:
