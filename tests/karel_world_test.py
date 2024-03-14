@@ -106,7 +106,7 @@ class TestKarelWorld:
 
         ref_program = KarelProgram("1x1")
 
-        assert ref_program.world.get_beepers() == test_program.world.get_beepers()
+        assert ref_program.world.beepers == test_program.world.beepers
 
     @staticmethod
     def test_empty_colors(tmp_path: Path) -> None:
@@ -125,7 +125,7 @@ class TestKarelWorld:
 
         ref_program = KarelProgram("1x1")
 
-        assert ref_program.world.get_beepers() == test_program.world.get_beepers()
+        assert ref_program.world.get_colors() == test_program.world.get_colors()
 
     @staticmethod
     def test_equal_worlds() -> None:
