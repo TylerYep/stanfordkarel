@@ -26,7 +26,9 @@ TEST_CASES = (
 
 @pytest.mark.parametrize(("code_file", "expected_error"), TEST_CASES)
 def test_exceptions(tmp_path: Path, code_file: str, expected_error: str) -> None:
-    txt_file_contents = Path(f"tests/programs/{code_file}").read_text(encoding="utf-8")
+    txt_file_contents = Path(f"tests/exception_programs/{code_file}").read_text(
+        encoding="utf-8"
+    )
     py_path = (tmp_path / code_file).with_suffix(".py")
     py_path.write_text(txt_file_contents)
     execute_karel_code(
@@ -39,7 +41,7 @@ def test_file_coverage() -> None:
     tested_files = {filepath for filepath, _ in TEST_CASES}
     test_programs = {
         filepath.name
-        for filepath in Path("tests/programs").glob("*.txt")
+        for filepath in Path("tests/exception_programs").glob("*.txt")
         if filepath.name not in IGNORED_FILES
     }
     untested_files = tested_files ^ test_programs

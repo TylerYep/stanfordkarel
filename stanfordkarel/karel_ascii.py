@@ -221,9 +221,17 @@ def compare_output(first: Any, second: Any) -> str:
             f"Student: {(first.avenue, first.street)}\n"
             f"Expected: {(second.avenue, second.street)}\n\n"
         )
-    if first.world.beepers != second.world.beepers:
+
+    if first.direction != second.direction:
+        result += (
+            "Karel not facing the correct direction.\n"
+            f"Student: {first.direction}\n"
+            f"Expected: {second.direction}\n\n"
+        )
+
+    if first.world.get_beepers() != second.world.get_beepers():
         extra_a, extra_b = symmetric_difference(
-            first.world.beepers, second.world.beepers
+            first.world.get_beepers(), second.world.get_beepers()
         )
         result += (
             "Beepers do not match: "
@@ -231,4 +239,16 @@ def compare_output(first: Any, second: Any) -> str:
             f"Student: {extra_a}\n"
             f"Expected: {extra_b}\n\n"
         )
+
+    if first.world.get_colors() != second.world.get_colors():
+        extra_a, extra_b = symmetric_difference(
+            first.world.get_colors(), second.world.get_colors()
+        )
+        result += (
+            "Colors do not match: "
+            "(Only colors that appear in one world but not the other are listed)\n"
+            f"Student: {extra_a}\n"
+            f"Expected: {extra_b}\n\n"
+        )
+
     return result

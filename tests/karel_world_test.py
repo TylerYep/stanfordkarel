@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from stanfordkarel.karel_application import StudentCode
 from stanfordkarel.karel_program import KarelProgram
 
 STONE_MASON_ASCII_OUTPUT = (
@@ -87,3 +88,48 @@ class TestKarelWorld:
         )
 
         assert output_file.read_text() == "\n".join(expected) + "\n"
+
+    @staticmethod
+    def test_empty_beepers(tmp_path: Path) -> None:
+        code_file = "empty_beeper.txt"
+        txt_file_contents = Path(f"tests/programs/{code_file}").read_text(
+            encoding="utf-8"
+        )
+        py_path = (tmp_path / code_file).with_suffix(".py")
+        py_path.write_text(txt_file_contents)
+
+        test_program = KarelProgram("1x1")
+
+        test_code = StudentCode(py_path)
+        test_code.inject_namespace(test_program)
+        test_code.main()
+
+        ref_program = KarelProgram("1x1")
+
+        assert ref_program.world.beepers == test_program.world.beepers
+
+    @staticmethod
+    def test_empty_colors(tmp_path: Path) -> None:
+        code_file = "empty_color.txt"
+        txt_file_contents = Path(f"tests/programs/{code_file}").read_text(
+            encoding="utf-8"
+        )
+        py_path = (tmp_path / code_file).with_suffix(".py")
+        py_path.write_text(txt_file_contents)
+
+        test_program = KarelProgram("1x1")
+
+        test_code = StudentCode(py_path)
+        test_code.inject_namespace(test_program)
+        test_code.main()
+
+        ref_program = KarelProgram("1x1")
+
+        assert ref_program.world.corner_colors == test_program.world.corner_colors
+
+    @staticmethod
+    def test_equal_worlds() -> None:
+        test_program = KarelProgram("1x1")
+        ref_program = KarelProgram("1x1")
+
+        assert ref_program.world == test_program.world

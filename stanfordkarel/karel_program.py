@@ -289,7 +289,9 @@ class KarelProgram:
             beepers_on_corner (Bool) - True if there's at least one beeper
                                        on Karel's current corner, False otherwise
         """
-        return self.world.beepers[(self.avenue, self.street)] != 0
+        if (self.avenue, self.street) in self.world.beepers:
+            return self.world.beepers[(self.avenue, self.street)] != 0
+        return False
 
     def no_beepers_present(self) -> bool:
         return not self.beepers_present()

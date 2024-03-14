@@ -41,7 +41,6 @@ Date of Creation: 10/1/2019
 
 from __future__ import annotations
 
-import collections
 import copy
 import re
 import sys
@@ -90,10 +89,10 @@ class KarelWorld:
         self.world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
-        self.beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
+        self.beepers: dict[tuple[int, int], int] = {}
 
         # Map of corner colors, defaults to ""
-        self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(str)
+        self.corner_colors: dict[tuple[int, int], str] = {}
 
         # Set of Wall objects placed in the world
         self.walls: set[Wall] = set()
@@ -120,10 +119,10 @@ class KarelWorld:
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelWorld):
             return (
-                self.beepers == other.beepers
-                and self.walls == other.walls
-                and self.num_streets == other.num_streets
+                self.num_streets == other.num_streets
                 and self.num_avenues == other.num_avenues
+                and self.walls == other.walls
+                and self.beepers == other.beepers
                 and self.corner_colors == other.corner_colors
             )
         return NotImplemented
@@ -263,7 +262,10 @@ class KarelWorld:
 
                 elif keyword == "beeper":
                     # add the specified number of beepers to the world
-                    self.beepers[params["location"]] += params["val"]
+                    if params["location"] in self.beepers:
+                        self.beepers[params["location"]] += params["val"]
+                    else:
+                        self.beepers[params["location"]] = params["val"]
 
                 elif keyword == "karel":
                     # Give Karel initial state values
@@ -315,7 +317,9 @@ class KarelWorld:
         self.corner_colors[(avenue, street)] = color
 
     def corner_color(self, avenue: int, street: int) -> str:
-        return self.corner_colors[(avenue, street)]
+        if (avenue, street) in self.corner_colors:
+            return self.corner_colors[(avenue, street)]
+        return ""
 
     def reset_corner(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] = 0
@@ -331,7 +335,7 @@ class KarelWorld:
     def reset_world(self) -> None:
         """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
-        self.corner_colors = collections.defaultdict(str)
+        self.corner_colors = {}
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
