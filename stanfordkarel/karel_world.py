@@ -89,7 +89,7 @@ class KarelWorld:
         self.world_file = self.process_world(world_file)
 
         # Map of beeper locations to the count of beepers at that location
-        self.beepers: dict[tuple[int, int], int] = collections.defaultdict(int)
+        self.beepers: dict[tuple[int, int], int] = {}
 
         # Map of corner colors, defaults to ""
         self.corner_colors: dict[tuple[int, int], str] = collections.defaultdict(str)
@@ -284,7 +284,10 @@ class KarelWorld:
 
                 elif keyword == "beeper":
                     # add the specified number of beepers to the world
-                    self.beepers[params["location"]] += params["val"]
+                    if params["location"] in self.beepers:
+                        self.beepers[params["location"]] += params["val"]
+                    else:
+                        self.beepers[params["location"]] = params["val"]
 
                 elif keyword == "karel":
                     # Give Karel initial state values
