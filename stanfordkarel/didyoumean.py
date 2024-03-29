@@ -13,8 +13,10 @@ from __future__ import annotations
 import difflib
 import itertools
 import re
-from types import FrameType, TracebackType
-from typing import Any, Callable, Iterator
+from typing import TYPE_CHECKING, Any, Callable, Iterator
+
+if TYPE_CHECKING:
+    from types import FrameType, TracebackType
 
 # To be used in `get_suggestions_for_exception`.
 SUGGESTION_FUNCTIONS: dict[Any, list[Any]] = {}

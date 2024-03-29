@@ -18,9 +18,12 @@ from __future__ import annotations
 import cmath
 import math
 import tkinter as tk
+from typing import TYPE_CHECKING
 
-from .karel_program import KarelProgram
 from .karel_world import Direction, KarelWorld, Wall
+
+if TYPE_CHECKING:
+    from .karel_program import KarelProgram
 
 DIRECTION_TO_RADIANS = {
     Direction.EAST: 0,
