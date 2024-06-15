@@ -140,6 +140,8 @@ class KarelWorld:
                 if (ave, st) not in self.corner_colors:
                     self.corner_colors[(ave, st)] = BLANK
 
+        self.init_corner_colors = copy.deepcopy(self.corner_colors)
+
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelWorld):
             return (
@@ -341,13 +343,11 @@ class KarelWorld:
         self.corner_colors[(avenue, street)] = color
 
     def corner_color(self, avenue: int, street: int) -> str:
-        if (avenue, street) in self.corner_colors:
-            return self.corner_colors[(avenue, street)]
-        return ""
+        return self.corner_colors[(avenue, street)]
 
     def reset_corner(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] = 0
-        self.corner_colors[(avenue, street)] = ""
+        self.corner_colors[(avenue, street)] = BLANK
 
     def wall_exists(self, avenue: int, street: int, direction: Direction) -> bool:
         wall = Wall(avenue, street, direction)
@@ -359,7 +359,7 @@ class KarelWorld:
     def reset_world(self) -> None:
         """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
-        self.corner_colors = {}
+        self.corner_colors = copy.deepcopy(self.init_corner_colors)
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
