@@ -20,7 +20,7 @@ Date of Creation: 10/1/2019
 from __future__ import annotations
 
 from .karel_ascii import AsciiKarelWorld, compare_output
-from .karel_world import BLANK, COLOR_MAP, INFINITY, Direction, KarelWorld
+from .karel_world import COLOR_MAP, INFINITY, Direction, KarelWorld
 
 NEXT_DIRECTION_MAP = {
     Direction.NORTH: Direction.WEST,
@@ -392,8 +392,8 @@ class KarelProgram:
                 f"Karel attempted to paint the corner with color {color}, "
                 "which is not valid.",
             )
-        if color != BLANK:
-            self.world.paint_corner(self.avenue, self.street, color)
+
+        self.world.paint_corner(self.avenue, self.street, color)
 
     def corner_color_is(self, color: str) -> bool:
         """
