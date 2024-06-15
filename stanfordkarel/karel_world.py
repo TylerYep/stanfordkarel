@@ -49,20 +49,38 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 INFINITY = -1
+
+# Defined constants for ease of use by students when coloring corners
+BLANK = "Empty"
+RED = "Red"
+BLACK = "Black"
+CYAN = "Cyan"
+DARK_GRAY = "Dark Gray"
+GRAY = "Gray"
+GREEN = "Green"
+LIGHT_GRAY = "Light Gray"
+MAGENTA = "Magenta"
+ORANGE = "Orange"
+PINK = "Pink"
+WHITE = "White"
+BLUE = "Blue"
+YELLOW = "Yellow"
+
 COLOR_MAP = {
-    "Red": "red",
-    "Black": "black",
-    "Cyan": "cyan",
-    "Dark Gray": "gray30",
-    "Gray": "gray55",
-    "Green": "green",
-    "Light Gray": "gray80",
-    "Magenta": "magenta3",
-    "Orange": "orange",
-    "Pink": "pink",
-    "White": "snow",
-    "Blue": "blue",
-    "Yellow": "yellow",
+    BLANK: "",
+    BLACK: "black",
+    BLUE: "blue",
+    CYAN: "cyan",
+    DARK_GRAY: "gray30",
+    GRAY: "gray55",
+    GREEN: "green",
+    LIGHT_GRAY: "gray80",
+    MAGENTA: "magenta3",
+    ORANGE: "orange",
+    PINK: "pink",
+    RED: "red",
+    WHITE: "snow",
+    YELLOW: "yellow",
 }
 INIT_SPEED = 50
 VALID_WORLD_KEYWORDS = [

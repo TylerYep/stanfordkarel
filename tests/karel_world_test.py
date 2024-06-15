@@ -2,6 +2,7 @@ from pathlib import Path
 
 from stanfordkarel.karel_application import StudentCode
 from stanfordkarel.karel_program import KarelProgram
+from stanfordkarel.karel_world import BLANK
 
 STONE_MASON_ASCII_OUTPUT = (
     "┌───────────────────────────────────────────────────────────────────────────────┐",
@@ -130,6 +131,14 @@ class TestKarelWorld:
     @staticmethod
     def test_equal_worlds() -> None:
         test_program = KarelProgram("1x1")
+        ref_program = KarelProgram("1x1")
+
+        assert ref_program.world == test_program.world
+
+    @staticmethod
+    def test_paint_corner() -> None:
+        test_program = KarelProgram("1x1")
+        test_program.paint_corner(BLANK)
         ref_program = KarelProgram("1x1")
 
         assert ref_program.world == test_program.world
