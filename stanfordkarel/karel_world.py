@@ -51,7 +51,7 @@ from typing import Any, NamedTuple
 INFINITY = -1
 
 # Defined constants for ease of use by students when coloring corners
-BLANK = "Empty"
+BLANK = ""
 RED = "Red"
 BLACK = "Black"
 CYAN = "Cyan"

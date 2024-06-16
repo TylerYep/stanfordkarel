@@ -25,7 +25,7 @@ class Tile:
         self.value = value
         self.walls: list[Direction] = []
         self.beepers = 0
-        self.color = ""
+        self.color = BLANK
 
     def __repr__(self) -> str:
         result = ""
