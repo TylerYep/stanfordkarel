@@ -213,11 +213,8 @@ class KarelProgram:
 
         # must also check for alternate possible representation of wall
         opposite_direction = NEXT_DIRECTION_MAP[NEXT_DIRECTION_MAP[direction]]
-        if self.world.wall_exists(next_avenue, next_street, opposite_direction):
-            return False
-
         # If all previous conditions checked out, then the front is clear
-        return True
+        return not self.world.wall_exists(next_avenue, next_street, opposite_direction)
 
     def front_is_blocked(self) -> bool:
         """
