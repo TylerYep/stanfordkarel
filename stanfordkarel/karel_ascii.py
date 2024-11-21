@@ -12,7 +12,7 @@ from __future__ import annotations
 from enum import Enum, unique
 from typing import Any, Dict, Iterator, Tuple
 
-from .karel_world import Direction, KarelWorld
+from .karel_world import BLANK, Direction, KarelWorld
 
 CHAR_WIDTH = 5
 HORIZONTAL, VERTICAL = "─", "│"
@@ -25,7 +25,7 @@ class Tile:
         self.value = value
         self.walls: list[Direction] = []
         self.beepers = 0
-        self.color = ""
+        self.color = BLANK
 
     def __repr__(self) -> str:
         result = ""
@@ -33,7 +33,7 @@ class Tile:
             result = "<K>"
         elif self.beepers > 0:
             result = f"<{self.beepers}>"
-        elif self.color:
+        elif self.color != BLANK:
             result = self.color[:3]
         else:
             result = self.value
