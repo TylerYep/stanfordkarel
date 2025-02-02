@@ -33,9 +33,9 @@ def execute_karel_code(
     student_code.inject_namespace(karel)
     try:
         student_code.main()
-        assert karel.compare_with(
-            KarelProgram(f"{world_name}_end")
-        ), "Resulting world did not match expected result."
+        assert karel.compare_with(KarelProgram(f"{world_name}_end")), (
+            "Resulting world did not match expected result."
+        )
     except (KarelException, NameError) as e:
         assert str(e) == expected_error  # noqa: PT017
 
