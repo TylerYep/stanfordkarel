@@ -12,10 +12,11 @@ Date of Creation: 10/1/2019
 from __future__ import annotations
 
 import tkinter as tk
+from collections.abc import Callable
 from pathlib import Path
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from typing import Any, Callable
+from typing import Any
 
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelProgram

@@ -10,8 +10,9 @@ Email: tyep@cs.stanford.edu
 
 import ast
 import inspect
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import stanfordkarel
 
