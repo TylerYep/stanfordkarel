@@ -13,7 +13,8 @@ from __future__ import annotations
 import difflib
 import itertools
 import re
-from typing import TYPE_CHECKING, Any, Callable, Iterator
+from collections.abc import Callable, Iterator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from types import FrameType, TracebackType

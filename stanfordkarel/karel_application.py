@@ -15,12 +15,13 @@ import importlib.util
 import inspect
 import tkinter as tk
 import traceback as tb
+from collections.abc import Callable
 from pathlib import Path
 from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 from types import FrameType, ModuleType
-from typing import Any, Callable, cast
+from typing import Any, cast
 
 from .didyoumean import add_did_you_mean
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
