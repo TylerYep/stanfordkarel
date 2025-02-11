@@ -10,14 +10,17 @@ Email: tyep@cs.stanford.edu
 from __future__ import annotations
 
 from enum import Enum, unique
-from typing import Any, Dict, Iterator, Tuple
+from typing import TYPE_CHECKING, Any
 
 from .karel_world import Direction, KarelWorld
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 CHAR_WIDTH = 5
 HORIZONTAL, VERTICAL = "─", "│"
 SPACING = 10
-BEEPER_COORDS = Dict[Tuple[int, int], int]
+BEEPER_COORDS = dict[tuple[int, int], int]
 
 
 class Tile:
@@ -182,7 +185,7 @@ def compare_output(first: Any, second: Any) -> str:
 
     def create_two_column_string(col1: list[str], col2: list[str]) -> Iterator[str]:
         """col1 and col2 are Lists."""
-        return (f"{x[0]}{' ' * SPACING}{x[1]}" for x in zip(col1, col2))
+        return (f"{x[0]}{' ' * SPACING}{x[1]}" for x in zip(col1, col2, strict=False))
 
     def symmetric_difference(
         a: BEEPER_COORDS, b: BEEPER_COORDS

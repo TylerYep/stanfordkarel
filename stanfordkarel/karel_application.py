@@ -20,11 +20,14 @@ from time import sleep
 from tkinter.filedialog import askopenfilename
 from tkinter.messagebox import showwarning
 from types import FrameType, ModuleType
-from typing import Any, Callable, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from .didyoumean import add_did_you_mean
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelException, KarelProgram
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 class StudentModule(ModuleType):
@@ -130,7 +133,7 @@ class StudentCode:
         try:
             self.mods[0].main()
         except Exception as e:
-            if isinstance(e, (KarelException, NameError, RuntimeError)):
+            if isinstance(e, KarelException | NameError | RuntimeError):
                 self.print_error_traceback(e)
             raise
 

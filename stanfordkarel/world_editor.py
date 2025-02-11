@@ -15,11 +15,14 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
 from .karel_program import KarelProgram
 from .karel_world import COLOR_MAP, INFINITY, Direction
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 MIN_DIMENSIONS = 1
 MAX_DIMENSIONS = 50
