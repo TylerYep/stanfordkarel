@@ -60,12 +60,12 @@ class StudentCode:
         try:
             module_loader = spec.loader
             assert module_loader is not None
-            mod = cast(StudentModule, importlib.util.module_from_spec(spec))
+            mod = cast("StudentModule", importlib.util.module_from_spec(spec))
             self.mods: list[StudentModule] = [mod]
             module_loader.exec_module(mod)
             # Go through attributes to find imported modules
             for name in dir(mod):
-                module = cast(StudentModule, getattr(mod, name))
+                module = cast("StudentModule", getattr(mod, name))
                 if isinstance(module, ModuleType):
                     assert module.__file__ is not None
                     code_file_path = Path(module.__file__)
