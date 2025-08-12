@@ -127,6 +127,9 @@ class KarelWorld:
             )
         return NotImplemented
 
+    def __hash__(self) -> int:
+        return 0
+
     @staticmethod
     def process_world(world_file: str) -> Path:
         """

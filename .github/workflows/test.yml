@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.13"]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,13 +22,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade uv
-        uv pip install --system mypy pytest pytest-cov
     - name: mypy
       run: |
-        mypy --install-types --non-interactive .
+        uv run mypy --install-types --non-interactive .
     - name: pytest
       if: always()
       run: |
-        pytest --cov=stanfordkarel --cov-report= --durations=0
+        uv run pytest --cov=stanfordkarel --cov-report= --durations=0
     - name: codecov
       uses: codecov/codecov-action@v1

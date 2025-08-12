@@ -73,6 +73,9 @@ class KarelProgram:
             return self.__dict__ == other.__dict__
         return NotImplemented
 
+    def __hash__(self) -> int:
+        return 0
+
     def compare_with(self, other: KarelProgram, two_columns: bool = True) -> bool:
         """
         Options:
