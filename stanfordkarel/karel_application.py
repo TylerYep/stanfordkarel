@@ -11,6 +11,7 @@ Date of Creation: 10/1/2019
 
 from __future__ import annotations
 
+import contextlib
 import importlib.util
 import inspect
 import tkinter as tk
@@ -173,6 +174,12 @@ class KarelApplication(tk.Frame):
     ) -> None:
         # set window background to contrast white Karel canvas
         master.configure(background=LIGHT_GREY)
+
+        # disable dark mode in macOS to maintain legibility (#8)
+        with contextlib.suppress(tk.TclError):
+            master.tk.call(
+                "tk::unsupported::MacWindowStyle", "appearance", str(master), "aqua"
+            )
 
         # configure location of canvas to expand to fit window resizing
         master.rowconfigure(0, weight=1)
