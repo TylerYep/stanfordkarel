@@ -300,7 +300,7 @@ class KarelWorld:
         self.karel_start_beeper_count = beeper_count
 
     def add_beeper(self, avenue: int, street: int) -> None:
-        self.beepers[(avenue, street)] += 1
+        self.beepers[(avenue, street)] = self.beepers.get((avenue, street), 0) + 1
 
     def remove_beeper(self, avenue: int, street: int) -> None:
         if self.beepers[(avenue, street)] > 0:
