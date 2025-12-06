@@ -1,4 +1,4 @@
-from stanfordkarel.stanfordkarel import (  # noqa: F401
+from stanfordkarel.karel_world import (  # noqa: F401
     BLACK,
     BLANK,
     BLUE,
@@ -13,6 +13,8 @@ from stanfordkarel.stanfordkarel import (  # noqa: F401
     RED,
     WHITE,
     YELLOW,
+)
+from stanfordkarel.stanfordkarel import (  # noqa: F401
     beepers_in_bag,
     beepers_present,
     corner_color_is,
