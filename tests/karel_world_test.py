@@ -1,7 +1,8 @@
 from pathlib import Path
 
-from stanfordkarel.karel_application import StudentCode
+from stanfordkarel.karel_executor import inject_karel_api
 from stanfordkarel.karel_program import KarelProgram
+from stanfordkarel.student_code import StudentCode
 
 STONE_MASON_ASCII_OUTPUT = (
     "┌───────────────────────────────────────────────────────────────────────────────┐",
@@ -101,7 +102,7 @@ class TestKarelWorld:
         test_program = KarelProgram("1x1")
 
         test_code = StudentCode(py_path)
-        test_code.inject_namespace(test_program)
+        inject_karel_api(test_code, test_program)
         test_code.main()
 
         ref_program = KarelProgram("1x1")
@@ -120,7 +121,7 @@ class TestKarelWorld:
         test_program = KarelProgram("1x1")
 
         test_code = StudentCode(py_path)
-        test_code.inject_namespace(test_program)
+        inject_karel_api(test_code, test_program)
         test_code.main()
 
         ref_program = KarelProgram("1x1")

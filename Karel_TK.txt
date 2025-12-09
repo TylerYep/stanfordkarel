@@ -1,0 +1,24 @@
+title Karel / TK
+
+User->Student Prog:python student_prog.py (__main__)
+Student Prog->stanford_karel.py:run_karel_prog
+stanford_karel.py->KarelProgram:__init__(world_file)
+stanford_karel.py->KarelApplication:__init__(Karel, student_code_file, Tk)
+KarelApplication->StudentCode:__init__(student_code_file)
+stanford_karel.py->KarelApplication:main_loop
+KarelApplication->Tk:main_loop
+User->UI:push Run Program button
+UI->KarelApplication:run_prog
+KarelApplication->karel_executor.py:execute_student_prog(code, Karel, on_karel_action [callback])
+karel_executor.py->Student Prog:inject Karel API
+karel_executor.py->KarelProgram:add_action_callback
+karel_executor.py->StudentCode:main
+StudentCode->Student Prog:main
+Student Prog->KarelProgram:move
+KarelProgram->KarelApplication:on_karel_action('move') [callback]
+KarelApplication->KarelCanvas:redraw_all
+KarelCanvas->Canvas:delete('all')
+KarelCanvas->KarelBaseRenderer:redraw_world
+KarelBaseRenderer->KarelCanvas:init_geom,draw_line,draw_poly, etc.
+
+

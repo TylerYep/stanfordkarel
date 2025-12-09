@@ -15,10 +15,15 @@ Date of Creation: 10/1/2019
 
 import sys
 import tkinter as tk
+from collections.abc import Callable
 from pathlib import Path
 
+from yarl import URL
+
 from .karel_application import KarelApplication
+from .karel_image_renderer import KarelImageRenderer
 from .karel_program import KarelProgram
+from .student_code import StudentCode
 
 # The following function definitions are defined as stubs so that IDEs can recognize
 # the function definitions in student code. These names are re-bound upon program
@@ -140,7 +145,11 @@ YELLOW = "Yellow"
 BLANK = ""
 
 
-def run_karel_program(world_file: str = "") -> None:
+def run_karel_program(
+    world_file: str | URL = "",
+    render: str = "tk",
+    main_func: Callable[[], None] | None = None,
+) -> None:
     # Extract the name of the file the student is executing
     student_code_file = Path(sys.argv[0])
 
@@ -160,7 +169,18 @@ def run_karel_program(world_file: str = "") -> None:
     # Create Karel and assign it to live in the newly created world
     karel = KarelProgram(world_file)
 
-    # Initialize root Tk Window and spawn Karel application
-    root = tk.Tk()
-    app = KarelApplication(karel, student_code_file, master=root)
-    app.mainloop()
+    if render == "tk":
+        # Initialize root Tk Window and spawn Karel application
+        root = tk.Tk()
+        app = KarelApplication(karel, student_code_file, master=root)
+        app.mainloop()
+    elif render == "gif":
+        renderer = KarelImageRenderer(karel.world, karel)
+        student_code = StudentCode(code_file=student_code_file, main_func=main_func)
+        renderer.run_and_render_to_gif(student_code)
+    elif render == "ipython":
+        renderer = KarelImageRenderer(karel.world, karel)
+        student_code = StudentCode(code_file=student_code_file, main_func=main_func)
+        renderer.run_and_render_to_ipython(student_code)
+    else:
+        raise ValueError(f"Invalid render option: {render}. Options are 'tk' or 'gif'.")
