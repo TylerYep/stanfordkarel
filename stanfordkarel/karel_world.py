@@ -49,20 +49,38 @@ from pathlib import Path
 from typing import Any, NamedTuple
 
 INFINITY = -1
+
+# Defined constants for ease of use by students when coloring corners
+BLANK = ""
+RED = "Red"
+BLACK = "Black"
+CYAN = "Cyan"
+DARK_GRAY = "Dark Gray"
+GRAY = "Gray"
+GREEN = "Green"
+LIGHT_GRAY = "Light Gray"
+MAGENTA = "Magenta"
+ORANGE = "Orange"
+PINK = "Pink"
+WHITE = "White"
+BLUE = "Blue"
+YELLOW = "Yellow"
+
 COLOR_MAP = {
-    "Red": "red",
-    "Black": "black",
-    "Cyan": "cyan",
-    "Dark Gray": "gray30",
-    "Gray": "gray55",
-    "Green": "green",
-    "Light Gray": "gray80",
-    "Magenta": "magenta3",
-    "Orange": "orange",
-    "Pink": "pink",
-    "White": "snow",
-    "Blue": "blue",
-    "Yellow": "yellow",
+    BLANK: "",
+    BLACK: "black",
+    BLUE: "blue",
+    CYAN: "cyan",
+    DARK_GRAY: "gray30",
+    GRAY: "gray55",
+    GREEN: "green",
+    LIGHT_GRAY: "gray80",
+    MAGENTA: "magenta3",
+    ORANGE: "orange",
+    PINK: "pink",
+    RED: "red",
+    WHITE: "snow",
+    YELLOW: "yellow",
 }
 INIT_SPEED = 50
 VALID_WORLD_KEYWORDS = [
@@ -91,7 +109,7 @@ class KarelWorld:
         # Map of beeper locations to the count of beepers at that location
         self.beepers: dict[tuple[int, int], int] = {}
 
-        # Map of corner colors, defaults to ""
+        # Map of corner colors
         self.corner_colors: dict[tuple[int, int], str] = {}
 
         # Set of Wall objects placed in the world
@@ -115,6 +133,14 @@ class KarelWorld:
 
         # Save initial beeper state to enable world reset
         self.init_beepers = copy.deepcopy(self.beepers)
+
+        # Fill corner colors
+        for ave in range(1, 1 + self.num_avenues):
+            for st in range(1, 1 + self.num_streets):
+                if (ave, st) not in self.corner_colors:
+                    self.corner_colors[(ave, st)] = BLANK
+
+        self.init_corner_colors = copy.deepcopy(self.corner_colors)
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, KarelWorld):
@@ -320,13 +346,11 @@ class KarelWorld:
         self.corner_colors[(avenue, street)] = color
 
     def corner_color(self, avenue: int, street: int) -> str:
-        if (avenue, street) in self.corner_colors:
-            return self.corner_colors[(avenue, street)]
-        return ""
+        return self.corner_colors[(avenue, street)]
 
     def reset_corner(self, avenue: int, street: int) -> None:
         self.beepers[(avenue, street)] = 0
-        self.corner_colors[(avenue, street)] = ""
+        self.corner_colors[(avenue, street)] = BLANK
 
     def wall_exists(self, avenue: int, street: int, direction: Direction) -> bool:
         wall = Wall(avenue, street, direction)
@@ -338,7 +362,7 @@ class KarelWorld:
     def reset_world(self) -> None:
         """Reset initial state of beepers in the world"""
         self.beepers = copy.deepcopy(self.init_beepers)
-        self.corner_colors = {}
+        self.corner_colors = copy.deepcopy(self.init_corner_colors)
 
     def reload_world(self, filename: str | None = None) -> None:
         """Reloads world using constructor."""
@@ -360,7 +384,7 @@ class KarelWorld:
 
         # Next, output all color information
         for (x, y), color in sorted(self.corner_colors.items()):
-            if color:
+            if color is not BLANK:
                 output += f"Color: ({x}, {y}); {color}\n"
 
         # Next, output Karel information
