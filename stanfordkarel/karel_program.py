@@ -378,7 +378,7 @@ class KarelProgram:
         This function makes Karel paint its current corner the indicated color.
         This function will raise a KarelException if the indicated color is not one
         of the valid predefined colors. For this list of colors, check the
-        kareldefinitions.py file.
+        stanfordkarel.py file.
 
         Parameters:
             color (str) - The color string specifying which color to paint the corner
@@ -392,6 +392,7 @@ class KarelProgram:
                 f"Karel attempted to paint the corner with color {color}, "
                 "which is not valid.",
             )
+
         self.world.paint_corner(self.avenue, self.street, color)
 
     def corner_color_is(self, color: str) -> bool:
