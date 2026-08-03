@@ -95,6 +95,7 @@ lint.ignore = [
 	"PLR0912", # Too many branches
 	"PLR0913", # Too many arguments to function call
 	"PLR0915", # Too many statements
+	"PLR0917", # Too many positional arguments (6 > 5)
 	"S101",    # Use of `assert` detected
 	"S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
 	"T201",    # print() found
