@@ -18,7 +18,8 @@ from tkinter import messagebox, simpledialog
 from tkinter.filedialog import askopenfilename, asksaveasfilename
 from typing import TYPE_CHECKING, Any
 
-from .karel_canvas import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y, KarelCanvas
+from .karel_canvas import KarelCanvas
+from .karel_constants import DEFAULT_ICON, LIGHT_GREY, PAD_X, PAD_Y
 from .karel_program import KarelProgram
 from .karel_world import COLOR_MAP, INFINITY, Direction
 
@@ -410,15 +411,14 @@ class WorldBuilderApplication(tk.Frame):
         elif action == "paint_corner":
             apply_function(self.world.paint_corner, self.color_var.get())
         elif action == "add_wall":
-            wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
-            if wall:
-                self.world.add_wall(wall)
-                self.canvas.redraw_walls()
+            self.canvas.add_wall_at_location(event.x, event.y)
+            self.canvas.redraw_corners(update=False)
+            self.canvas.redraw_beepers(update=False)
+            self.canvas.redraw_walls(update=False)
+            self.canvas.redraw_karel()
         elif action == "remove_wall":
-            wall = self.canvas.find_nearest_wall(event.x, event.y, avenue, street)
-            if wall:
-                self.world.remove_wall(wall)
-                self.canvas.redraw_walls()
+            self.canvas.remove_wall_at_location(event.x, event.y)
+            self.canvas.redraw_walls()
 
     def save_world(self) -> None:
         default_worlds_path = Path(__file__).absolute().parent / "worlds"

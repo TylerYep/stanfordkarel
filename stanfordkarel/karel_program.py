@@ -19,6 +19,14 @@ Date of Creation: 10/1/2019
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from yarl import URL
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 from .karel_ascii import AsciiKarelWorld, compare_output
 from .karel_world import COLOR_MAP, INFINITY, Direction, KarelWorld
 
@@ -42,7 +50,7 @@ DIRECTION_DELTA_MAP = {
 
 
 class KarelProgram:
-    def __init__(self, world_file: str) -> None:
+    def __init__(self, world_file: str | URL) -> None:
         """
         This functions instantiates a new Karel instance and sets its
         location and current number of beepers to be the default starting
@@ -63,6 +71,20 @@ class KarelProgram:
         self.avenue, self.street = self.world.karel_start_location
         self.direction = self.world.karel_start_direction
         self.num_beepers = self.world.karel_start_beeper_count
+        self._action_callbacks: list[Callable[[str], None]] = []
+
+    def add_action_callback(self, callback: Callable[[str], None]) -> None:
+        """
+        Adds a callback function to be executed after each Karel action.
+        """
+        self._action_callbacks.append(callback)
+
+    def _execute_callbacks(self, action_name: str) -> None:
+        """
+        Executes all registered action callbacks.
+        """
+        for callback in self._action_callbacks:
+            callback(action_name)
 
     def __repr__(self) -> str:
         """Creates a Karel World in ASCII Art!"""
@@ -123,6 +145,7 @@ class KarelProgram:
         delta_avenue, delta_street = DIRECTION_DELTA_MAP[self.direction]
         self.avenue += delta_avenue
         self.street += delta_street
+        self._execute_callbacks("move")
 
     def turn_left(self) -> None:
         """
@@ -132,6 +155,7 @@ class KarelProgram:
         Returns: None
         """
         self.direction = NEXT_DIRECTION_MAP[self.direction]
+        self._execute_callbacks("turn_left")
 
     def put_beeper(self) -> None:
         """
@@ -154,6 +178,7 @@ class KarelProgram:
             self.num_beepers -= 1
 
         self.world.add_beeper(self.avenue, self.street)
+        self._execute_callbacks("put_beeper")
 
     def pick_beeper(self) -> None:
         """
@@ -177,6 +202,7 @@ class KarelProgram:
             self.num_beepers += 1
 
         self.world.remove_beeper(self.avenue, self.street)
+        self._execute_callbacks("pick_beeper")
 
     def front_is_clear(self) -> bool:
         """
@@ -393,6 +419,7 @@ class KarelProgram:
                 "which is not valid.",
             )
         self.world.paint_corner(self.avenue, self.street, color)
+        self._execute_callbacks("paint_corner")
 
     def corner_color_is(self, color: str) -> bool:
         """
