@@ -46,7 +46,12 @@ import re
 import sys
 from enum import Enum, unique
 from pathlib import Path
-from typing import Any, NamedTuple
+from typing import TYPE_CHECKING, Any, NamedTuple, cast
+
+import requests
+
+if TYPE_CHECKING:
+    from yarl import URL
 
 INFINITY = -1
 COLOR_MAP = {
@@ -80,14 +85,12 @@ DEFAULT_WORLD_FILE = "default_world.w"
 
 
 class KarelWorld:
-    def __init__(self, world_file: str) -> None:
+    def __init__(self, world_file: str | URL) -> None:
         """
         Karel World constructor
         Parameters:
             world_file: filename containing the initial state of Karel's world
         """
-        self.world_file = self.process_world(world_file)
-
         # Map of beeper locations to the count of beepers at that location
         self.beepers: dict[tuple[int, int], int] = {}
 
@@ -110,8 +113,11 @@ class KarelWorld:
         self.init_speed = INIT_SPEED
 
         # If a world file has been specified, load world details from the file
-        if self.world_file:
+        if type(world_file) is str:
+            self.world_file = self.process_world(world_file)
             self.load_from_file()
+        else:
+            self.load_from_url(cast("URL", world_file))
 
         # Save initial beeper state to enable world reset
         self.init_beepers = copy.deepcopy(self.beepers)
@@ -232,63 +238,72 @@ class KarelWorld:
                 raise ValueError(f"Error: {param} is invalid parameter for {keyword}.")
         return params
 
+    def load_from_text(self, world_text: str) -> None:
+        for i, line_with_spaces in enumerate(world_text.splitlines()):
+            # Ignore blank lines and lines with no comma delineator
+            line = line_with_spaces.strip()
+            if not line:
+                continue
+
+            if KEYWORD_DELIM not in line:
+                print(f"Incorrectly formatted - ignoring line {i} of file: {line}")
+                continue
+
+            keyword, param_str = line.lower().split(KEYWORD_DELIM)
+
+            # only accept valid keywords as defined in world file spec
+            # TODO: add error detection for keywords with insufficient parameters
+            params = self.parse_parameters(keyword, param_str)
+
+            # handle all different possible keyword cases
+            if keyword == "dimension":
+                # set world dimensions based on location values
+                self.num_avenues, self.num_streets = params["location"]
+
+            elif keyword == "wall":
+                # build a wall at the specified location
+                (avenue, street), direction = (
+                    params["location"],
+                    params["direction"],
+                )
+                self.walls.add(Wall(avenue, street, direction))
+
+            elif keyword == "beeper":
+                # add the specified number of beepers to the world
+                if params["location"] in self.beepers:
+                    self.beepers[params["location"]] += params["val"]
+                else:
+                    self.beepers[params["location"]] = params["val"]
+
+            elif keyword == "karel":
+                # Give Karel initial state values
+                self.karel_start_location = params["location"]
+                self.karel_start_direction = params["direction"]
+
+            elif keyword == "beeperbag":
+                # Set Karel's initial beeper bag count
+                self.karel_start_beeper_count = params["val"]
+
+            elif keyword == "speed":
+                # Set delay speed of program execution
+                self.init_speed = params["val"]
+
+            elif keyword == "color":
+                # Set corner color to be specified color
+                self.corner_colors[params["location"]] = params["color"]
+
+            else:
+                print(f"Invalid keyword - ignoring line {i} of world file: {line}")
+
+    def load_from_url(self, world_url: URL) -> None:
+        response = requests.get(str(world_url), timeout=1000)
+        response.raise_for_status()
+        self.load_from_text(response.text)
+
     def load_from_file(self) -> None:
         with self.world_file.open(encoding="utf-8") as f:
-            for i, line_with_spaces in enumerate(f):
-                # Ignore blank lines and lines with no comma delineator
-                line = line_with_spaces.strip()
-                if not line:
-                    continue
-
-                if KEYWORD_DELIM not in line:
-                    print(f"Incorrectly formatted - ignoring line {i} of file: {line}")
-                    continue
-
-                keyword, param_str = line.lower().split(KEYWORD_DELIM)
-
-                # only accept valid keywords as defined in world file spec
-                # TODO: add error detection for keywords with insufficient parameters
-                params = self.parse_parameters(keyword, param_str)
-
-                # handle all different possible keyword cases
-                if keyword == "dimension":
-                    # set world dimensions based on location values
-                    self.num_avenues, self.num_streets = params["location"]
-
-                elif keyword == "wall":
-                    # build a wall at the specified location
-                    (avenue, street), direction = (
-                        params["location"],
-                        params["direction"],
-                    )
-                    self.walls.add(Wall(avenue, street, direction))
-
-                elif keyword == "beeper":
-                    # add the specified number of beepers to the world
-                    if params["location"] in self.beepers:
-                        self.beepers[params["location"]] += params["val"]
-                    else:
-                        self.beepers[params["location"]] = params["val"]
-
-                elif keyword == "karel":
-                    # Give Karel initial state values
-                    self.karel_start_location = params["location"]
-                    self.karel_start_direction = params["direction"]
-
-                elif keyword == "beeperbag":
-                    # Set Karel's initial beeper bag count
-                    self.karel_start_beeper_count = params["val"]
-
-                elif keyword == "speed":
-                    # Set delay speed of program execution
-                    self.init_speed = params["val"]
-
-                elif keyword == "color":
-                    # Set corner color to be specified color
-                    self.corner_colors[params["location"]] = params["color"]
-
-                else:
-                    print(f"Invalid keyword - ignoring line {i} of world file: {line}")
+            world_text = f.read()
+            self.load_from_text(world_text)
 
     def set_karel_start_location(self, avenue: int, street: int) -> None:
         self.karel_start_location = (avenue, street)
@@ -303,7 +318,7 @@ class KarelWorld:
         self.beepers[(avenue, street)] = self.beepers.get((avenue, street), 0) + 1
 
     def remove_beeper(self, avenue: int, street: int) -> None:
-        if self.beepers[(avenue, street)] > 0:
+        if self.beepers.get((avenue, street), 0) > 0:
             self.beepers[(avenue, street)] -= 1
 
     def add_wall(self, wall: Wall) -> None:
